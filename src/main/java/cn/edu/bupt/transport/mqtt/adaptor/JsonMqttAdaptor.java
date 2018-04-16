@@ -5,12 +5,14 @@ import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.message.*;
 import cn.edu.bupt.transport.AdaptorException;
 import cn.edu.bupt.transport.TransportAdaptor;
+import cn.edu.bupt.transport.mqtt.MqttTopics;
 import cn.edu.bupt.transport.mqtt.session.DeviceSessionCtx;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
+import io.netty.handler.codec.mqtt.MqttSubscribeMessage;
 
 import java.nio.charset.Charset;
 import java.util.Optional;
@@ -33,6 +35,15 @@ public class JsonMqttAdaptor implements TransportAdaptor<DeviceSessionCtx,MqttMe
             case MsgType.POST_ATTRIBUTE_REQUEST:
                 msg = convertToUpdateAttributesRequest(ctx, (MqttPublishMessage) inbound);
                 break;
+            case MsgType.FROM_DEVICE_RPC_SUB:
+                msg = convertToRpcSubRequest(ctx,(MqttSubscribeMessage)inbound);
+                break;
+            case MsgType.FROM_DEVICE_RPC_UNSUB:
+                msg = convertToRpcUnSubRequest(ctx,(MqttSubscribeMessage)inbound);
+                break;
+            case MsgType.FROM_DEVICE_RPC_RESPONCE:
+                msg = convertToRpcResponceRequest(ctx,(MqttPublishMessage) inbound);
+                break;
         }
         return new BasicAdapterToSessionActorMsg(ctx,msg);
     }
@@ -41,6 +52,26 @@ public class JsonMqttAdaptor implements TransportAdaptor<DeviceSessionCtx,MqttMe
     public Optional<MqttMessage> convertToAdaptorMsg(DeviceSessionCtx ctx, SessionActorToAdaptorMsg msg) throws AdaptorException {
         return null;
     }
+
+    private FromDeviceMsg convertToRpcUnSubRequest(DeviceSessionCtx ctx, MqttSubscribeMessage inbound) {
+        return new RpcUnSubscribeMsg();
+    }
+
+    private FromDeviceMsg convertToRpcSubRequest(DeviceSessionCtx ctx, MqttSubscribeMessage inbound) {
+        return new RpcSubscribeMsg();
+    }
+
+    private FromDeviceMsg convertToRpcResponceRequest(DeviceSessionCtx ctx, MqttPublishMessage inbound) throws AdaptorException{
+        String topicName = inbound.variableHeader().topicName();
+        try{
+            int requestId = Integer.valueOf(topicName.substring(MqttTopics.DEVICE_RPC_RESPONSE_TOPIC.length()));
+            String payload = inbound.payload().toString(UTF8);
+            return new FromDeviceRpcResponce(requestId,payload);
+        }catch(Exception e){
+            throw new AdaptorException(e.toString());
+        }
+    }
+
 
     private FromDeviceMsg convertToUpdateAttributesRequest(DeviceSessionCtx ctx, MqttPublishMessage inbound) throws AdaptorException {
         String payLoad = validatePayload(ctx.getSessionId(),inbound.payload());

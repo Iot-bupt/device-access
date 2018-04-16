@@ -1,11 +1,13 @@
 package cn.edu.bupt.transport.mqtt;
 
-import io.netty.handler.codec.mqtt.MqttConnAckMessage;
-import io.netty.handler.codec.mqtt.MqttConnAckVariableHeader;
-import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
-import io.netty.handler.codec.mqtt.MqttFixedHeader;
+import io.netty.handler.codec.mqtt.*;
+
+import java.util.List;
 
 import static io.netty.handler.codec.mqtt.MqttMessageType.CONNACK;
+import static io.netty.handler.codec.mqtt.MqttMessageType.SUBACK;
+import static io.netty.handler.codec.mqtt.MqttMessageType.UNSUBACK;
+import static io.netty.handler.codec.mqtt.MqttQoS.AT_LEAST_ONCE;
 import static io.netty.handler.codec.mqtt.MqttQoS.AT_MOST_ONCE;
 
 /**
@@ -18,5 +20,20 @@ public class MqttMsgFactory {
         MqttConnAckVariableHeader mqttConnAckVariableHeader =
                 new MqttConnAckVariableHeader(returnCode, true);
         return new MqttConnAckMessage(mqttFixedHeader, mqttConnAckVariableHeader);
+    }
+
+    public static Object createSubAckMessage(int msgId, List<Integer> grantedQoSList) {
+        MqttFixedHeader mqttFixedHeader =
+                new MqttFixedHeader(SUBACK, false, AT_LEAST_ONCE, false, 0);
+        MqttMessageIdVariableHeader mqttMessageIdVariableHeader = MqttMessageIdVariableHeader.from(msgId);
+        MqttSubAckPayload mqttSubAckPayload = new MqttSubAckPayload(grantedQoSList);
+        return new MqttSubAckMessage(mqttFixedHeader, mqttMessageIdVariableHeader, mqttSubAckPayload);
+    }
+
+    public static Object createUnSubAckMessage(int msgId) {
+        MqttFixedHeader mqttFixedHeader =
+                new MqttFixedHeader(UNSUBACK, false, AT_LEAST_ONCE, false, 0);
+        MqttMessageIdVariableHeader mqttMessageIdVariableHeader = MqttMessageIdVariableHeader.from(msgId);
+        return new MqttMessage(mqttFixedHeader, mqttMessageIdVariableHeader);
     }
 }

@@ -1,6 +1,5 @@
 package cn.edu.bupt.common.security;
 
-import cn.edu.bupt.pojo.DeviceId;
 
 /**
  * Created by Administrator on 2018/4/13.
@@ -8,18 +7,18 @@ import cn.edu.bupt.pojo.DeviceId;
 public class DeviceAuthResult {
 
     private final boolean success;
-    private final DeviceId deviceId;
+    private final String deviceId;
     private final String errorMsg;
 
-    public static DeviceAuthResult of(DeviceId deviceId) {
-        return new DeviceAuthResult(true, deviceId, null);
+    public static DeviceAuthResult of(boolean success,String deviceId,String errormsg) {
+        return new DeviceAuthResult(success, deviceId, errormsg);
     }
 
-    public static DeviceAuthResult of(String errorMsg) {
-        return new DeviceAuthResult(false, null, errorMsg);
-    }
+//   public static DeviceAuthResult of(String errorMsg) {
+//        return new DeviceAuthResult(false, null, errorMsg);
+//    }
 
-    private DeviceAuthResult(boolean success, DeviceId deviceId, String errorMsg) {
+    private DeviceAuthResult(boolean success, String deviceId, String errorMsg) {
         super();
         this.success = success;
         this.deviceId = deviceId;
@@ -30,7 +29,7 @@ public class DeviceAuthResult {
         return success;
     }
 
-    public DeviceId getDeviceId() {
+    public String getDeviceId() {
         return deviceId;
     }
 

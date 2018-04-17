@@ -1,0 +1,62 @@
+CREATE KEYSPACE IF NOT EXISTS BUPT_IOT
+WITH replication = {
+	'class' : 'SimpleStrategy',
+	'replication_factor' : 1
+};
+
+CREATE TABLE IF NOT EXISTS BUPT_IOT.device (
+    id timeuuid,
+    tenant_id timeuuid,
+    customer_id timeuuid,
+    name text,
+    search_text text,
+    manufacture text,
+    model text,
+    device_type text,
+    parent_device_id text,
+    status text,
+    additional_info text,
+	location text,
+    PRIMARY KEY (id, tenant_id, customer_id)
+);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS BUPT_IOT.device_by_tenant_and_parent_device_id AS
+    SELECT *
+    from BUPT_IOT.device
+    WHERE tenant_id IS NOT NULL AND customer_id IS NOT NULL AND parent_device_id IS NOT NULL AND id IS NOT NULL
+    PRIMARY KEY ( parent_device_id, tenant_id, id, customer_id)
+    WITH CLUSTERING ORDER BY ( parent_device_id ASC, id DESC, customer_id DESC);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS BUPT_IOT.device_by_tenant_and_name AS
+    SELECT *
+    from BUPT_IOT.device
+    WHERE tenant_id IS NOT NULL AND customer_id IS NOT NULL AND name IS NOT NULL AND id IS NOT NULL
+    PRIMARY KEY ( tenant_id, name, id, customer_id)
+    WITH CLUSTERING ORDER BY ( name ASC, id DESC, customer_id DESC);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS BUPT_IOT.device_by_tenant_and_search_text AS
+    SELECT *
+    from BUPT_IOT.device
+    WHERE tenant_id IS NOT NULL AND customer_id IS NOT NULL AND search_text IS NOT NULL AND id IS NOT NULL
+    PRIMARY KEY ( tenant_id, search_text, id, customer_id)
+    WITH CLUSTERING ORDER BY ( search_text ASC, id DESC, customer_id DESC);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS BUPT_IOT.device_by_customer_and_search_text AS
+    SELECT *
+    from BUPT_IOT.device
+    WHERE tenant_id IS NOT NULL AND customer_id IS NOT NULL AND search_text IS NOT NULL AND id IS NOT NULL
+    PRIMARY KEY ( customer_id, tenant_id, search_text, id )
+    WITH CLUSTERING ORDER BY ( tenant_id DESC, search_text ASC, id DESC );
+
+CREATE TABLE IF NOT EXISTS bupt_iot.device_credentials (
+	id timeuuid PRIMARY KEY,
+	device_id timeuuid,
+	device_token text
+);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.device_credentials_by_device AS
+	SELECT *
+	from  bupt_iot.device_credentials
+	WHERE device_id IS NOT NULL AND id IS NOT NULL
+	PRIMARY KEY ( device_id, id );
+

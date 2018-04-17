@@ -21,11 +21,11 @@ public class BasicToDeviceActorMsg implements FromSessionActorToDeviceActorMsg{
     @Override
     public String getDeviceId() {
 
-        return device.getDeviceId();
+        return device.getId().toString();
     }
     @Override
     public String getTenantId() {
-        return device.getTenantId();
+        return device.getTenantId().toString();
     }
     @Override
     public SessionId getSessionId() {

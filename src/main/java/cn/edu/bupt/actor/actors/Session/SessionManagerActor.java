@@ -1,12 +1,12 @@
 package cn.edu.bupt.actor.actors.Session;
 
 import akka.actor.ActorRef;
+import akka.actor.Props;
 import akka.japi.Creator;
 import cn.edu.bupt.actor.actors.ContextAwareActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
-import cn.edu.bupt.message.FormSessionToDeviceActorMsg;
-import cn.edu.bupt.message.SessionAwareMsg;
-import cn.edu.bupt.message.SessionCtrlMsg;
+import cn.edu.bupt.common.SessionId;
+import cn.edu.bupt.message.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +26,23 @@ public class SessionManagerActor extends ContextAwareActor {
 
     @Override
     public void onReceive(Object msg) throws Exception {
+        System.out.println("sessionmanager receive "+ msg);
         if(msg instanceof SessionCtrlMsg){
             onSessionCtrlMsg((SessionCtrlMsg)msg);
         }else if(msg instanceof SessionAwareMsg){
             forwardToSessionActor((SessionAwareMsg) msg);
+        }else if(msg instanceof SessionTerminationMsg){
+             onSessionTermination((SessionTerminationMsg)msg);
+        }
+    }
+
+    private void onSessionTermination(SessionTerminationMsg msg) {
+        String sessionIdStr = msg.getSessionId().toUidStr();
+        ActorRef sessionActor = sessionActors.remove(sessionIdStr);
+        if(sessionActor != null){
+            //TODO 打log
+        }else{
+            //TODO 打l og
         }
     }
 
@@ -42,11 +55,32 @@ public class SessionManagerActor extends ContextAwareActor {
     }
 
     private void forwardToSessionActor(SessionAwareMsg msg) {
-        if (msg instanceof FormSessionToDeviceActorMsg) {
-
+        if (msg instanceof FromSessionActorToDeviceActorMsg) {
+            try{
+                getOrCreateSessionActor(msg.getSessionId()).tell(msg,self());
+            }catch(Exception e){
+                //TODO 待补全
+            }
         }else{
-
+            String sessionIdStr = msg.getSessionId().toUidStr();
+            ActorRef sessionActor = sessionActors.get(sessionIdStr);
+            if(sessionActor!=null){
+                sessionActor.tell(msg,ActorRef.noSender());
+            }else{
+                //TODO log.debug session actor was removed
+            }
         }
+    }
+
+    private ActorRef getOrCreateSessionActor(SessionId sessionId) {
+        String sessionIdStr = sessionId.toUidStr();
+        ActorRef sessionActor = sessionActors.get(sessionIdStr);
+        if(sessionActor == null){
+            sessionActor = context().actorOf(Props.create(new SessionActor.ActorCreator(systemContext,sessionId)).
+                    withDispatcher("session-dispatcher"),sessionIdStr);
+            sessionActors.put(sessionIdStr, sessionActor);
+        }
+        return sessionActor;
     }
 
     public static class ActorCreator implements Creator<SessionManagerActor>{

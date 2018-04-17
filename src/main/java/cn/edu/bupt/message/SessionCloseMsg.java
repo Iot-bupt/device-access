@@ -23,6 +23,6 @@ public class SessionCloseMsg implements SessionCtrlMsg{
 
     @Override
     public SessionId getSessionId() {
-        return null;
+        return sessionId;
     }
 }

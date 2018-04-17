@@ -5,6 +5,8 @@ import cn.edu.bupt.common.security.DeviceCredentialsType;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.DeviceCredentals;
 import cn.edu.bupt.service.DeviceAuthService;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Optional;
 
@@ -13,6 +15,7 @@ import java.util.Optional;
  */
 public abstract class DeviceAwareSessionContext implements SessionContext {
     protected  DeviceAuthService authService;
+    @Getter @Setter
     protected volatile Device device;
 
     public DeviceAwareSessionContext(DeviceAuthService authService){

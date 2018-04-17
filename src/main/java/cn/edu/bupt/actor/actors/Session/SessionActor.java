@@ -1,5 +1,6 @@
 package cn.edu.bupt.actor.actors.Session;
 
+import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.OneForOneStrategy;
 import akka.actor.SupervisorStrategy;
@@ -7,6 +8,7 @@ import akka.japi.Creator;
 import cn.edu.bupt.actor.actors.ContextAwareActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.common.SessionId;
+import cn.edu.bupt.message.*;
 import scala.concurrent.duration.Duration;
 
 /**
@@ -14,6 +16,7 @@ import scala.concurrent.duration.Duration;
  */
 public class SessionActor extends ContextAwareActor{
     private final SessionId sessionId;
+    private SessionActorProcessor  processor;
 
     private SessionActor(ActorSystemContext context,SessionId sessionId){
         super(context);
@@ -33,8 +36,40 @@ public class SessionActor extends ContextAwareActor{
     }
 
     @Override
-    public void onReceive(Object message) throws Exception {
+    public void onReceive(Object msg) throws Exception {
+        System.out.println("session receive "+ msg);
+        if(msg instanceof SessionCtrlMsg){
+            processSessionCtrlMsg((SessionCtrlMsg)msg);
+        }else if(msg instanceof FromDeviceActorToSessionActorMsg){
 
+        }else if(msg instanceof FromSessionActorToDeviceActorMsg){
+            processFromSessionActorToDeviceActorMsg((FromSessionActorToDeviceActorMsg)msg);
+        }else if(msg instanceof SessionTimeoutMsg){
+
+        }
+    }
+
+    private void processFromSessionActorToDeviceActorMsg(FromSessionActorToDeviceActorMsg msg) {
+        initProcessor(msg);
+        processor.processToDeviceActorMsg(context(), msg);
+    }
+
+    private void initProcessor(FromSessionActorToDeviceActorMsg msg) {
+        if (processor == null) {
+            processor = new MqttSessionActorProcessor(systemContext,msg.getSessionId());
+        }
+    }
+
+    private void processSessionCtrlMsg(SessionCtrlMsg msg) {
+        if(processor != null){
+            processor.processSessionCtrlMsg(context(),msg);
+        }else{
+            if(msg instanceof SessionCloseMsg){
+                context().parent().tell(new SessionTerminationMsg(msg.getSessionId()), ActorRef.noSender());
+                context().stop(context().self());
+            }
+            // TODO 打日志
+        }
     }
 
     public static class ActorCreator implements Creator<SessionActor> {

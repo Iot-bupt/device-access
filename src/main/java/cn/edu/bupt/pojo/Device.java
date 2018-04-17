@@ -7,6 +7,8 @@ import lombok.Data;
  */
 @Data
 public class Device {
+
+    private String DeviceId;
     private String tenantId;
     private String customerId;
     private String name;

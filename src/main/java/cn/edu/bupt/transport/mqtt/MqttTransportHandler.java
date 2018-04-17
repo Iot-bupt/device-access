@@ -3,6 +3,7 @@ package cn.edu.bupt.transport.mqtt;
 import cn.edu.bupt.actor.service.SessionMsgProcessor;
 import cn.edu.bupt.common.security.DeviceTokenCredentials;
 import cn.edu.bupt.message.AdaptorToSessionActorMsg;
+import cn.edu.bupt.message.BasicToDeviceActorMsg;
 import cn.edu.bupt.message.MsgType;
 import cn.edu.bupt.message.SessionCloseMsg;
 import cn.edu.bupt.service.DeviceAuthService;
@@ -162,7 +163,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             //TODO 异常待处理
         }
         if(msg!=null){
-           // processor.process(msg);
+            processor.process(new BasicToDeviceActorMsg(msg,deviceSessionCtx.getDevice()));
             System.out.println("received a data "+msg.getMsg().getMsgType());
         }else{
 
@@ -193,7 +194,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
         ctx.close();
         if(connected){
             //TODO 避免抛出异常暂时关掉
-          //  processor.process(SessionCloseMsg.onDisconnected(deviceSessionCtx.getSessionId()));
+            processor.process(SessionCloseMsg.onDisconnected(deviceSessionCtx.getSessionId()));
         }
     }
 

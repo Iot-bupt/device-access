@@ -2,14 +2,18 @@ package cn.edu.bupt.actor.actors.app;
 
 import akka.actor.ActorRef;
 import akka.actor.OneForOneStrategy;
+import akka.actor.Props;
 import akka.actor.SupervisorStrategy;
 import akka.japi.Creator;
 import akka.japi.Function;
 import cn.edu.bupt.actor.actors.ContextAwareActor;
 import cn.edu.bupt.actor.actors.Session.SessionActor;
+import cn.edu.bupt.actor.actors.tenant.TenantActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
+import cn.edu.bupt.actor.service.DefaultActorService;
 import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;
+import cn.edu.bupt.message.SessionAwareMsg;
 import scala.concurrent.duration.Duration;
 
 import java.util.HashMap;
@@ -40,7 +44,13 @@ public class AppActor extends ContextAwareActor{
     }
 
     private void process(FromSessionActorToDeviceActorMsg msg) {
+        getOrCreateTenantActor(msg.getTenantId()).tell(msg,ActorRef.noSender());
+    }
 
+
+    private ActorRef getOrCreateTenantActor(String tenantId) {
+        return tenantActors.computeIfAbsent(tenantId, k -> context().actorOf(Props.create(new TenantActor.ActorCreator(systemContext, tenantId))
+                .withDispatcher(DefaultActorService.CORE_DISPATCHER_NAME), tenantId.toString()));
     }
 
     private final SupervisorStrategy strategy = new OneForOneStrategy(3, Duration.create("1 minute"), new Function<Throwable, SupervisorStrategy.Directive>() {

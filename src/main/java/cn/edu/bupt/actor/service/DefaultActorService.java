@@ -3,6 +3,7 @@ package cn.edu.bupt.actor.service;
 import akka.actor.*;
 import cn.edu.bupt.actor.actors.Session.SessionActorProcessor;
 import cn.edu.bupt.actor.actors.Session.SessionManagerActor;
+import cn.edu.bupt.actor.actors.app.AppActor;
 import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;
 import cn.edu.bupt.message.SessionAwareMsg;
 import cn.edu.bupt.message.SessionCtrlMsg;
@@ -31,15 +32,20 @@ public class DefaultActorService implements SessionMsgProcessor{
 
     private ActorRef sessionManagerActor;
 
+    private ActorRef appActor;
+
     @PostConstruct
     public void initActorSystem(){
         //actorContext.setSessionManagerActor(this);
         system = ActorSystem.create(ACTOR_SYSTEM_NAME, actorContext.getConfig());
         actorContext.setActorSystem(system);
 
+        appActor = system.actorOf(Props.create(new AppActor.ActorCreator(actorContext)).withDispatcher(CORE_DISPATCHER_NAME),
+                "AppActor");
+        actorContext.setAppActor(appActor);
+
         sessionManagerActor = system.actorOf(Props.create(new SessionManagerActor.ActorCreator(actorContext)).withDispatcher(CORE_DISPATCHER_NAME),
                 "sessionManagerActor");
-        actorContext.setSessionManagerActor(sessionManagerActor);
         actorContext.setSessionManagerActor(sessionManagerActor);
     }
 

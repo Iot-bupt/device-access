@@ -3,12 +3,10 @@ package cn.edu.bupt.actor.actors.Session;
 import akka.actor.ActorContext;
 import akka.actor.ActorRef;
 import cn.edu.bupt.actor.service.ActorSystemContext;
+import cn.edu.bupt.common.DeviceAwareSessionContext;
 import cn.edu.bupt.common.SessionContext;
 import cn.edu.bupt.common.SessionId;
-import cn.edu.bupt.message.BasicToDeviceActorMsg;
-import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;
-import cn.edu.bupt.message.SessionCloseMsg;
-import cn.edu.bupt.message.SessionCtrlMsg;
+import cn.edu.bupt.message.*;
 import org.omg.PortableInterceptor.ACTIVE;
 
 /**
@@ -19,12 +17,12 @@ public class MqttSessionActorProcessor implements  SessionActorProcessor{
     protected final ActorSystemContext systemContext;
     private boolean firstMsg = true;
     protected final SessionId sessionId;
-    protected SessionContext sessionCtx;
+    protected DeviceAwareSessionContext sessionCtx;
 
-    public MqttSessionActorProcessor(ActorSystemContext systemContext,SessionId sessionId){
+    public MqttSessionActorProcessor(ActorSystemContext systemContext,SessionId sessionId,DeviceAwareSessionContext sessionCtx){
         this.systemContext = systemContext;
         this.sessionId = sessionId;
-     //   this.sessionCtx = sessionCtx;
+        this.sessionCtx = sessionCtx;
     }
 
     @Override
@@ -44,6 +42,6 @@ public class MqttSessionActorProcessor implements  SessionActorProcessor{
 
     private void cleanupSession(SessionCtrlMsg msg, ActorContext context) {
         //TODO appactor 未完成
-        systemContext.getAppActor().tell(msg,ActorRef.noSender());
+        systemContext.getAppActor().tell(new BasicToDeviceActorSessionMsg(msg,sessionCtx.getDevice()),ActorRef.noSender());
     }
 }

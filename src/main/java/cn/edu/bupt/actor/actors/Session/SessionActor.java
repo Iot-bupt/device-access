@@ -7,6 +7,7 @@ import akka.actor.SupervisorStrategy;
 import akka.japi.Creator;
 import cn.edu.bupt.actor.actors.ContextAwareActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
+import cn.edu.bupt.common.DeviceAwareSessionContext;
 import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.message.*;
 import scala.concurrent.duration.Duration;
@@ -56,7 +57,8 @@ public class SessionActor extends ContextAwareActor{
 
     private void initProcessor(FromSessionActorToDeviceActorMsg msg) {
         if (processor == null) {
-            processor = new MqttSessionActorProcessor(systemContext,msg.getSessionId());
+            DeviceAwareSessionContext context = ((BasicAdapterToSessionActorMsg)(((BasicToDeviceActorMsg)msg).getMsg())).getContext();
+            processor = new MqttSessionActorProcessor(systemContext,msg.getSessionId(),context);
         }
     }
 

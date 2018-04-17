@@ -38,6 +38,7 @@ public class ActorSystemContext {
     @Getter @Setter
     private ActorSystem actorSystem;
 
+    @Getter @Setter private ActorRef appActor;
     @Getter @Setter private ActorRef sessionManagerActor;
 
     @Getter private final Config config;
@@ -47,6 +48,6 @@ public class ActorSystemContext {
     }
 
     public ActorRef getAppActor() {
-        return null;
+        return appActor;
     }
 }

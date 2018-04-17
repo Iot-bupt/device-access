@@ -1,6 +1,7 @@
 package cn.edu.bupt.transport.mqtt;
 
 import cn.edu.bupt.actor.service.SessionMsgProcessor;
+import cn.edu.bupt.common.SessionContext;
 import cn.edu.bupt.common.security.DeviceTokenCredentials;
 import cn.edu.bupt.message.AdaptorToSessionActorMsg;
 import cn.edu.bupt.message.BasicToDeviceActorMsg;
@@ -103,6 +104,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             try{
                 if(topicName.equals(MqttTopics.DEVICE_RPC_REQUESTS_SUB_TOPIC)){
                     AdaptorToSessionActorMsg msg1 = adaptor.convertToActorMsg(deviceSessionCtx,MsgType.FROM_DEVICE_RPC_SUB,msg);
+                    processor.process(new BasicToDeviceActorMsg(msg1,deviceSessionCtx.getDevice()));
                     grantedQoSList.add(getMinSupportedQos(reqQoS));
                 }
             }catch(Exception e){
@@ -120,11 +122,10 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             try {
                 if (topicName.equals(MqttTopics.DEVICE_RPC_REQUESTS_SUB_TOPIC)) {
                     AdaptorToSessionActorMsg msg = adaptor.convertToActorMsg(deviceSessionCtx, MsgType.FROM_DEVICE_RPC_UNSUB, mqttMsg);
-                    //TODO 待修改
-                 //   processor.process(new BasicToDeviceActorSessionMsg(deviceSessionCtx.getDevice(), msg));
+                    processor.process(new BasicToDeviceActorMsg(msg,deviceSessionCtx.getDevice()));
                 }
             } catch (AdaptorException e) {
-
+                e.printStackTrace();
             }
         }
         ctx.writeAndFlush(MqttMsgFactory.createUnSubAckMessage(mqttMsg.variableHeader().messageId()));
@@ -205,5 +206,6 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void operationComplete(Future<? super Void> future) throws Exception {
+        processor.process(new SessionCloseMsg(deviceSessionCtx.getSessionId(),false,false));
     }
 }

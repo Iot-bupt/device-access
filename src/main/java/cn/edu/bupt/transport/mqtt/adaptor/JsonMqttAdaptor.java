@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttSubscribeMessage;
+import io.netty.handler.codec.mqtt.MqttUnsubscribeMessage;
 
 import java.nio.charset.Charset;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class JsonMqttAdaptor implements TransportAdaptor<DeviceSessionCtx,MqttMe
                 msg = convertToRpcSubRequest(ctx,(MqttSubscribeMessage)inbound);
                 break;
             case MsgType.FROM_DEVICE_RPC_UNSUB:
-                msg = convertToRpcUnSubRequest(ctx,(MqttSubscribeMessage)inbound);
+                msg = convertToRpcUnSubRequest(ctx,(MqttUnsubscribeMessage)inbound);
                 break;
             case MsgType.FROM_DEVICE_RPC_RESPONCE:
                 msg = convertToRpcResponceRequest(ctx,(MqttPublishMessage) inbound);
@@ -53,7 +54,7 @@ public class JsonMqttAdaptor implements TransportAdaptor<DeviceSessionCtx,MqttMe
         return null;
     }
 
-    private FromDeviceMsg convertToRpcUnSubRequest(DeviceSessionCtx ctx, MqttSubscribeMessage inbound) {
+    private FromDeviceMsg convertToRpcUnSubRequest(DeviceSessionCtx ctx, MqttUnsubscribeMessage inbound) {
         return new RpcUnSubscribeMsg();
     }
 

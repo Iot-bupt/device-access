@@ -11,7 +11,7 @@ public class SessionCloseMsg implements SessionCtrlMsg{
     private final boolean revoked;
     private final boolean timeout;
 
-    private SessionCloseMsg(SessionId sessionId, boolean unauthorized, boolean timeout) {
+    public SessionCloseMsg(SessionId sessionId, boolean unauthorized, boolean timeout) {
         super();
         this.sessionId = sessionId;
         this.revoked = unauthorized;

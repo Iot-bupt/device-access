@@ -7,7 +7,6 @@ output/**
 .idea/**
 .idea
 *.log
-*.yml
 *.log.[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]
 */.classpath
 .classpath

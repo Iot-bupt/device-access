@@ -6,8 +6,8 @@ WITH replication = {
 
 CREATE TABLE IF NOT EXISTS BUPT_IOT.device (
     id timeuuid,
-    tenant_id timeuuid,
-    customer_id timeuuid,
+    tenant_id int,
+    customer_id int,
     name text,
     search_text text,
     manufacture text,
@@ -60,3 +60,45 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.device_credentials_by_device AS
 	WHERE device_id IS NOT NULL AND id IS NOT NULL
 	PRIMARY KEY ( device_id, id );
 
+CREATE TABLE IF NOT EXISTS bupt_iot.group (
+    id timeuuid,
+    tenant_id int,
+    customer_id int,
+    name text,
+    search_text text,
+    PRIMARY KEY (id, tenant_id, customer_id)
+);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.group_by_tenant_and_search_text AS
+	SELECT *
+	from bupt_iot.group
+	WHERE tenant_id IS NOT NULL AND search_text IS NOT NULL AND id IS NOT NULL AND customer_id IS NOT NULL
+	PRIMARY KEY ( tenant_id, search_text, id ,customer_id)
+	WITH CLUSTERING ORDER BY ( search_text ASC, id DESC );
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.group_by_customer_and_search_text AS
+	SELECT *
+	from bupt_iot.group
+	WHERE customer_id IS NOT NULL AND search_text IS NOT NULL AND id IS NOT NULL AND tenant_id IS NOT NULL
+	PRIMARY KEY ( customer_id, search_text, tenant_id, id )
+	WITH CLUSTERING ORDER BY ( search_text ASC, id DESC );
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.group_by_customer_and_name AS
+    SELECT *
+    from bupt_iot.group
+    WHERE customer_id IS NOT NULL AND name IS NOT NULL AND id IS NOT NULL AND tenant_id IS NOT NULL
+    PRIMARY KEY ( customer_id, name, tenant_id, id )
+    WITH CLUSTERING ORDER BY ( name ASC, id DESC, customer_id DESC);
+
+CREATE TABLE IF NOT EXISTS bupt_iot.device_by_group_id (
+    device_id timeuuid,
+    group_id timeuuid,
+    PRIMARY KEY (group_id, device_id)
+);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.group_by_device_id AS
+    SELECT *
+    from bupt_iot.device_by_group_id
+    WHERE group_id IS NOT NULL AND device_id IS NOT NULL
+    PRIMARY KEY ( device_id, group_id)
+    WITH CLUSTERING ORDER BY ( device_id ASC, group DESC );

@@ -35,7 +35,7 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
     }
 
     @Override
-    public List<Device> findDevicesByTenantId(UUID tenantId, TextPageLink pageLink) {
+    public List<Device> findDevicesByTenantId(Integer tenantId, TextPageLink pageLink) {
         List<Device> devices = findPageWithTextSearch(DEVICE_BY_TENANT_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME,
                 Collections.singletonList(eq(DEVICE_TENANT_ID_PROPERTY, tenantId)), pageLink);
         return devices;
@@ -49,7 +49,7 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
     }
 
     @Override
-    public List<Device> findDevicesByTenantIdAndCustomerId(UUID tenantId, UUID customerId, TextPageLink pageLink) {
+    public List<Device> findDevicesByTenantIdAndCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink) {
         List<Device> devices = findPageWithTextSearch(DEVICE_BY_CUSTOMER_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME,
                 Arrays.asList(eq(DEVICE_CUSTOMER_ID_PROPERTY, customerId),
                         eq(DEVICE_TENANT_ID_PROPERTY, tenantId)),
@@ -58,7 +58,7 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
     }
 
     @Override
-    public Optional<Device> findDeviceByTenantIdAndName(UUID tenantId, String deviceName) {
+    public Optional<Device> findDeviceByTenantIdAndName(Integer tenantId, String deviceName) {
         Select select = select().from(DEVICE_BY_TENANT_AND_NAME_VIEW_NAME);
         Select.Where query = select.where();
         query.and(eq(DEVICE_TENANT_ID_PROPERTY, tenantId));

@@ -23,11 +23,11 @@ public class Device extends SearchTextBased implements SearchTextEntity {
 
     @PartitionKey(value = 1)
     @Column(name = DEVICE_TENANT_ID_PROPERTY)
-    private UUID tenantId;
+    private Integer tenantId;
 
     @PartitionKey(value = 2)
     @Column(name = DEVICE_CUSTOMER_ID_PROPERTY)
-    private UUID customerId;
+    private Integer customerId;
 
     @Column(name = DEVICE_NAME_PROPERTY)
     private String name;
@@ -77,19 +77,19 @@ public class Device extends SearchTextBased implements SearchTextEntity {
         this.id = id;
     }
 
-    public UUID getTenantId() {
+    public Integer getTenantId() {
         return tenantId;
     }
 
-    public void setTenantId(UUID tenantId) {
+    public void setTenantId(Integer tenantId) {
         this.tenantId = tenantId;
     }
 
-    public UUID getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(UUID customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 

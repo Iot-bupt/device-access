@@ -29,7 +29,7 @@ public interface DeviceDao extends Dao<Device> {
      * @param pageLink the page link
      * @return the list of device objects
      */
-    List<Device> findDevicesByTenantId(UUID tenantId, TextPageLink pageLink);
+    List<Device> findDevicesByTenantId(Integer tenantId, TextPageLink pageLink);
 
 
     /**
@@ -40,7 +40,7 @@ public interface DeviceDao extends Dao<Device> {
      * @param pageLink the page link
      * @return the list of device objects
      */
-    List<Device> findDevicesByTenantIdAndCustomerId(UUID tenantId, UUID customerId, TextPageLink pageLink);
+    List<Device> findDevicesByTenantIdAndCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink);
 
     /**
      * Find devices by tenantId and device name.
@@ -49,7 +49,7 @@ public interface DeviceDao extends Dao<Device> {
      * @param name the device name
      * @return the optional device object
      */
-    Optional<Device> findDeviceByTenantIdAndName(UUID tenantId, String name);
+    Optional<Device> findDeviceByTenantIdAndName(Integer tenantId, String name);
 
 
     List<Device> findDevicesByParentDeviceId(String parentDeviceId, TextPageLink pageLink);

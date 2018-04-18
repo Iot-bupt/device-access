@@ -23,7 +23,7 @@ public class DeviceAuthServiceImpl implements  DeviceAuthService {
     public Optional<Device> findDeviceById(String deviceId) {
         //
         Device d = new Device();
-        d.setTenantId(UUID.randomUUID());
+        d.setTenantId(1);
         d.setId(UUID.randomUUID());
         return Optional.of(d);
     }

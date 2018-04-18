@@ -31,6 +31,10 @@ public abstract class CassandraAbstractModelDao<E extends BaseEntity> extends Ca
 
     protected abstract String getColumnFamilyName();
 
+    protected E updateSearchTextIfPresent(E entity) {
+        return entity;
+    }
+
     protected Mapper<E> getMapper() {
         return cluster.getMapper(getColumnFamilyClass());
     }

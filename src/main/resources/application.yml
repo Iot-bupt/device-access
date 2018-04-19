@@ -14,7 +14,7 @@ cassandra:
   # keyspace name
   keyspace_name: "${CASSANDRA_KEYSPACE_NAME:BUPT_IOT}"
   # URL
-  contactpoints: "${CASSANDRA_CONTACTPOINTS:127.0.0.1}"
+  contactpoints: "${CASSANDRA_CONTACTPOINTS:10.112.233.200}"
   port: "${CASSANDRA_PORT:9042}"
   # Enable/disable secure connection
   ssl: "${CASSANDRA_USE_SSL:false}"

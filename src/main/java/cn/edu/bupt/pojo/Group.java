@@ -1,8 +1,10 @@
 package cn.edu.bupt.pojo;
 
+import cn.edu.bupt.dao.SearchTextBased;
 import cn.edu.bupt.dao.SearchTextEntity;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
 
 import java.util.UUID;
 
@@ -11,7 +13,8 @@ import static cn.edu.bupt.dao.ModelConstants.*;
 /**
  * Created by CZX on 2018/4/18.
  */
-public class Group implements SearchTextEntity {
+@Table(name = GROUP_COLUMN_FAMILY_NAME)
+public class Group extends SearchTextBased implements SearchTextEntity {
 
     @PartitionKey(value = 0)
     @Column(name = ID_PROPERTY)

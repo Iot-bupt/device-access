@@ -16,4 +16,6 @@ public interface DeviceCredentialsService {
     DeviceCredentials createDeviceCredentials(DeviceCredentials deviceCredentials);
 
     void deleteDeviceCredentials(DeviceCredentials deviceCredentials);
+
+    DeviceCredentials findDeviceCredentialsByToken(String token);
 }

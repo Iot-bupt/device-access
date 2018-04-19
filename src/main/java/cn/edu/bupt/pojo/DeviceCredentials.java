@@ -1,6 +1,7 @@
 package cn.edu.bupt.pojo;
 
 import cn.edu.bupt.dao.BaseEntity;
+import cn.edu.bupt.dao.SearchTextBased;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -12,7 +13,7 @@ import static cn.edu.bupt.dao.ModelConstants.*;
  * Created by CZX on 2018/4/17.
  */
 @Table(name = DEVICE_CREDENTIALS_COLUMN_FAMILY_NAME)
-public class DeviceCredentials implements BaseEntity{
+public class DeviceCredentials extends SearchTextBased implements BaseEntity{
 
     @PartitionKey(value = 0)
     @Column(name = ID_PROPERTY)
@@ -21,7 +22,7 @@ public class DeviceCredentials implements BaseEntity{
     @Column(name = DEVICE_CREDENTIALS_DEVICE_ID_PROPERTY)
     private UUID deviceId;
 
-    @Column(name = DEVICE_TOKEN_PROPERTY)
+    @Column(name = DEVICE_CREDENTIALS_TOKEN_PROPERTY )
     private String deviceToken;
 
     @Override
@@ -49,6 +50,11 @@ public class DeviceCredentials implements BaseEntity{
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
     }
+
+    public String getSearchText() {
+        return "";
+    }
+
 
     @Override
     public String toString() {

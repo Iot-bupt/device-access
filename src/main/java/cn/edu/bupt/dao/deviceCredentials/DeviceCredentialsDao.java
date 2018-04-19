@@ -11,4 +11,8 @@ import java.util.UUID;
 public interface DeviceCredentialsDao extends Dao<DeviceCredentials> {
 
     DeviceCredentials findByDeviceId(UUID deviceId);
+
+    DeviceCredentials findByToken(String token);
+
+    DeviceCredentials save(DeviceCredentials deviceCredentials);
 }

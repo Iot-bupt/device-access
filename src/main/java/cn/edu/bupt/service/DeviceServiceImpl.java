@@ -3,23 +3,21 @@ package cn.edu.bupt.service;
 import cn.edu.bupt.dao.device.DeviceByGroupIdDao;
 import cn.edu.bupt.dao.device.DeviceDao;
 import cn.edu.bupt.dao.device.GroupDao;
+import cn.edu.bupt.dao.exception.DataValidationException;
 import cn.edu.bupt.dao.page.TextPageData;
 import cn.edu.bupt.dao.page.TextPageLink;
+import cn.edu.bupt.dao.util.DataValidator;
+import cn.edu.bupt.dao.util.PaginatedRemover;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.DeviceByGroupId;
 import cn.edu.bupt.pojo.DeviceCredentials;
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.AsyncFunction;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import scala.Int;
+import org.springframework.util.StringUtils;
 
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Collectors;
+import static cn.edu.bupt.dao.util.Validator.*;
 
 /**
  * Created by Administrator on 2018/4/14.
@@ -45,8 +43,8 @@ public class DeviceServiceImpl implements  DeviceService{
     @Autowired
     private GroupDao groupDao;
 
-//    @Autowired
-//    private DeviceCredentialsService deviceCredentialsService;
+    @Autowired
+    private DeviceCredentialsService deviceCredentialsService;
 
     @Autowired
     private DeviceByGroupIdDao deviceByGroupIdDao;
@@ -54,8 +52,8 @@ public class DeviceServiceImpl implements  DeviceService{
     //*********查找组中设备**********
     @Override
     public TextPageData<Device> findDevicesByGroupId(UUID groupId, TextPageLink pageLink) {
-//        validateId(groupId, INCORRECT_GROUP_ID + groupId);
-//        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
+        validateId(groupId, INCORRECT_GROUP_ID + groupId);
+        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
         List<Device> devices = new ArrayList<Device>();
         List<UUID> deviceIds = deviceByGroupIdDao.findDevicesByGroupId(groupId);
         for(UUID deviceId : deviceIds){
@@ -66,24 +64,22 @@ public class DeviceServiceImpl implements  DeviceService{
 
     //******分配相应设备到对应的设备组******
     @Override
-    public Device assignDeviceToGroup(UUID deviceId, UUID groupId) {
-        Device device = findDeviceById(deviceId);
+    public void assignDeviceToGroup(UUID deviceId, UUID groupId) {
         DeviceByGroupId deviceByGroupId = new DeviceByGroupId(groupId,deviceId);
         deviceByGroupIdDao.save(deviceByGroupId);
-        return saveDevice(device);
     }
 
     @Override
     public void unassignDeviceFromGroup(UUID deviceId , UUID groupId){
-//        validateId(deviceId, INCORRECT_GROUP_ID + deviceId);
-//        validateId(groupId, INCORRECT_GROUP_ID + groupId);
+        validateId(deviceId, INCORRECT_GROUP_ID + deviceId);
+        validateId(groupId, INCORRECT_GROUP_ID + groupId);
         deviceByGroupIdDao.delete(new DeviceByGroupId(groupId,deviceId));
     }
 
     //******Unassign设备组中的所有设备******
     @Override
     public void unassignDevicesByGroupId(UUID groupId) {
-//        validateId(groupId, INCORRECT_GROUP_ID + groupId);
+        validateId(groupId, INCORRECT_GROUP_ID + groupId);
         deviceByGroupIdDao.deleteAllByGroupId(groupId);
     }
 
@@ -95,13 +91,13 @@ public class DeviceServiceImpl implements  DeviceService{
 
     @Override
     public Device findDeviceById(UUID deviceId) {
-//        validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
+        validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
         return deviceDao.findById(deviceId);
     }
 
     @Override
     public Optional<Device> findDeviceByTenantIdAndName(Integer tenantId, String name) {
-//        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
         Optional<Device> deviceOpt = deviceDao.findDeviceByTenantIdAndName(tenantId, name);
         if (deviceOpt.isPresent()) {
             return Optional.of(deviceOpt.get());
@@ -112,16 +108,15 @@ public class DeviceServiceImpl implements  DeviceService{
 
     @Override
     public Device saveDevice(Device device) {
-//        deviceValidator.validate(device);
+        deviceValidator.validate(device);
+        UUID deviceId = device.getId();
         Device savedDevice = deviceDao.save(device);
-        //TODO
-//        if (device.getId() == null) {
-//            DeviceCredentials deviceCredentials = new DeviceCredentials();
-//            deviceCredentials.setDeviceId(new DeviceId(savedDevice.getUuidId()));
-//            deviceCredentials.setCredentialsType(DeviceCredentialsType.ACCESS_TOKEN);
-//            deviceCredentials.setCredentialsId(RandomStringUtils.randomAlphanumeric(20));
-//            deviceCredentialsService.createDeviceCredentials(deviceCredentials);
-//        }
+        if (deviceId == null) {
+            DeviceCredentials deviceCredentials = new DeviceCredentials();
+            deviceCredentials.setDeviceId(savedDevice.getId());
+            deviceCredentials.setDeviceToken(RandomStringUtils.randomAlphanumeric(20));
+            deviceCredentialsService.createDeviceCredentials(deviceCredentials);
+        }
         return savedDevice;
     }
 
@@ -141,12 +136,11 @@ public class DeviceServiceImpl implements  DeviceService{
 
     @Override
     public void deleteDevice(UUID deviceId) {
-//        validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
-        //TODO
-//        DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByDeviceId(deviceId);
-//        if (deviceCredentials != null) {
-//            deviceCredentialsService.deleteDeviceCredentials(deviceCredentials);
-//        }
+        validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
+        DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByDeviceId(deviceId);
+        if (deviceCredentials != null) {
+            deviceCredentialsService.deleteDeviceCredentials(deviceCredentials);
+        }
         List<UUID> groupIds = deviceByGroupIdDao.findGroupsByDeviceId(deviceId);
         for(UUID groupId : groupIds){
             deviceByGroupIdDao.delete(new DeviceByGroupId(groupId,deviceId));
@@ -156,33 +150,103 @@ public class DeviceServiceImpl implements  DeviceService{
 
     @Override
     public TextPageData<Device> findDevicesByTenantId(Integer tenantId, TextPageLink pageLink) {
-//        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
-//        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
         List<Device> devices = deviceDao.findDevicesByTenantId(tenantId, pageLink);
         return new TextPageData<>(devices, pageLink);
     }
 
     @Override
     public void deleteDevicesByTenantId(Integer tenantId) {
-//        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
-//        tenantDevicesRemover.removeEntities(tenantId);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        tenantDevicesRemover.removeEntities(tenantId);
     }
 
     @Override
     public TextPageData<Device> findDevicesByTenantIdAndCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink) {
-//        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
-//        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
-//        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
         List<Device> devices = deviceDao.findDevicesByTenantIdAndCustomerId(tenantId, customerId, pageLink);
         return new TextPageData<>(devices, pageLink);
     }
 
     @Override
     public void unassignCustomerDevices(Integer tenantId, Integer customerId) {
-//        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
-//        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
 
-//        new CustomerDevicesUnassigner(tenantId).removeEntities(customerId);
+        new CustomerDevicesUnassigner(tenantId).removeEntities(customerId);
     }
 
+    private DataValidator<Device> deviceValidator =
+            new DataValidator<Device>() {
+
+                @Override
+                protected void validateCreate(Device device) {
+                    deviceDao.findDeviceByTenantIdAndName(device.getTenantId(), device.getName()).ifPresent(
+                            d -> {
+                                throw new DataValidationException("Device with such name already exists!");
+                            }
+                    );
+                }
+
+                @Override
+                protected void validateUpdate(Device device) {
+                    deviceDao.findDeviceByTenantIdAndName(device.getTenantId(), device.getName()).ifPresent(
+                            d -> {
+                                if (!d.getId().equals(device.getId())) {
+                                    throw new DataValidationException("Device with such name already exists!");
+                                }
+                            }
+                    );
+                }
+
+                @Override
+                protected void validateDataImpl(Device device) {
+                    if (StringUtils.isEmpty(device.getName())) {
+                        throw new DataValidationException("Device name should be specified!");
+                    }
+                    if (device.getTenantId() == null) {
+                        throw new DataValidationException("Device should be assigned to tenant!");
+                    }
+                    if (device.getCustomerId() == null) {
+                        device.setCustomerId(1);
+                    }
+                }
+            };
+
+    private PaginatedRemover<Integer,Device> tenantDevicesRemover =
+            new PaginatedRemover<Integer,Device>() {
+
+                @Override
+                protected List<Device> findEntities(Integer id, TextPageLink pageLink) {
+                    return deviceDao.findDevicesByTenantId(id, pageLink);
+                }
+
+                @Override
+                protected void removeEntity(Device entity) {
+                    deleteDevice(entity.getId());
+                }
+            };
+
+    private class CustomerDevicesUnassigner extends PaginatedRemover<Integer, Device> {
+
+        private Integer tenantId;
+
+        CustomerDevicesUnassigner(Integer tenantId) {
+            this.tenantId = tenantId;
+        }
+
+        @Override
+        protected List<Device> findEntities(Integer id, TextPageLink pageLink) {
+            return deviceDao.findDevicesByTenantIdAndCustomerId(tenantId, id, pageLink);
+        }
+
+        @Override
+        protected void removeEntity(Device entity) {
+            unassignDeviceFromCustomer(entity.getId());
+        }
+
+    }
 }

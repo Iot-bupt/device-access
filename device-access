@@ -60,6 +60,12 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.device_credentials_by_device AS
 	WHERE device_id IS NOT NULL AND id IS NOT NULL
 	PRIMARY KEY ( device_id, id );
 
+CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.device_credentials_by_device_token AS
+	SELECT *
+	from bupt_iot.device_credentials
+	WHERE device_token IS NOT NULL AND id IS NOT NULL
+	PRIMARY KEY ( device_token, id );
+
 CREATE TABLE IF NOT EXISTS bupt_iot.group (
     id timeuuid,
     tenant_id int,

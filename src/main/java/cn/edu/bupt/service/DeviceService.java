@@ -20,7 +20,7 @@ public interface DeviceService {
 
     Device saveDevice(Device device);
 
-    Device assignDeviceToGroup(UUID deviceId, UUID groupId);
+    void assignDeviceToGroup(UUID deviceId, UUID groupId);
 
     Device assignDeviceToCustomer(UUID deviceId,Integer customerId);
 

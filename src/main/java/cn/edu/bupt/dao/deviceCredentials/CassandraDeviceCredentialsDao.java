@@ -34,4 +34,12 @@ public class CassandraDeviceCredentialsDao extends CassandraAbstractModelDao<Dev
         DeviceCredentials deviceCredentials = findOneByStatement(query);
         return deviceCredentials;
     }
+
+    @Override
+    public DeviceCredentials findByToken(String token) {
+        Select.Where query = select().from(ModelConstants.DEVICE_CREDENTIALS_BY_DEVICE_TOKEN_COLUMN_FAMILY_NAME)
+                .where(eq(ModelConstants.DEVICE_CREDENTIALS_TOKEN_PROPERTY, token));
+        DeviceCredentials deviceCredentials = findOneByStatement(query);
+        return deviceCredentials;
+    }
 }

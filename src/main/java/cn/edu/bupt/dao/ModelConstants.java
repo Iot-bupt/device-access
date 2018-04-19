@@ -114,8 +114,9 @@ public class ModelConstants {
      */
     public static final String DEVICE_CREDENTIALS_COLUMN_FAMILY_NAME = "device_credentials";
     public static final String DEVICE_CREDENTIALS_DEVICE_ID_PROPERTY = DEVICE_ID_PROPERTY;
-    public static final String DEVICE_TOKEN_PROPERTY = "device_token";
+    public static final String DEVICE_CREDENTIALS_TOKEN_PROPERTY = "device_token";
 
     public static final String DEVICE_CREDENTIALS_BY_DEVICE_COLUMN_FAMILY_NAME = "device_credentials_by_device";
+    public static final String DEVICE_CREDENTIALS_BY_DEVICE_TOKEN_COLUMN_FAMILY_NAME = "device_credentials_by_device_token";
 
 }

@@ -54,3 +54,9 @@ cassandra:
     default_fetch_size: "${CASSANDRA_DEFAULT_FETCH_SIZE:2000}"
     # Specify partitioning size for timestamp key-value storage. Example MINUTES, HOURS, DAYS, MONTHS
     ts_key_value_partitioning: "${TS_KV_PARTITIONING:MONTHS}"
+
+spring:
+  datasource:
+    url: jdbc:mysql://10.112.233.200:3306/BUPT_IOT
+    username: root
+    password: root

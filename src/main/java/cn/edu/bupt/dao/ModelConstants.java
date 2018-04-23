@@ -1,6 +1,8 @@
 package cn.edu.bupt.dao;
 
+import cn.edu.bupt.pojo.kv.Aggregation;
 import com.datastax.driver.core.utils.UUIDs;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.UUID;
 
@@ -119,4 +121,75 @@ public class ModelConstants {
     public static final String DEVICE_CREDENTIALS_BY_DEVICE_COLUMN_FAMILY_NAME = "device_credentials_by_device";
     public static final String DEVICE_CREDENTIALS_BY_DEVICE_TOKEN_COLUMN_FAMILY_NAME = "device_credentials_by_device_token";
 
+    /**
+     * Cassandra attributes and timeseries constants.
+     */
+    public static final String ATTRIBUTES_KV_CF = "attributes_kv_cf";
+    public static final String TS_KV_CF = "ts_kv_cf";
+    public static final String TS_KV_PARTITIONS_CF = "ts_kv_partitions_cf";
+    public static final String TS_KV_LATEST_CF = "ts_kv_latest_cf";
+
+    public static final String ENTITY_ID_COLUMN = "entity_id";
+    public static final String ATTRIBUTE_TYPE_COLUMN = "attribute_type";
+    public static final String ATTRIBUTE_KEY_COLUMN = "attribute_key";
+    public static final String LAST_UPDATE_TS_COLUMN = "last_update_ts";
+
+    public static final String PARTITION_COLUMN = "partition";
+    public static final String KEY_COLUMN = "key";
+    public static final String TS_COLUMN = "ts";
+
+    /**
+     * Main names of cassandra key-value columns storage.
+     */
+    public static final String BOOLEAN_VALUE_COLUMN = "bool_v";
+    public static final String STRING_VALUE_COLUMN = "str_v";
+    public static final String LONG_VALUE_COLUMN = "long_v";
+    public static final String DOUBLE_VALUE_COLUMN = "dbl_v";
+
+    protected static final String[] NONE_AGGREGATION_COLUMNS = new String[]{LONG_VALUE_COLUMN, DOUBLE_VALUE_COLUMN, BOOLEAN_VALUE_COLUMN, STRING_VALUE_COLUMN, KEY_COLUMN, TS_COLUMN};
+
+    protected static final String[] COUNT_AGGREGATION_COLUMNS = new String[]{count(LONG_VALUE_COLUMN), count(DOUBLE_VALUE_COLUMN), count(BOOLEAN_VALUE_COLUMN), count(STRING_VALUE_COLUMN)};
+
+    protected static final String[] MIN_AGGREGATION_COLUMNS = ArrayUtils.addAll(COUNT_AGGREGATION_COLUMNS,
+            new String[]{min(LONG_VALUE_COLUMN), min(DOUBLE_VALUE_COLUMN), min(BOOLEAN_VALUE_COLUMN), min(STRING_VALUE_COLUMN)});
+    protected static final String[] MAX_AGGREGATION_COLUMNS = ArrayUtils.addAll(COUNT_AGGREGATION_COLUMNS,
+            new String[]{max(LONG_VALUE_COLUMN), max(DOUBLE_VALUE_COLUMN), max(BOOLEAN_VALUE_COLUMN), max(STRING_VALUE_COLUMN)});
+    protected static final String[] SUM_AGGREGATION_COLUMNS = ArrayUtils.addAll(COUNT_AGGREGATION_COLUMNS,
+            new String[]{sum(LONG_VALUE_COLUMN), sum(DOUBLE_VALUE_COLUMN)});
+    protected static final String[] AVG_AGGREGATION_COLUMNS = SUM_AGGREGATION_COLUMNS;
+
+    public static String min(String s) {
+        return "min(" + s + ")";
+    }
+
+    public static String max(String s) {
+        return "max(" + s + ")";
+    }
+
+    public static String sum(String s) {
+        return "sum(" + s + ")";
+    }
+
+    public static String count(String s) {
+        return "count(" + s + ")";
+    }
+
+    public static String[] getFetchColumnNames(Aggregation aggregation) {
+        switch (aggregation) {
+            case NONE:
+                return NONE_AGGREGATION_COLUMNS;
+            case MIN:
+                return MIN_AGGREGATION_COLUMNS;
+            case MAX:
+                return MAX_AGGREGATION_COLUMNS;
+            case SUM:
+                return SUM_AGGREGATION_COLUMNS;
+            case COUNT:
+                return COUNT_AGGREGATION_COLUMNS;
+            case AVG:
+                return AVG_AGGREGATION_COLUMNS;
+            default:
+                throw new RuntimeException("Aggregation type: " + aggregation + " is not supported!");
+        }
+    }
 }

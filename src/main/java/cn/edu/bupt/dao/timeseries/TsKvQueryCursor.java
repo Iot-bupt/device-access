@@ -13,8 +13,6 @@ import java.util.UUID;
  */
 public class TsKvQueryCursor {
     @Getter
-    private final String entityType;
-    @Getter
     private final UUID entityId;
     @Getter
     private final String key;
@@ -29,8 +27,7 @@ public class TsKvQueryCursor {
     private int partitionIndex;
     private int currentLimit;
 
-    public TsKvQueryCursor(String entityType, UUID entityId, TsKvQuery baseQuery, List<Long> partitions) {
-        this.entityType = entityType;
+    public TsKvQueryCursor(UUID entityId, TsKvQuery baseQuery, List<Long> partitions) {
         this.entityId = entityId;
         this.key = baseQuery.getKey();
         this.startTs = baseQuery.getStartTs();

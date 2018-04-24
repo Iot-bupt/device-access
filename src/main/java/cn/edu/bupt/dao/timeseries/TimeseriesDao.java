@@ -12,11 +12,11 @@ import java.util.UUID;
  */
 public interface TimeseriesDao {
 
-//    ListenableFuture<List<TsKvEntry>> findAllAsync(UUID entityId, List<TsKvQuery> queries);
-//
-//    ListenableFuture<TsKvEntry> findLatest(UUID entityId, String key);
-//
-//    ListenableFuture<List<TsKvEntry>> findAllLatest(UUID entityId);
+    ListenableFuture<List<TsKvEntry>> findAllAsync(UUID entityId, List<TsKvQuery> queries);
+
+    ListenableFuture<TsKvEntry> findLatest(UUID entityId, String key);
+
+    ListenableFuture<List<TsKvEntry>> findAllLatest(UUID entityId);
 
     ListenableFuture<Void> save(UUID entityId, TsKvEntry tsKvEntry, long ttl);
 

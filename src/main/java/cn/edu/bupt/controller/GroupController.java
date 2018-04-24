@@ -18,7 +18,7 @@ public class GroupController extends BaseController {
     public static final String GROUP_ID = "groupId";
 
 
-    @RequestMapping("/")
+    @RequestMapping("")
     public String hello(){
         return "Hello, IOT";
     }

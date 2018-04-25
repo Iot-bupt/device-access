@@ -95,24 +95,26 @@ public class DeviceActorMsgProcessor {
         Map<Long, List<cn.edu.bupt.common.entry.KvEntry>> data = msg.getData();
         for( long ts : data.keySet()){
             UUID entityId = UUID.fromString(msg1.getDeviceId());
-            List<cn.edu.bupt.common.entry.KvEntry> KvEntry =  data.get(ts);
-          //  BaseTimeseriesService baseTimeseriesService = new BaseTimeseriesService();
-          //  actorSystemContext.get
+            List<cn.edu.bupt.common.entry.KvEntry> KvEntry = data.get(ts);
             List<TsKvEntry> ls = new ArrayList<>();
             KvEntry.forEach(entry->{
                 ls.add(new BasicAdapterTsKvEntry(ts,entry));
             });
-            BaseTimeseriesService  baseTimeseriesService =  actorSystemContext.getBaseTimeseriesService();
+            BaseTimeseriesService baseTimeseriesService = actorSystemContext.getBaseTimeseriesService();
             baseTimeseriesService.save(entityId, ls, 0);
         }
     }
 
 
     public void handleAttributeUploadRequest(AttributeUploadMsg msg, BasicToDeviceActorMsg msg1){
-        List<AttributeKvEntry> kvEntries = (List)msg.getData();
+        List<cn.edu.bupt.common.entry.KvEntry> atts = (List)msg.getData();
+        List<AttributeKvEntry> attributes = new ArrayList<>();
+        atts.forEach(entry->{
+            attributes.add(new BasicAdaptorAttributeKvEntry(entry));
+        });
         UUID entityId = UUID.fromString(msg1.getDeviceId());
-        BaseAttributesService baseAttributesService = new BaseAttributesService();
-        baseAttributesService.save(entityId, kvEntries);
+        BaseAttributesService baseAttributesService = actorSystemContext.getBaseAttributesService();
+        baseAttributesService.save(entityId, attributes);
     }
 
 }

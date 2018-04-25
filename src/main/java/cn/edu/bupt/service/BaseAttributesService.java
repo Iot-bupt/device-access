@@ -1,5 +1,6 @@
-package cn.edu.bupt.dao.attributes;
+package cn.edu.bupt.service;
 
+import cn.edu.bupt.dao.attributes.AttributesDao;
 import cn.edu.bupt.dao.exception.IncorrectParameterException;
 import cn.edu.bupt.dao.util.Validator;
 import cn.edu.bupt.pojo.kv.AttributeKvEntry;

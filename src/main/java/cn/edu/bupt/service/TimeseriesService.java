@@ -1,4 +1,4 @@
-package cn.edu.bupt.dao.timeseries;
+package cn.edu.bupt.service;
 
 import cn.edu.bupt.pojo.kv.TsKvEntry;
 import cn.edu.bupt.pojo.kv.TsKvQuery;

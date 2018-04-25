@@ -1,4 +1,4 @@
-package cn.edu.bupt.dao.attributes;
+package cn.edu.bupt.service;
 
 import cn.edu.bupt.pojo.kv.AttributeKvEntry;
 import com.google.common.util.concurrent.ListenableFuture;

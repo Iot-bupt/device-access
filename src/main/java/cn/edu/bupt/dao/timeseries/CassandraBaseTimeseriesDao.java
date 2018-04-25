@@ -42,9 +42,6 @@ public class CassandraBaseTimeseriesDao extends CassandraAbstractAsyncDao implem
     public static final String SELECT_PREFIX = "SELECT ";
     public static final String EQUALS_PARAM = " = ? ";
 
-    @Autowired
-    private Environment environment;
-
     @Value("${cassandra.query.ts_key_value_partitioning}")
     private String partitioning;
 

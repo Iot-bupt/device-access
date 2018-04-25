@@ -15,7 +15,7 @@ public class DeviceTokenCredentials implements DeviceCredentals {
 
     @Override
     public String getCredentialsId() {
-        return null;
+        return token;
     }
 
     @Override

@@ -3,6 +3,8 @@ package cn.edu.bupt.service;
 import cn.edu.bupt.common.security.DeviceAuthResult;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.DeviceCredentals;
+import cn.edu.bupt.pojo.DeviceCredentials;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,18 +15,30 @@ import java.util.UUID;
  */
 @Service
 public class DeviceAuthServiceImpl implements  DeviceAuthService {
+
+    @Autowired
+    DeviceService deviceService;
+
+    @Autowired
+    DeviceCredentialsService deviceCredentialsService;
+
     @Override
     public DeviceAuthResult process(DeviceCredentals credentals) {
         //需要根据具体逻辑修改，此处为了测试通过仅仅做了简单的返回
-        return DeviceAuthResult.of(true, UUID.randomUUID().toString(),"errorMsg");
+//        return DeviceAuthResult.of(true, UUID.randomUUID().toString(),"errorMsg");
+        DeviceCredentials crede= deviceCredentialsService.findDeviceCredentialsByToken(credentals.getCredentialsId());
+
+        if(crede!=null){
+           return  DeviceAuthResult.of(true,crede.getDeviceId().toString(),"success");
+        }else{
+            return  DeviceAuthResult.of(false,null,"wrong token");
+        }
     }
 
     @Override
     public Optional<Device> findDeviceById(String deviceId) {
         //
-        Device d = new Device();
-        d.setTenantId(1);
-        d.setId(UUID.randomUUID());
-        return Optional.of(d);
+        Device device = deviceService.findDeviceById(UUID.fromString(deviceId));
+        return Optional.of(device);
     }
 }

@@ -1,9 +1,11 @@
 package cn.edu.bupt.service;
 
+import cn.edu.bupt.common.security.DeviceAuthResult;
 import cn.edu.bupt.dao.deviceCredentials.DeviceCredentialsDao;
 import cn.edu.bupt.dao.exception.DataValidationException;
 import cn.edu.bupt.dao.util.DataValidator;
 import cn.edu.bupt.pojo.Device;
+import cn.edu.bupt.pojo.DeviceCredentals;
 import cn.edu.bupt.pojo.DeviceCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -11,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static cn.edu.bupt.dao.util.Validator.*;

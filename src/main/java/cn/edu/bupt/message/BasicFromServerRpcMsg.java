@@ -53,6 +53,6 @@ public class BasicFromServerRpcMsg  implements   FromServerRpcMsg{
     @Override
     public boolean requireResponce() {
        //TODO 需要根据情况更改
-        return false;
+        return true;
     }
 }

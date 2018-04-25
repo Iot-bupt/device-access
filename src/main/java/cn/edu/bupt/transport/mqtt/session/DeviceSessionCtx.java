@@ -3,6 +3,7 @@ package cn.edu.bupt.transport.mqtt.session;
 import cn.edu.bupt.common.DeviceAwareSessionContext;
 import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.service.DeviceAuthService;
+import cn.edu.bupt.service.DeviceCredentialsService;
 import cn.edu.bupt.transport.TransportAdaptor;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;

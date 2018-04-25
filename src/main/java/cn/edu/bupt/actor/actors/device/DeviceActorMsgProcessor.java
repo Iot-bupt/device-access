@@ -82,6 +82,12 @@ public class DeviceActorMsgProcessor {
                 });
             }else{
                 msg1.getRes().setResult(new ResponseEntity(HttpStatus.OK));
+                subscriptions.forEach(sessionId->{
+                    actorSystemContext.getSessionManagerActor().tell(
+                            new BasicFromDeviceActorRpc(sessionId,msg1.getDevice(),msg1),
+                            ActorRef.noSender()
+                    );
+                });
             }
         }
     }

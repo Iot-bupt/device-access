@@ -23,7 +23,7 @@ public class DeviceActor extends ContextAwareActor{
         this.tenantId = tenantId;
         this.deviceId = deviceId;
         // TODO 待修改
-        this.processor  = new DeviceActorMsgProcessor();
+        this.processor  = new DeviceActorMsgProcessor(systemContext);
     }
 
     @Override

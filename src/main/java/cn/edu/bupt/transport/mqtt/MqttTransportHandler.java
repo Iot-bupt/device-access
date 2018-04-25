@@ -8,6 +8,7 @@ import cn.edu.bupt.message.BasicToDeviceActorMsg;
 import cn.edu.bupt.message.MsgType;
 import cn.edu.bupt.message.SessionCloseMsg;
 import cn.edu.bupt.service.DeviceAuthService;
+import cn.edu.bupt.service.DeviceCredentialsService;
 import cn.edu.bupt.service.DeviceService;
 import cn.edu.bupt.transport.AdaptorException;
 import cn.edu.bupt.transport.TransportAdaptor;
@@ -43,12 +44,12 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
     private DeviceSessionCtx deviceSessionCtx;
     private TransportAdaptor adaptor;
 
-    public MqttTransportHandler(SessionMsgProcessor processor, DeviceService deviceService, DeviceAuthService deviceAuthService ,TransportAdaptor adaptor){
+    public MqttTransportHandler(SessionMsgProcessor processor, DeviceService deviceService, DeviceAuthService deviceCredentialsService ,TransportAdaptor adaptor){
         this.processor = processor;
         this.deviceService = deviceService;
-        this.deviceAuthService = deviceAuthService;
+        this.deviceAuthService = deviceCredentialsService;
         this.adaptor = adaptor;
-        this.deviceSessionCtx = new DeviceSessionCtx(deviceAuthService,adaptor);
+        this.deviceSessionCtx = new DeviceSessionCtx(deviceCredentialsService,adaptor);
     }
 
     @Override

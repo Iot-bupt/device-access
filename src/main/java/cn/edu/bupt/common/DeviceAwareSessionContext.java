@@ -5,6 +5,7 @@ import cn.edu.bupt.common.security.DeviceCredentialsType;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.DeviceCredentals;
 import cn.edu.bupt.service.DeviceAuthService;
+import cn.edu.bupt.service.DeviceCredentialsService;
 import lombok.Getter;
 import lombok.Setter;
 

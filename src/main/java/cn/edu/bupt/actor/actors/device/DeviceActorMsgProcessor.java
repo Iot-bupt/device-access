@@ -2,6 +2,7 @@ package cn.edu.bupt.actor.actors.device;
 
 import akka.actor.ActorRef;
 import cn.edu.bupt.actor.service.ActorSystemContext;
+import cn.edu.bupt.common.entry.BasicAttributeKvEntry;
 import cn.edu.bupt.message.*;
 import cn.edu.bupt.pojo.kv.*;
 
@@ -110,7 +111,7 @@ public class DeviceActorMsgProcessor {
         Set<cn.edu.bupt.common.entry.KvEntry> atts = msg.getData();
         List<AttributeKvEntry> attributes = new ArrayList<>();
         atts.forEach(entry->{
-            attributes.add(new BasicAdaptorAttributeKvEntry(entry));
+            attributes.add(new BasicAdaptorAttributeKvEntry(entry,((BasicAttributeKvEntry)entry).getLastUpdateTs()));
         });
         UUID entityId = UUID.fromString(msg1.getDeviceId());
         BaseAttributesService baseAttributesService = actorSystemContext.getBaseAttributesService();

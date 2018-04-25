@@ -44,7 +44,7 @@ public class BasicAttributeKvEntry implements KvEntry{
 
     @Override
     public Optional<Double> getDoubleValue() {
-        return null;
+        return kv.getDoubleValue();
     }
 
     @Override

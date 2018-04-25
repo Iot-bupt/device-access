@@ -5,9 +5,11 @@ import java.util.Optional;
 public class BasicAdaptorAttributeKvEntry implements AttributeKvEntry {
 
     private final cn.edu.bupt.common.entry.KvEntry kv;
+    private final long ts;
 
-    public BasicAdaptorAttributeKvEntry(cn.edu.bupt.common.entry.KvEntry kv) {
+    public BasicAdaptorAttributeKvEntry(cn.edu.bupt.common.entry.KvEntry kv,long ts) {
         this.kv = kv;
+        this.ts = ts;
     }
 
 
@@ -63,6 +65,6 @@ public class BasicAdaptorAttributeKvEntry implements AttributeKvEntry {
 
     @Override
     public long getLastUpdateTs() {
-        return 0;
+        return ts;
     }
 }

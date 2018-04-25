@@ -2,6 +2,7 @@ package cn.edu.bupt.actor.service;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import cn.edu.bupt.service.BaseAttributesService;
 import cn.edu.bupt.service.BaseTimeseriesService;
 import cn.edu.bupt.service.DeviceAuthService;
 import cn.edu.bupt.service.DeviceService;
@@ -29,6 +30,9 @@ public class ActorSystemContext {
 
     @Autowired
     @Getter private BaseTimeseriesService baseTimeseriesService;
+
+    @Autowired
+    @Getter private BaseAttributesService baseAttributesService;
 
 //    @Autowired
 //    @Getter private TenantService tenantService;

@@ -12,8 +12,7 @@ import cn.edu.bupt.actor.actors.tenant.TenantActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.actor.service.DefaultActorService;
 import cn.edu.bupt.common.SessionId;
-import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;
-import cn.edu.bupt.message.SessionAwareMsg;
+import cn.edu.bupt.message.*;
 import scala.concurrent.duration.Duration;
 
 import java.util.HashMap;
@@ -40,6 +39,15 @@ public class AppActor extends ContextAwareActor{
     public void onReceive(Object msg) throws Exception {
         if(msg instanceof FromSessionActorToDeviceActorMsg){
             process((FromSessionActorToDeviceActorMsg)msg);
+        }else if(msg instanceof FromServerMsg){
+            process((FromServerMsg)msg);
+        }
+    }
+
+    private void process(FromServerMsg msg) {
+        if(msg.getMsgType().equals(MsgType.FROM_SERVER_RPC_MSG)){
+            String tenantId = ((BasicFromServerRpcMsg)msg).getTenantId();
+            getOrCreateTenantActor(tenantId).tell(msg,ActorRef.noSender());
         }
     }
 

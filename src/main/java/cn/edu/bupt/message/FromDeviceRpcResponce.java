@@ -1,12 +1,15 @@
 package cn.edu.bupt.message;
 
+import lombok.Getter;
+
 /**
  * Created by Administrator on 2018/4/16.
  */
 public class FromDeviceRpcResponce implements FromDeviceMsg{
+    @Getter
     private final int requestId;
+    @Getter
     private final String data;
-
     public FromDeviceRpcResponce(int id,String data){
         requestId = id;
         this.data = data;

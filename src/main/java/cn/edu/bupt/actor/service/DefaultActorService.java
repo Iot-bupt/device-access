@@ -4,6 +4,7 @@ import akka.actor.*;
 import cn.edu.bupt.actor.actors.Session.SessionActorProcessor;
 import cn.edu.bupt.actor.actors.Session.SessionManagerActor;
 import cn.edu.bupt.actor.actors.app.AppActor;
+import cn.edu.bupt.message.FromServerMsg;
 import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;
 import cn.edu.bupt.message.SessionAwareMsg;
 import cn.edu.bupt.message.SessionCtrlMsg;
@@ -20,7 +21,7 @@ import javax.annotation.PreDestroy;
  * Created by Administrator on 2018/4/17.
  */
 @Service
-public class DefaultActorService implements SessionMsgProcessor{
+public class DefaultActorService implements SessionMsgProcessor,RpcMsgProcessor {
 
     private static final String ACTOR_SYSTEM_NAME = "Akka";
     public static final String CORE_DISPATCHER_NAME = "core-dispatcher";
@@ -63,5 +64,10 @@ public class DefaultActorService implements SessionMsgProcessor{
     @Override
     public void process(SessionAwareMsg sessionMsg) {
         sessionManagerActor.tell(sessionMsg,ActorRef.noSender());
+    }
+
+    @Override
+    public void process(FromServerMsg msg) {
+        appActor.tell(msg,ActorRef.noSender());
     }
 }

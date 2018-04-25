@@ -68,6 +68,7 @@ public class SessionManagerActor extends ContextAwareActor {
                 sessionActor.tell(msg,ActorRef.noSender());
             }else{
                 //TODO log.debug session actor was removed
+
             }
         }
     }

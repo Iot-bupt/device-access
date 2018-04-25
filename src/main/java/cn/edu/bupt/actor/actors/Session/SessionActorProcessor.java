@@ -11,4 +11,6 @@ public interface SessionActorProcessor {
     void processSessionCtrlMsg(ActorContext context, SessionCtrlMsg msg);
 
     void processToDeviceActorMsg(ActorContext context, FromSessionActorToDeviceActorMsg msg);
+
+    void processToDeviceRpcRequestMsg(int requestId, String data);
 }

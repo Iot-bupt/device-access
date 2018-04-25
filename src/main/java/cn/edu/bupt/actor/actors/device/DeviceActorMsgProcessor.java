@@ -97,9 +97,15 @@ public class DeviceActorMsgProcessor {
         Map<Long, List<KvEntry>> data = msg.getData();
         for( long ttl : data.keySet()){
             UUID entityId = UUID.fromString(msg1.getDeviceId());
-            List<TsKvEntry> tsKvEntry = Collections.singletonList(((TsKvEntry) data.get(ttl)));
-            BaseTimeseriesService baseTimeseriesService = new BaseTimeseriesService();
-            baseTimeseriesService.save(entityId, tsKvEntry, ttl);
+            List<KvEntry> KvEntry =  data.get(ttl);
+          //  BaseTimeseriesService baseTimeseriesService = new BaseTimeseriesService();
+          //  actorSystemContext.get
+            List<TsKvEntry> ls = new ArrayList<>();
+            KvEntry.forEach(entry->{
+                ls.add((TsKvEntry)entry);
+            });
+            BaseTimeseriesService  baseTimeseriesService =  actorSystemContext.getBaseTimeseriesService();
+            baseTimeseriesService.save(entityId, ls, ttl);
         }
     }
 

@@ -26,7 +26,7 @@ public class GroupController extends BaseController {
 
     @RequestMapping(value = "/saveGroup", method = RequestMethod.POST)
     @ResponseBody
-    public Group saveGroup(@RequestBody Group group) throws Exception{
+    public Group saveGroup(Group group) throws Exception{
         try {
             Group savedGroup = checkNotNull(groupService.saveGroup(group));
             return savedGroup;
@@ -65,5 +65,26 @@ public class GroupController extends BaseController {
             return null;
         }
     }
+
+    @RequestMapping(value = "/assign/{groupId}/{deviceId}", method = RequestMethod.GET)
+    @ResponseBody
+    public void assignDeviceToGroup(@PathVariable("groupId") UUID groupId, @PathVariable("deviceId") UUID deviceId) throws Exception{
+        try{
+            deviceService.assignDeviceToGroup(groupId,deviceId);
+        }catch(Exception e){
+            e.getMessage();
+        }
+    }
+
+    @RequestMapping(value = "/unassign/{groupId}/{deviceId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void unassignDeviceFromGroup(@PathVariable("groupId") UUID groupId, @PathVariable("deviceId") UUID deviceId) throws Exception{
+        try{
+            deviceService.unassignDeviceFromGroup(groupId, deviceId);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
 }

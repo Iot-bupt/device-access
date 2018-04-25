@@ -2,15 +2,18 @@ package cn.edu.bupt.actor.actors.device;
 
 import akka.actor.ActorRef;
 import cn.edu.bupt.actor.service.ActorSystemContext;
+import cn.edu.bupt.common.entry.KvEntry;
 import cn.edu.bupt.message.*;
+import cn.edu.bupt.pojo.kv.AttributeKvEntry;
+import cn.edu.bupt.pojo.kv.BasicTsKvEntry;
+import cn.edu.bupt.pojo.kv.TsKvEntry;
+import cn.edu.bupt.service.BaseAttributesService;
+import cn.edu.bupt.service.BaseTimeseriesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/4/17.
@@ -33,9 +36,11 @@ public class DeviceActorMsgProcessor {
         FromDeviceMsg fromDeviceMsg = adptorMsg.getMsg();
         switch(fromDeviceMsg.getMsgType()){
             case MsgType.POST_TELEMETRY_REQUEST:
+                handleTelemetryUploadRequest((TelemetryUploadMsg)fromDeviceMsg, msg1);
                 System.err.println("receive a telemetry msg");
                 break;
             case MsgType.POST_ATTRIBUTE_REQUEST:
+                handleAttributeUploadRequest((AttributeUploadMsg)fromDeviceMsg, msg1);
                 System.err.println("receive a attribute msg");
                 break;
             case MsgType.FROM_DEVICE_RPC_SUB:
@@ -80,4 +85,24 @@ public class DeviceActorMsgProcessor {
             }
         }
     }
+
+
+     public void handleTelemetryUploadRequest(TelemetryUploadMsg msg, BasicToDeviceActorMsg msg1){
+        Map<Long, List<KvEntry>> data = msg.getData();
+        for( long ttl : data.keySet()){
+            UUID entityId = UUID.fromString(msg1.getDeviceId());
+            List<TsKvEntry> tsKvEntry = Collections.singletonList(((TsKvEntry) data.get(ttl)));
+            BaseTimeseriesService baseTimeseriesService = new BaseTimeseriesService();
+            baseTimeseriesService.save(entityId, tsKvEntry, ttl);
+        }
+    }
+
+
+    public void handleAttributeUploadRequest(AttributeUploadMsg msg, BasicToDeviceActorMsg msg1){
+        List<AttributeKvEntry> kvEntries = (List)msg.getData();
+        UUID entityId = UUID.fromString(msg1.getDeviceId());
+        BaseAttributesService baseAttributesService = new BaseAttributesService();
+        baseAttributesService.save(entityId, kvEntries);
+    }
+
 }

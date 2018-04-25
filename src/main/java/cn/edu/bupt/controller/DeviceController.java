@@ -32,7 +32,7 @@ public class DeviceController extends BaseController{
 
     @RequestMapping(value = "/createDevice", method = RequestMethod.POST)
     @ResponseBody
-    public Device saveDevice(@RequestBody Device device) throws Exception {
+    public Device saveDevice(Device device) throws Exception {
         try {
             Device savedDevice = checkNotNull(deviceService.saveDevice(device));
             return savedDevice;
@@ -56,7 +56,7 @@ public class DeviceController extends BaseController{
     @RequestMapping(value = "/devices/{tenantId}", params = {"limit"}, method = RequestMethod.GET)
     @ResponseBody
     public TextPageData<Device> getTenantDevices(
-            @PathVariable Integer tenantId,
+            @PathVariable("tenantId") Integer tenantId,
             @RequestParam int limit,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,
@@ -72,7 +72,7 @@ public class DeviceController extends BaseController{
 
     @RequestMapping(value = "/devices/{tenantId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteDevicesByTenantId(@PathVariable Integer tenantId) throws Exception{
+    public void deleteDevicesByTenantId(@PathVariable("tenantId") Integer tenantId) throws Exception{
         try{
             deviceService.deleteDevicesByTenantId(tenantId);
         }catch(Exception e){
@@ -80,30 +80,11 @@ public class DeviceController extends BaseController{
         }
     }
 
-    @RequestMapping(value = "/assign/{groupId}/{deviceId}", method = RequestMethod.GET)
-    @ResponseBody
-    public void assignDeviceToGroup(@PathVariable UUID groupId, @PathVariable UUID deviceId) throws Exception{
-        try{
-            deviceService.assignDeviceToGroup(groupId,deviceId);
-        }catch(Exception e){
-             e.getMessage();
-        }
-    }
-
-    @RequestMapping(value = "/unassign/{groupId}/{deviceId}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public void unassignDeviceFromGroup(@PathVariable UUID groupId, @PathVariable UUID deviceId) throws Exception{
-        try{
-            deviceService.unassignDeviceFromGroup(groupId, deviceId);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
 
     @RequestMapping(value = "/devices/{parentDeviceId}",params = {"limit"}, method = RequestMethod.GET)
     @ResponseBody
     public List<Device> getDevicesByParentDeviceId(
-            @PathVariable String parentDeviceId,
+            @PathVariable("parentDeviceId") String parentDeviceId,
             @RequestParam int limit,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,

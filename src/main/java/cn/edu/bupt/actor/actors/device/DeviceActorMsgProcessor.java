@@ -100,7 +100,7 @@ public class DeviceActorMsgProcessor {
           //  actorSystemContext.get
             List<TsKvEntry> ls = new ArrayList<>();
             KvEntry.forEach(entry->{
-                ls.add(new BasicAdapterKvEntry(ts,entry));
+                ls.add(new BasicAdapterTsKvEntry(ts,entry));
             });
             BaseTimeseriesService  baseTimeseriesService =  actorSystemContext.getBaseTimeseriesService();
             baseTimeseriesService.save(entityId, ls, 0);

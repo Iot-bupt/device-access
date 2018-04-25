@@ -8,9 +8,9 @@ import cn.edu.bupt.actor.actors.app.AppActor;
 import cn.edu.bupt.actor.actors.device.DeviceActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.actor.service.DefaultActorService;
-import cn.edu.bupt.message.BasicToDeviceActorMsg;
-import cn.edu.bupt.message.BasicToDeviceActorSessionMsg;
-import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;
+import cn.edu.bupt.message.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +22,7 @@ public class TenantActor extends ContextAwareActor {
 
     private final Map<String, ActorRef> deviceActors;
     private final String tenantId;
+    private final String DEVICE_OFFLINE  = "device is offline";
 
     public TenantActor(ActorSystemContext systemContext,String tenantId){
         super(systemContext);
@@ -35,7 +36,31 @@ public class TenantActor extends ContextAwareActor {
             getOrCreateDeviceActor(((BasicToDeviceActorMsg) msg).getDeviceId()).tell(msg,ActorRef.noSender());
         }else if(msg instanceof BasicToDeviceActorSessionMsg){
             //TODO 待完成
-            System.err.println("tenant actor receive a sessionControl msg");
+            ActorRef ref = deviceActors.get(((BasicToDeviceActorSessionMsg)msg).getDeviceId());
+            if(ref != null){
+                //TODO 延时时间改为通过配置文件注入
+                scheduleMsgWithDelay(msg,60000,ref);
+            }
+        }else if(msg instanceof  DeviceTerminationMsg){
+            ActorRef ref =  deviceActors.remove(((DeviceTerminationMsg)msg).getDeviceId());
+            if(ref!=null){
+                //TODO 打日志
+            }else{
+                //TODO 打日志
+            }
+        }else if(msg instanceof FromServerMsg){
+            process((FromServerMsg)msg);
+        }
+    }
+
+    private void process(FromServerMsg msg) {
+        if(msg.getMsgType().equals(MsgType.FROM_SERVER_RPC_MSG)){
+            String deviceId = ((BasicFromServerRpcMsg)msg).getDeviceId();
+            if(deviceActors.containsKey(deviceId)){
+                deviceActors.get(deviceId).tell(msg,ActorRef.noSender());
+            }else{
+                ((BasicFromServerRpcMsg)msg).getRes().setResult(new ResponseEntity(DEVICE_OFFLINE,HttpStatus.OK));
+            }
         }
     }
 

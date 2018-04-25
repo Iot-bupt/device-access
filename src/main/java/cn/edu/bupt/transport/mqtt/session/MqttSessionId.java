@@ -14,6 +14,9 @@ public class MqttSessionId implements SessionId {
     public MqttSessionId(){
         this.id = idSeq.incrementAndGet();
     }
+    public MqttSessionId(long id){
+        this.id = id;
+    }
     @Override
     public String toUidStr() {
         return "mqtt"+id;

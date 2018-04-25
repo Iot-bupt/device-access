@@ -1,11 +1,13 @@
 package cn.edu.bupt.actor.actors.device;
 
+import akka.actor.ActorRef;
 import akka.japi.Creator;
 import cn.edu.bupt.actor.actors.ContextAwareActor;
-import cn.edu.bupt.actor.actors.Session.SessionActor;
+import cn.edu.bupt.actor.actors.Session.*;
+import cn.edu.bupt.actor.actors.tenant.DeviceTerminationMsg;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.common.SessionId;
-import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;
+import cn.edu.bupt.message.*;
 
 /**
  * Created by Administrator on 2018/4/17.
@@ -26,8 +28,17 @@ public class DeviceActor extends ContextAwareActor{
 
     @Override
     public void onReceive(Object msg) throws Exception {
-        if(msg instanceof FromSessionActorToDeviceActorMsg){
-            processor.process((FromSessionActorToDeviceActorMsg)msg);
+        if(msg instanceof BasicToDeviceActorMsg){
+            processor.process((BasicToDeviceActorMsg)msg);
+        }else if(msg instanceof BasicToDeviceActorSessionMsg){
+            SessionAwareMsg msg1 = ((BasicToDeviceActorSessionMsg) msg).getMsg();
+            String deviceId = ((BasicToDeviceActorSessionMsg) msg).getDeviceId();
+            if(msg1 instanceof SessionCloseMsg){
+                context().parent().tell(new DeviceTerminationMsg(deviceId), ActorRef.noSender());
+                context().stop(context().self());
+            }
+        }else if(msg instanceof FromServerMsg){
+            processor.process((FromServerMsg)msg);
         }
     }
 

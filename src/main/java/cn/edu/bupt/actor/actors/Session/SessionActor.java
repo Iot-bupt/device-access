@@ -42,12 +42,19 @@ public class SessionActor extends ContextAwareActor{
         if(msg instanceof SessionCtrlMsg){
             processSessionCtrlMsg((SessionCtrlMsg)msg);
         }else if(msg instanceof FromDeviceActorToSessionActorMsg){
-
+            processFromDeviceToSessionActorMsg((FromDeviceActorToSessionActorMsg)msg);
         }else if(msg instanceof FromSessionActorToDeviceActorMsg){
             processFromSessionActorToDeviceActorMsg((FromSessionActorToDeviceActorMsg)msg);
         }else if(msg instanceof SessionTimeoutMsg){
 
         }
+    }
+
+    private void processFromDeviceToSessionActorMsg(FromDeviceActorToSessionActorMsg msg) {
+        FromServerRpcMsg msg1 = (FromServerRpcMsg)msg.getServerMsg();
+        int requestId = msg1.getRpcRequestId();
+        String data = msg1.getRpcRequestPayLoad();
+        processor.processToDeviceRpcRequestMsg(requestId,data);
     }
 
     private void processFromSessionActorToDeviceActorMsg(FromSessionActorToDeviceActorMsg msg) {

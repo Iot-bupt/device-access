@@ -9,4 +9,5 @@ public class MsgType {
     public static final String FROM_DEVICE_RPC_RESPONCE = "from_device_rpc_responce";
     public static final String FROM_DEVICE_RPC_SUB = "form_device_rpc_sub";
     public static final String FROM_DEVICE_RPC_UNSUB = "form_device_rpc_unsub";
+    public static final String FROM_SERVER_RPC_MSG = "from_server_rpc_msg";
 }

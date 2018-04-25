@@ -64,6 +64,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             //TODO 输出异常连接消息
             processDisconnect(ctx);
         }else{
+            deviceSessionCtx.setChannelHandlerContext(ctx);
             switch(msg.fixedHeader().messageType()){
                 case CONNECT:
                     processConnect(ctx, (MqttConnectMessage) msg);

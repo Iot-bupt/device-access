@@ -159,7 +159,7 @@ public class MqttTransportHandler extends ChannelInboundHandlerAdapter implement
             }else if(topicName.equals(MqttTopics.DEVICE_ATTRIBUTES_TOPIC)){
                 msg = adaptor.convertToActorMsg(deviceSessionCtx, MsgType.POST_ATTRIBUTE_REQUEST,mqttMsg);
             }else if(topicName.startsWith(MqttTopics.DEVICE_RPC_RESPONSE_TOPIC)){
-                msg = adaptor.convertToActorMsg(deviceSessionCtx,MsgType.FROM_DEVICE_RPC_RESPONCE,mqttMsg);
+                msg = adaptor.convertToActorMsg(deviceSessionCtx,MsgType.FROM_DEVICE_RPC_RESPONSE,mqttMsg);
             }
             //TODO 其他数据类型处理
         }catch(Exception e){

@@ -1,8 +1,7 @@
-package cn.edu.bupt.dao.Tenant;
+package cn.edu.bupt.dao.tenant;
 
 import cn.edu.bupt.pojo.Tenant;
 import cn.edu.bupt.service.DeviceService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

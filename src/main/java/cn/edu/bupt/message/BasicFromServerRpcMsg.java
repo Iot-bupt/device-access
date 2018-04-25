@@ -8,7 +8,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 /**
  * Created by Administrator on 2018/4/24.
  */
-public class BasicFromServerRpcMsg  implements   FromServerRpcMsg{
+public class BasicFromServerRpcMsg  implements FromServerRpcMsg{
 
     private final int requestId;
     private final String data;
@@ -51,7 +51,7 @@ public class BasicFromServerRpcMsg  implements   FromServerRpcMsg{
     }
 
     @Override
-    public boolean requireResponce() {
+    public boolean requireResponse() {
        //TODO 需要根据情况更改
         return true;
     }

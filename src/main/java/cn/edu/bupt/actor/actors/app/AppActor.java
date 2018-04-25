@@ -7,11 +7,9 @@ import akka.actor.SupervisorStrategy;
 import akka.japi.Creator;
 import akka.japi.Function;
 import cn.edu.bupt.actor.actors.ContextAwareActor;
-import cn.edu.bupt.actor.actors.Session.SessionActor;
 import cn.edu.bupt.actor.actors.tenant.TenantActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.actor.service.DefaultActorService;
-import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.message.*;
 import scala.concurrent.duration.Duration;
 

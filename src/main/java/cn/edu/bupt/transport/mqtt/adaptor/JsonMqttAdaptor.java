@@ -1,6 +1,5 @@
 package cn.edu.bupt.transport.mqtt.adaptor;
 
-import cn.edu.bupt.common.SessionContext;
 import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.message.*;
 import cn.edu.bupt.transport.AdaptorException;
@@ -42,8 +41,8 @@ public class JsonMqttAdaptor implements TransportAdaptor<DeviceSessionCtx,MqttMe
             case MsgType.FROM_DEVICE_RPC_UNSUB:
                 msg = convertToRpcUnSubRequest(ctx,(MqttUnsubscribeMessage)inbound);
                 break;
-            case MsgType.FROM_DEVICE_RPC_RESPONCE:
-                msg = convertToRpcResponceRequest(ctx,(MqttPublishMessage) inbound);
+            case MsgType.FROM_DEVICE_RPC_RESPONSE:
+                msg = convertToRpcResponseRequest(ctx,(MqttPublishMessage) inbound);
                 break;
         }
         return new BasicAdapterToSessionActorMsg(ctx,msg);
@@ -62,12 +61,12 @@ public class JsonMqttAdaptor implements TransportAdaptor<DeviceSessionCtx,MqttMe
         return new RpcSubscribeMsg();
     }
 
-    private FromDeviceMsg convertToRpcResponceRequest(DeviceSessionCtx ctx, MqttPublishMessage inbound) throws AdaptorException{
+    private FromDeviceMsg convertToRpcResponseRequest(DeviceSessionCtx ctx, MqttPublishMessage inbound) throws AdaptorException{
         String topicName = inbound.variableHeader().topicName();
         try{
             int requestId = Integer.valueOf(topicName.substring(MqttTopics.DEVICE_RPC_RESPONSE_TOPIC.length()));
             String payload = inbound.payload().toString(UTF8);
-            return new FromDeviceRpcResponce(requestId,payload);
+            return new FromDeviceRpcResponse(requestId,payload);
         }catch(Exception e){
             throw new AdaptorException(e.toString());
         }

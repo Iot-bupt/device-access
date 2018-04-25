@@ -1,24 +1,20 @@
-package cn.edu.bupt.actor.actors.Session;
+package cn.edu.bupt.actor.actors.session;
 
 import akka.actor.ActorContext;
 import akka.actor.ActorRef;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.common.DeviceAwareSessionContext;
-import cn.edu.bupt.common.SessionContext;
 import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.message.*;
 import cn.edu.bupt.transport.mqtt.MqttTopics;
 import cn.edu.bupt.transport.mqtt.session.DeviceSessionCtx;
-import com.google.gson.JsonElement;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.*;
-import org.omg.PortableInterceptor.ACTIVE;
 
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Administrator on 2018/4/17.

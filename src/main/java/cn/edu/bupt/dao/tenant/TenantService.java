@@ -1,4 +1,4 @@
-package cn.edu.bupt.dao.Tenant;
+package cn.edu.bupt.dao.tenant;
 
 import cn.edu.bupt.pojo.Tenant;
 import org.springframework.data.domain.Page;

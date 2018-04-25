@@ -1,4 +1,4 @@
-package cn.edu.bupt.actor.actors.Session;
+package cn.edu.bupt.actor.actors.session;
 
 import akka.actor.ActorContext;
 import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;

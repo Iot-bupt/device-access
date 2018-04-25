@@ -49,14 +49,14 @@ public class DeviceActorMsgProcessor {
                 System.err.println("receive a rpc unsub");
                 subscriptions.remove(adptorMsg.getSessionId().toUidStr());
                 break;
-            case MsgType.FROM_DEVICE_RPC_RESPONCE:
-                System.err.println("receive a rpc  responce");
-                int requestId = ((FromDeviceRpcResponce)fromDeviceMsg).getRequestId();
+            case MsgType.FROM_DEVICE_RPC_RESPONSE:
+                System.err.println("receive a rpc  response");
+                int requestId = ((FromDeviceRpcResponse)fromDeviceMsg).getRequestId();
                 DeferredResult result = rpcRequests.get(requestId);
                 if(result == null){
                     //TODO 记录一下rpc超时
                 }else{
-                    result.setResult(((FromDeviceRpcResponce)fromDeviceMsg).getData());
+                    result.setResult(((FromDeviceRpcResponse)fromDeviceMsg).getData());
                     rpcRequests.remove(requestId);
                 }
                 break;
@@ -70,7 +70,7 @@ public class DeviceActorMsgProcessor {
         if(msg.getMsgType().equals(MsgType.FROM_SERVER_RPC_MSG)){
             BasicFromServerRpcMsg msg1 = (BasicFromServerRpcMsg)(msg);
             int requestId = msg1.getRpcRequestId();
-            if(msg1.requireResponce()){
+            if(msg1.requireResponse()){
                 rpcRequests.put(requestId,msg1.getRes());
                 subscriptions.forEach(sessionId->{
                     actorSystemContext.getSessionManagerActor().tell(
@@ -98,7 +98,7 @@ public class DeviceActorMsgProcessor {
             List<cn.edu.bupt.common.entry.KvEntry> KvEntry = data.get(ts);
             List<TsKvEntry> ls = new ArrayList<>();
             KvEntry.forEach(entry->{
-                ls.add(new BasicAdapterTsKvEntry(ts,entry));
+                ls.add(new BasicAdaptorTsKvEntry(ts,entry));
             });
             BaseTimeseriesService baseTimeseriesService = actorSystemContext.getBaseTimeseriesService();
             baseTimeseriesService.save(entityId, ls, 0);
@@ -107,7 +107,7 @@ public class DeviceActorMsgProcessor {
 
 
     public void handleAttributeUploadRequest(AttributeUploadMsg msg, BasicToDeviceActorMsg msg1){
-        List<cn.edu.bupt.common.entry.KvEntry> atts = (List)msg.getData();
+        Set<cn.edu.bupt.common.entry.KvEntry> atts = msg.getData();
         List<AttributeKvEntry> attributes = new ArrayList<>();
         atts.forEach(entry->{
             attributes.add(new BasicAdaptorAttributeKvEntry(entry));

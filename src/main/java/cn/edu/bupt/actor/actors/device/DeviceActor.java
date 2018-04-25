@@ -3,10 +3,8 @@ package cn.edu.bupt.actor.actors.device;
 import akka.actor.ActorRef;
 import akka.japi.Creator;
 import cn.edu.bupt.actor.actors.ContextAwareActor;
-import cn.edu.bupt.actor.actors.Session.*;
 import cn.edu.bupt.actor.actors.tenant.DeviceTerminationMsg;
 import cn.edu.bupt.actor.service.ActorSystemContext;
-import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.message.*;
 
 /**

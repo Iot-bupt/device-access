@@ -1,13 +1,10 @@
 package cn.edu.bupt.actor.service;
 
 import akka.actor.*;
-import cn.edu.bupt.actor.actors.Session.SessionActorProcessor;
-import cn.edu.bupt.actor.actors.Session.SessionManagerActor;
+import cn.edu.bupt.actor.actors.session.SessionManagerActor;
 import cn.edu.bupt.actor.actors.app.AppActor;
 import cn.edu.bupt.message.FromServerMsg;
-import cn.edu.bupt.message.FromSessionActorToDeviceActorMsg;
 import cn.edu.bupt.message.SessionAwareMsg;
-import cn.edu.bupt.message.SessionCtrlMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import scala.concurrent.Await;

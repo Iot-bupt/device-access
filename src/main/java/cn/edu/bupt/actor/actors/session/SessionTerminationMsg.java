@@ -1,4 +1,4 @@
-package cn.edu.bupt.actor.actors.Session;
+package cn.edu.bupt.actor.actors.session;
 
 import cn.edu.bupt.common.SessionId;
 import lombok.Getter;

@@ -6,5 +6,5 @@ package cn.edu.bupt.message;
 public interface FromServerRpcMsg extends FromServerMsg,DeviceAwareMsg,TenantAwareMsg{
     public int getRpcRequestId();
     public String getRpcRequestPayLoad();
-    public boolean requireResponce();
+    public boolean requireResponse();
 }

@@ -1,7 +1,6 @@
-package cn.edu.bupt.actor.actors.Session;
+package cn.edu.bupt.actor.actors.session;
 
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
 import akka.actor.OneForOneStrategy;
 import akka.actor.SupervisorStrategy;
 import akka.japi.Creator;

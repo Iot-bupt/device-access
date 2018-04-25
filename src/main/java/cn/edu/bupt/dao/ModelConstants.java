@@ -130,7 +130,6 @@ public class ModelConstants {
     public static final String TS_KV_LATEST_CF = "ts_kv_latest_cf";
 
     public static final String ENTITY_ID_COLUMN = "entity_id";
-    public static final String ATTRIBUTE_TYPE_COLUMN = "attribute_type";
     public static final String ATTRIBUTE_KEY_COLUMN = "attribute_key";
     public static final String LAST_UPDATE_TS_COLUMN = "last_update_ts";
 

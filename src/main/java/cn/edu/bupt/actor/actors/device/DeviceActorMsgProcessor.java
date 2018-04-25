@@ -2,11 +2,9 @@ package cn.edu.bupt.actor.actors.device;
 
 import akka.actor.ActorRef;
 import cn.edu.bupt.actor.service.ActorSystemContext;
-import cn.edu.bupt.common.entry.KvEntry;
 import cn.edu.bupt.message.*;
-import cn.edu.bupt.pojo.kv.AttributeKvEntry;
-import cn.edu.bupt.pojo.kv.BasicTsKvEntry;
-import cn.edu.bupt.pojo.kv.TsKvEntry;
+import cn.edu.bupt.pojo.kv.*;
+
 import cn.edu.bupt.service.BaseAttributesService;
 import cn.edu.bupt.service.BaseTimeseriesService;
 import org.springframework.http.HttpStatus;
@@ -94,18 +92,18 @@ public class DeviceActorMsgProcessor {
 
 
      public void handleTelemetryUploadRequest(TelemetryUploadMsg msg, BasicToDeviceActorMsg msg1){
-        Map<Long, List<KvEntry>> data = msg.getData();
-        for( long ttl : data.keySet()){
+        Map<Long, List<cn.edu.bupt.common.entry.KvEntry>> data = msg.getData();
+        for( long ts : data.keySet()){
             UUID entityId = UUID.fromString(msg1.getDeviceId());
-            List<KvEntry> KvEntry =  data.get(ttl);
+            List<cn.edu.bupt.common.entry.KvEntry> KvEntry =  data.get(ts);
           //  BaseTimeseriesService baseTimeseriesService = new BaseTimeseriesService();
           //  actorSystemContext.get
             List<TsKvEntry> ls = new ArrayList<>();
             KvEntry.forEach(entry->{
-                ls.add((TsKvEntry)entry);
+                ls.add(new BasicAdapterKvEntry(ts,entry));
             });
             BaseTimeseriesService  baseTimeseriesService =  actorSystemContext.getBaseTimeseriesService();
-            baseTimeseriesService.save(entityId, ls, ttl);
+            baseTimeseriesService.save(entityId, ls, 0);
         }
     }
 

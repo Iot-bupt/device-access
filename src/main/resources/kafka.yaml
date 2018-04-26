@@ -1,0 +1,39 @@
+producer:
+    # 生产者配置文件实体类目前添加的所有参数demo
+    producerConfigDemo:
+        !!com.bupt.kafka.enity.ProducerProperties
+        bootstrapServers: 10.112.233.200:9092
+        topic: test
+        acks: 1
+        retries: 0
+        batchSize: 16384
+        lingerMs: 1
+        bufferMemory: 33554432
+        keySerializer: org.apache.kafka.common.serialization.StringSerializer
+        valueSerializer: org.apache.kafka.common.serialization.StringSerializer
+
+    # 生产者测试
+    producerTest:
+        !!com.bupt.kafka.enity.ProducerProperties
+        bootstrapServers: 10.112.233.200:9092
+        topic: kfktest
+
+consumer:
+    # 消费者配置文件实体类目前添加的所有参数demo
+    consumerConfigDemo:
+        !!com.bupt.kafka.enity.ConsumerProperties
+        bootstrapServers: 10.112.233.200:9092
+        groupId: test
+        topic: test
+        enableAutoCommit: true
+        autoCommitIntercalMs: 1000
+        sessionTimeoutMs: 30000
+        keyDeserializer: org.apache.kafka.common.serialization.StringDeserializer
+        valueDeserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    # 消费者测试
+    consumerTest:
+        !!com.bupt.kafka.enity.ConsumerProperties
+        bootstrapServers: 10.112.233.200:9092
+        groupId: consumerTest
+        topic: kfktest

@@ -4,10 +4,15 @@ import akka.actor.ActorRef;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.common.entry.BasicAttributeKvEntry;
 import cn.edu.bupt.message.*;
+import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.kv.*;
 
 import cn.edu.bupt.service.BaseAttributesService;
 import cn.edu.bupt.service.BaseTimeseriesService;
+import cn.edu.bupt.utils.KafkaUtil;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -94,6 +99,7 @@ public class DeviceActorMsgProcessor {
 
      public void handleTelemetryUploadRequest(TelemetryUploadMsg msg, BasicToDeviceActorMsg msg1){
         Map<Long, List<cn.edu.bupt.common.entry.KvEntry>> data = msg.getData();
+         sendDataToKafka(msg1.getDevice(),data);
         for( long ts : data.keySet()){
             UUID entityId = UUID.fromString(msg1.getDeviceId());
             List<cn.edu.bupt.common.entry.KvEntry> KvEntry = data.get(ts);
@@ -116,6 +122,38 @@ public class DeviceActorMsgProcessor {
         UUID entityId = UUID.fromString(msg1.getDeviceId());
         BaseAttributesService baseAttributesService = actorSystemContext.getBaseAttributesService();
         baseAttributesService.save(entityId, attributes);
+    }
+
+    private void sendDataToKafka(Device device,Map<Long, List<cn.edu.bupt.common.entry.KvEntry>> data){
+        JsonObject obj =  new JsonObject();
+        obj.addProperty("deviceId",device.getId().toString());
+        obj.addProperty("tenantId",device.getTenantId());
+        JsonArray array = new JsonArray();
+        for(Map.Entry<Long,List<cn.edu.bupt.common.entry.KvEntry>> entry:data.entrySet()){
+            JsonObject temp = new JsonObject();
+            long ts = entry.getKey();
+            for(cn.edu.bupt.common.entry.KvEntry en:entry.getValue()){
+                temp.addProperty("ts",ts);
+                temp.addProperty("key",en.getKey());
+                switch(en.getDataType()){
+                    case "string":
+                        temp.addProperty("value",en.getStrValue().get());
+                        break;
+                    case "boolean":
+                        temp.addProperty("value",en.getBooleanValue().get());
+                        break;
+                    case "long":
+                        temp.addProperty("value",en.getLongValue().get());
+                        break;
+                    case "double":
+                        temp.addProperty("value",en.getDoubleValue().get());
+                        break;
+                }
+                array.add(temp);
+            }
+        }
+        obj.add("data",array);
+        KafkaUtil.send("",obj.toString());
     }
 
 }

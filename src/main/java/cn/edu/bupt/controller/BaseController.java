@@ -1,8 +1,11 @@
 package cn.edu.bupt.controller;
 
 import cn.edu.bupt.actor.service.DefaultActorService;
+import cn.edu.bupt.dao.page.TextPageLink;
+import cn.edu.bupt.service.BaseAttributesService;
 import cn.edu.bupt.service.DeviceService;
 import cn.edu.bupt.service.GroupService;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +21,7 @@ public class BaseController {
 
     @Autowired
     DefaultActorService actorService;
+
 
     UUID toUUID(String id) {
         return UUID.fromString(id);

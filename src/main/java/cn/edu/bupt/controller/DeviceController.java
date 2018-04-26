@@ -12,20 +12,20 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
-public class DeviceController extends BaseController{
+public class DeviceController extends BaseController {
     public static final String DEVICE_ID = "deviceId";
 
 
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.GET)
     @ResponseBody
-    public Device getDeviceById(@PathVariable(DEVICE_ID) String strDeviceId) throws Exception{
-        if(StringUtil.isEmpty(strDeviceId)){
+    public Device getDeviceById(@PathVariable(DEVICE_ID) String strDeviceId) throws Exception {
+        if (StringUtil.isEmpty(strDeviceId)) {
             throw new Exception("can't be empty");
         }
-        try{
+        try {
             Device device = deviceService.findDeviceById(toUUID(strDeviceId));
             return device;
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
@@ -42,28 +42,28 @@ public class DeviceController extends BaseController{
     }
 
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.DELETE)
-    public void deleteDevice(@PathVariable(DEVICE_ID) String strDeviceId) throws Exception{
-        if(StringUtil.isEmpty(strDeviceId)){
+    public void deleteDevice(@PathVariable(DEVICE_ID) String strDeviceId) throws Exception {
+        if (StringUtil.isEmpty(strDeviceId)) {
             throw new Exception("can't be empty");
         }
-        try{
+        try {
             deviceService.deleteDevice(toUUID(strDeviceId));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.getMessage();
         }
     }
 
-    @RequestMapping(value = "/devices/{tenantId}", params = {"limit"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/tenantDevices/{tenantId}", params = {"limit"}, method = RequestMethod.GET)
     @ResponseBody
     public TextPageData<Device> getTenantDevices(
             @PathVariable("tenantId") Integer tenantId,
             @RequestParam int limit,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,
-            @RequestParam(required = false) UUID idOffset,
+            @RequestParam(required = false) String idOffset,
             @RequestParam(required = false) String textOffset) throws Exception {
         try {
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset, textOffset);
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDevicesByTenantId(tenantId, pageLink));
         } catch (Exception e) {
             throw null;
@@ -72,30 +72,31 @@ public class DeviceController extends BaseController{
 
     @RequestMapping(value = "/devices/{tenantId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteDevicesByTenantId(@PathVariable("tenantId") Integer tenantId) throws Exception{
-        try{
+    public void deleteDevicesByTenantId(@PathVariable("tenantId") Integer tenantId) throws Exception {
+        try {
             deviceService.deleteDevicesByTenantId(tenantId);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.getMessage();
         }
     }
 
 
-    @RequestMapping(value = "/devices/{parentDeviceId}",params = {"limit"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/parentDevices/{parentDeviceId}",params = {"limit"}, method = RequestMethod.GET)
     @ResponseBody
     public List<Device> getDevicesByParentDeviceId(
             @PathVariable("parentDeviceId") String parentDeviceId,
             @RequestParam int limit,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,
-            @RequestParam(required = false) UUID idOffset,
+            @RequestParam(required = false) String idOffset,
             @RequestParam(required = false) String textOffset) throws Exception{
         try{
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset, textOffset);
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDeviceByParentDeviceId(parentDeviceId, pageLink));
         }catch(Exception e){
             return null;
         }
     }
+
 
 }

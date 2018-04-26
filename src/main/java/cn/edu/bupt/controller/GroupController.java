@@ -50,15 +50,15 @@ public class GroupController extends BaseController {
     @RequestMapping(value = "/devices/{groupId}",params = {"limit"}, method = RequestMethod.GET)
     @ResponseBody
     public TextPageData<Device> getCustomerDevices(
-            @PathVariable("groupId") String strGroupId,
+            @PathVariable(GROUP_ID) String strGroupId,
             @RequestParam int limit,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,
-            @RequestParam(required = false) UUID idOffset,
+            @RequestParam(required = false) String idOffset,
             @RequestParam(required = false) String textOffset) throws Exception{
         checkParameter("groupId", strGroupId);
         try{
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset, textOffset);
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             TextPageData<Device> devices = deviceService.findDevicesByGroupId(toUUID(strGroupId), pageLink);
             return devices;
         }catch(Exception e){
@@ -68,9 +68,9 @@ public class GroupController extends BaseController {
 
     @RequestMapping(value = "/assign/{groupId}/{deviceId}", method = RequestMethod.GET)
     @ResponseBody
-    public void assignDeviceToGroup(@PathVariable("groupId") UUID groupId, @PathVariable("deviceId") UUID deviceId) throws Exception{
+    public void assignDeviceToGroup(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
-            deviceService.assignDeviceToGroup(groupId,deviceId);
+            deviceService.assignDeviceToGroup(UUID.fromString(groupId),UUID.fromString(deviceId));
         }catch(Exception e){
             e.getMessage();
         }
@@ -78,9 +78,9 @@ public class GroupController extends BaseController {
 
     @RequestMapping(value = "/unassign/{groupId}/{deviceId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void unassignDeviceFromGroup(@PathVariable("groupId") UUID groupId, @PathVariable("deviceId") UUID deviceId) throws Exception{
+    public void unassignDeviceFromGroup(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
-            deviceService.unassignDeviceFromGroup(groupId, deviceId);
+            deviceService.unassignDeviceFromGroup(UUID.fromString(groupId), UUID.fromString(deviceId));
         }catch(Exception e){
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package cn.edu.bupt.controller;
 import cn.edu.bupt.actor.service.DefaultActorService;
 import cn.edu.bupt.dao.page.TextPageLink;
 import cn.edu.bupt.service.BaseAttributesService;
+import cn.edu.bupt.service.BaseTimeseriesService;
 import cn.edu.bupt.service.DeviceService;
 import cn.edu.bupt.service.GroupService;
 import lombok.Getter;
@@ -21,6 +22,12 @@ public class BaseController {
 
     @Autowired
     DefaultActorService actorService;
+
+    @Autowired
+    BaseAttributesService baseAttributesService;
+
+    @Autowired
+    BaseTimeseriesService baseTimeseriesService;
 
 
     UUID toUUID(String id) {

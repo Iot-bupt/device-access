@@ -19,17 +19,18 @@ import java.util.UUID;
 @RequestMapping("/api/v1")
 public class AttributeController extends BaseController{
 
-    @RequestMapping(value="/getAllAttributes/{deviceId}", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
+    @RequestMapping(value="/allattributes/{deviceId}", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
     public ListenableFuture<List<AttributeKvEntry>> getAllAttributes(@PathVariable("deviceId") String deviceId) throws Exception{
         try{
             ListenableFuture<List<AttributeKvEntry>> attributeKvEntry = baseAttributesService.findAll(toUUID(deviceId));
             return attributeKvEntry;
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value="/getAttributes/{deviceId}/{attributeKeys}", method = RequestMethod.GET,produces = {"application/json;charset=UTF-8"})
+    @RequestMapping(value="/attributes/{deviceId}/{attributeKeys}", method = RequestMethod.GET,produces = {"application/json;charset=UTF-8"})
     public ListenableFuture<List<AttributeKvEntry>> getAttribute(
             @PathVariable("deviceId") String deviceId, @PathVariable("attributeKeys") Collection<String> attributeKeys) throws Exception {
         try {
@@ -37,11 +38,12 @@ public class AttributeController extends BaseController{
                     baseAttributesService.find(toUUID(deviceId), attributeKeys);
             return listListenableFuture;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value="/getAttribute/{deviceId}/{attributeKey}", method = RequestMethod.GET,produces = {"application/json;charset=UTF-8"})
+    @RequestMapping(value="/attribute/{deviceId}/{attributeKey}", method = RequestMethod.GET,produces = {"application/json;charset=UTF-8"})
         public ListenableFuture<Optional<AttributeKvEntry>> getAttribute(
                 @PathVariable("deviceId") String deviceId, @PathVariable("attributeKey") String attributeKey) throws Exception {
         try {
@@ -49,16 +51,18 @@ public class AttributeController extends BaseController{
                     baseAttributesService.find(toUUID(deviceId), attributeKey);
             return optionalListenableFuture;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value="/removeAllAttributes/{deviceId}/{keys}",method = RequestMethod.DELETE)
+    @RequestMapping(value="/allattributes/{deviceId}/{keys}",method = RequestMethod.DELETE)
     public ListenableFuture<List<Void>> removeAllAttributes(
             @PathVariable("deviceId") String deviceId, @PathVariable("keys") List<String> keys) throws Exception{
         try{
             return baseAttributesService.removeAll(toUUID(deviceId), keys);
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }

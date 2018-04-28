@@ -17,12 +17,16 @@ public class DeviceController extends BaseController {
     public static final String DEVICE_ID = "deviceId";
 
     //对设备的操作
-    @RequestMapping(value = "/createDevice", method = RequestMethod.POST)
+    @RequestMapping(value = "/device", method = RequestMethod.POST)
     public Device saveDevice(Device device) throws Exception {
         try {
+            //将提交表单的形式转为json格式提交
+
+
             Device savedDevice = checkNotNull(deviceService.saveDevice(device));
             return savedDevice;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -35,7 +39,7 @@ public class DeviceController extends BaseController {
         try {
             deviceService.deleteDevice(toUUID(strDeviceId));
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 
@@ -49,13 +53,14 @@ public class DeviceController extends BaseController {
             Device device = deviceService.findDeviceById(toUUID(strDeviceId));
             return device;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value = "/parentDevices/{parentDeviceId}",params = {"limit"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/parentdevices/{parentdeviceId}",params = {"limit"}, method = RequestMethod.GET)
     public List<Device> getDevicesByParentDeviceId(
-            @PathVariable("parentDeviceId") String parentDeviceId,
+            @PathVariable("parentdeviceId") String parentDeviceId,
             @RequestParam int limit,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,
@@ -65,12 +70,13 @@ public class DeviceController extends BaseController {
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDeviceByParentDeviceId(parentDeviceId, pageLink));
         }catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
     //对tenant设备的操作
-    @RequestMapping(value = "/tenantDevices/{tenantId}", params = {"limit"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/tenant/devices/{tenantId}", params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Device> getTenantDevices(
             @PathVariable("tenantId") Integer tenantId,
             @RequestParam int limit,
@@ -82,7 +88,8 @@ public class DeviceController extends BaseController {
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDevicesByTenantId(tenantId, pageLink));
         } catch (Exception e) {
-            throw null;
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -91,7 +98,7 @@ public class DeviceController extends BaseController {
         try {
             deviceService.deleteDevicesByTenantId(tenantId);
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 
@@ -102,13 +109,14 @@ public class DeviceController extends BaseController {
             Optional<Device> optionalDevice = deviceService.findDeviceByTenantIdAndName(tenantId, name);
             return optionalDevice;
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
 
     //customer层面的设备操作
-    @RequestMapping(value="/assignToCustomer/{deviceId}/{customerId}",method = RequestMethod.GET)
+    @RequestMapping(value="/assign/customer/{deviceId}/{customerId}",method = RequestMethod.GET)
     public Device assignDeviceToCustomer(@PathVariable("deviceId") String deviceId,
                                          @PathVariable("customerId")Integer customerId) throws Exception{
 
@@ -116,21 +124,33 @@ public class DeviceController extends BaseController {
             Device device = deviceService.assignDeviceToCustomer(toUUID(deviceId), customerId);
             return device;
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value="unassignFromCustomer/{deviceId}",method = RequestMethod.DELETE)
+    @RequestMapping(value="unassign/customer/{deviceId}",method = RequestMethod.DELETE)
     public Device unassignDeviceFromCustomer(@PathVariable("deviceId")String deviceId) throws Exception{
         try{
             Device device = deviceService.unassignDeviceFromCustomer(toUUID(deviceId));
             return device;
         }catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value = "/customerdevices/{tenantId}/{customerId}", params = {"limit"}, method = RequestMethod.POST)
+    @RequestMapping(value = "unassign/{tenantId}/{customerId}",method = RequestMethod.DELETE)
+    public void unassignCustomerDevices(@PathVariable("tenantId") Integer tenantId,
+                                        @PathVariable("customerId") Integer customerId) throws Exception{
+        try{
+            deviceService.unassignCustomerDevices(tenantId, customerId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping(value = "/customerdevices/{tenantId}/{customerId}", params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Device> getDevicesByTenantIdAndCustomerId(
             @PathVariable("tenantId") Integer tenantId,
             @PathVariable("customerId") Integer customerId,
@@ -143,19 +163,10 @@ public class DeviceController extends BaseController {
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerId(tenantId, customerId, pageLink));
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
-
-    @RequestMapping(value = "unassignCustomerdevices/{tenantId}/{customerId}",method = RequestMethod.DELETE)
-    public void unassignCustomerDevices(@PathVariable("tenantId") Integer tenantId,
-                                        @PathVariable("customerId") Integer customerId) throws Exception{
-        try{
-            deviceService.unassignCustomerDevices(tenantId, customerId);
-        }catch (Exception e){
-            e.getMessage();
-        }
-    }
 
 }

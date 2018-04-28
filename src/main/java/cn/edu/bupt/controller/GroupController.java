@@ -18,7 +18,7 @@ public class GroupController extends BaseController {
     public static final String GROUP_ID = "groupId";
 
     //设备层面的设备组
-    @RequestMapping(value = "/devices/{groupId}",params = {"limit"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/group/devices/{groupId}",params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Device> getDevicesByGroupId(
             @PathVariable(GROUP_ID) String strGroupId,
             @RequestParam int limit,
@@ -32,11 +32,12 @@ public class GroupController extends BaseController {
             TextPageData<Device> devices = deviceService.findDevicesByGroupId(toUUID(strGroupId), pageLink);
             return devices;
         }catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value = "/assign/{groupId}/{deviceId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/assign/group/{groupId}/{deviceId}", method = RequestMethod.GET)
     public void assignDeviceToGroup(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
             deviceService.assignDeviceToGroup(UUID.fromString(groupId),UUID.fromString(deviceId));
@@ -46,7 +47,7 @@ public class GroupController extends BaseController {
     }
 
 
-    @RequestMapping(value = "/unassign/devices/{groupId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/unassign/group/{groupId}", method = RequestMethod.DELETE)
     public void unassignDevicesFromGroup(@PathVariable(GROUP_ID) String groupId) throws Exception{
         try{
             deviceService.unassignDevicesByGroupId(UUID.fromString(groupId));
@@ -56,7 +57,7 @@ public class GroupController extends BaseController {
     }
 
 
-    @RequestMapping(value = "/unassign/{groupId}/{deviceId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/unassign/group/{groupId}/{deviceId}", method = RequestMethod.DELETE)
     public void unassignDeviceByGroupId(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
             deviceService.unassignDeviceFromGroup(UUID.fromString(groupId), UUID.fromString(deviceId));
@@ -67,12 +68,15 @@ public class GroupController extends BaseController {
 
 
     //设备组层面的设备组
-    @RequestMapping(value = "/saveGroup", method = RequestMethod.POST)
+    @RequestMapping(value = "/group", method = RequestMethod.POST)
     public Group saveGroup(Group group) throws Exception{
+
+        //表单转变为json提交
         try {
             Group savedGroup = checkNotNull(groupService.saveGroup(group));
             return savedGroup;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -85,11 +89,11 @@ public class GroupController extends BaseController {
         try{
             groupService.deleteGroup(toUUID(strGroupId));
         }catch (Exception e){
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 
-    @RequestMapping(value = "/tenantGroups/{tenantId}",params = {"limit"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/groups/tenant/{tenantId}",params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Group> getGroupsByTenantId(
             @PathVariable("tenantId") Integer tenantId,
             @RequestParam int limit,
@@ -102,11 +106,12 @@ public class GroupController extends BaseController {
             TextPageData<Group> tenantgroups = groupService.findGroupsByTenantId(tenantId, pageLink);
             return tenantgroups;
         }catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value = "/customerGroups/{customerId}",params = {"limit"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/groups/customer/{customerId}",params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Group> getGroupsByCustomerId(
             @PathVariable("customerId") Integer customerId,
             @RequestParam int limit,
@@ -119,6 +124,7 @@ public class GroupController extends BaseController {
             TextPageData<Group> customergroups = groupService.findGroupsByCustomerId(customerId, pageLink);
             return customergroups;
         }catch(Exception e){
+            e.printStackTrace();
             return null;
         }
     }

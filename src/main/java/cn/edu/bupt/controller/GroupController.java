@@ -5,6 +5,7 @@ import cn.edu.bupt.dao.page.TextPageLink;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.Group;
 import cn.edu.bupt.utils.StringUtil;
+import com.alibaba.fastjson.JSON;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -69,11 +70,12 @@ public class GroupController extends BaseController {
 
     //设备组层面的设备组
     @RequestMapping(value = "/group", method = RequestMethod.POST)
-    public Group saveGroup(Group group) throws Exception{
+    public Group saveGroup(@RequestBody String group) throws Exception{
 
         //表单转变为json提交
         try {
-            Group savedGroup = checkNotNull(groupService.saveGroup(group));
+            Group group1 = JSON.parseObject(group, Group.class);
+            Group savedGroup = checkNotNull(groupService.saveGroup(group1));
             return savedGroup;
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,7 +6,9 @@ import cn.edu.bupt.dao.SearchTextEntity;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
+import com.google.gson.annotations.Expose;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import static cn.edu.bupt.dao.ModelConstants.*;
@@ -15,10 +17,13 @@ import static cn.edu.bupt.dao.ModelConstants.*;
  * Created by Administrator on 2018/4/13.
  */
 @Table(name = DEVICE_COLUMN_FAMILY_NAME)
-public class Device extends SearchTextBased implements SearchTextEntity {
+public class Device extends SearchTextBased implements SearchTextEntity,Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @PartitionKey(value = 0)
     @Column(name = ID_PROPERTY)
+    @Expose
     private UUID id;
 
     @PartitionKey(value = 1)

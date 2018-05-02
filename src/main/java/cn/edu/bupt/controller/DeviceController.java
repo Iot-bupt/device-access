@@ -4,6 +4,7 @@ import cn.edu.bupt.dao.page.TextPageData;
 import cn.edu.bupt.dao.page.TextPageLink;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.utils.StringUtil;
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +20,11 @@ public class DeviceController extends BaseController {
 
     //对设备的操作
     @RequestMapping(value = "/device", method = RequestMethod.POST)
-    public Device saveDevice(String device) throws Exception {
+    public Device saveDevice(@RequestBody String device) throws Exception {
         try {
             //将提交表单的形式转为json格式提交
-            Gson gson = new Gson();
-            Device device1 = gson.fromJson(device, Device.class);
+
+            Device device1 = JSON.parseObject(device, Device.class);
 
             Device savedDevice = checkNotNull(deviceService.saveDevice(device1));
             return savedDevice;

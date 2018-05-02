@@ -31,6 +31,7 @@
         <cassandra.version>3.0.0</cassandra.version>
         <springdata.cassandra.version>2.0.0.RELEASE</springdata.cassandra.version>
         <commons-lang3.version>3.4</commons-lang3.version>
+        <spring-security.version>4.2.0.RELEASE</spring-security.version>
     </properties>
     <!--dependencyManagement部分用于管理依赖，被dependencyManagement配置的元素既不会引入父项目的依赖，-->
     <!--也不会给子项目引入依赖，只是表示该部分是可被继承的，但不直接被引用。如果需要引用dependencyManagement部分内容，-->
@@ -137,6 +138,17 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.47</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${spring-security.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -18,7 +18,8 @@ public class DeviceCredentialController extends BaseController {
             DeviceCredentials deviceCredentials = deviceCredentialsService.createDeviceCredentials(deviceCredentials1);
             return deviceCredentials;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -27,7 +28,8 @@ public class DeviceCredentialController extends BaseController {
         try {
            deviceCredentialsService.deleteDeviceCredentials(credentials);
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return ;
         }
     }
 
@@ -38,7 +40,8 @@ public class DeviceCredentialController extends BaseController {
             DeviceCredentials deviceCredentials = deviceCredentialsService.updateDeviceCredentials(credentials);
             return deviceCredentials;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -48,7 +51,8 @@ public class DeviceCredentialController extends BaseController {
             DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByDeviceId(toUUID(deviceId));
             return deviceCredentials;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -58,7 +62,8 @@ public class DeviceCredentialController extends BaseController {
             DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByToken(token);
             return deviceCredentials;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 

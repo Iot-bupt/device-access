@@ -24,18 +24,21 @@ public class TelemetryController extends BaseController {
             ListenableFuture<List<TsKvEntry>> listListenableFuture = baseTimeseriesService.findAll(toUUID(deviceId),queries);
             return listListenableFuture;
         }catch (Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
     @RequestMapping(value = "/alllatestdata/{deviceId}", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
-    public ListenableFuture<List<TsKvEntry>> getlatestData(@PathVariable("deviceId") String deviceId)
+    public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId)
     throws DeviceAccessException{
         try{
             ListenableFuture<List<TsKvEntry>> tskventry = baseTimeseriesService.findAllLatest(toUUID(deviceId));
-            return tskventry;
+            List<TsKvEntry> ls = tskventry.get();
+            return ls;
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -48,7 +51,8 @@ public class TelemetryController extends BaseController {
             ListenableFuture<List<TsKvEntry>> tskventry = baseTimeseriesService.findLatest(toUUID(deviceId), keys);
             return tskventry;
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 

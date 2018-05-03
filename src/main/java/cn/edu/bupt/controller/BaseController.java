@@ -1,19 +1,10 @@
 package cn.edu.bupt.controller;
 
 import cn.edu.bupt.actor.service.DefaultActorService;
-import cn.edu.bupt.dao.exception.DataValidationException;
-import cn.edu.bupt.dao.exception.IncorrectParameterException;
-import cn.edu.bupt.dao.page.TextPageLink;
-import cn.edu.bupt.exception.DeviceAccessErrorCode;
-import cn.edu.bupt.exception.DeviceAccessErrorResponseHandler;
-import cn.edu.bupt.exception.DeviceAccessException;
 import cn.edu.bupt.service.*;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 public class BaseController {
@@ -36,37 +27,39 @@ public class BaseController {
     @Autowired
     DeviceCredentialsService deviceCredentialsService;
 
-    @Autowired
-    private DeviceAccessErrorResponseHandler errorResponseHandler;
+//    @Autowired
+//    private DeviceAccessErrorResponseHandler errorResponseHandler;
 
-    @ExceptionHandler(DeviceAccessException.class)
-    public void handleThingsboardException(DeviceAccessException ex, HttpServletResponse response) {
-        errorResponseHandler.handle(ex, response);
-    }
+//    @ExceptionHandler(DeviceAccessException.class)
+//    public void handleThingsboardException(DeviceAccessException ex, HttpServletResponse response) {
+//        errorResponseHandler.handle(ex, response);
+//    }
 
-    DeviceAccessException handleException(Exception exception) {
-        return handleException(exception, true);
-    }
-
-    private DeviceAccessException handleException(Exception exception, boolean logException) {
-        if (logException) {
-            System.err.println(exception.getMessage());
-        }
-
-        String cause = "";
-        if (exception.getCause() != null) {
-            cause = exception.getCause().getClass().getCanonicalName();
-        }
-
-        if (exception instanceof DeviceAccessException) {
-            return (DeviceAccessException) exception;
-        } else if (exception instanceof IllegalArgumentException || exception instanceof IncorrectParameterException
-                || exception instanceof DataValidationException || cause.contains("IncorrectParameterException")) {
-            return new DeviceAccessException(exception.getMessage(), DeviceAccessErrorCode.BAD_REQUEST_PARAMS);
-        }  else {
-            return new DeviceAccessException(exception.getMessage(), DeviceAccessErrorCode.GENERAL);
-        }
-    }
+//    DeviceAccessException handleException(Exception exception) {
+//        return handleException(exception, true);
+//    }
+//
+//    private DeviceAccessException handleException(Exception exception, boolean logException) {
+//        if (logException) {
+//            System.err.println(exception.getMessage());
+//        }
+//
+//        String cause = "";
+//        if (exception.getCause() != null) {
+//            cause = exception.getCause().getClass().getCanonicalName();
+//        }
+//
+//        if (exception instanceof DeviceAccessException) {
+//            return (DeviceAccessException) exception;
+//        } else if (exception instanceof IllegalArgumentException || exception instanceof IncorrectParameterException
+//                || exception instanceof DataValidationException || cause.contains("IncorrectParameterException")) {
+//            return new DeviceAccessException(exception.getMessage(), DeviceAccessErrorCode.BAD_REQUEST_PARAMS);
+//        } else if (exception instanceof MessagingException) {
+//            return new DeviceAccessException("Unable to send mail: " + exception.getMessage(), DeviceAccessErrorCode.GENERAL);
+//        } else {
+//            return new DeviceAccessException(exception.getMessage(), DeviceAccessErrorCode.GENERAL);
+//        }
+//    }
 
 
     UUID toUUID(String id) {

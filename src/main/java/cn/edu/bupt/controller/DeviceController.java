@@ -21,7 +21,7 @@ public class DeviceController extends BaseController {
 
     //对设备的操作
     @RequestMapping(value = "/device", method = RequestMethod.POST)
-    public Device saveDevice(@RequestBody String device) throws DeviceAccessException {
+    public Device saveDevice(@RequestBody String device)  {
         try {
             //将提交表单的形式转为json格式提交
 
@@ -30,19 +30,21 @@ public class DeviceController extends BaseController {
             Device savedDevice = checkNotNull(deviceService.saveDevice(device1));
             return savedDevice;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.DELETE)
     public void deleteDevice(@PathVariable(DEVICE_ID) String strDeviceId) throws DeviceAccessException {
         if (StringUtil.isEmpty(strDeviceId)) {
-            throw handleException(new Exception("can't be empty"));
+            return ;
         }
         try {
             deviceService.deleteDevice(toUUID(strDeviceId));
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return ;
         }
     }
 
@@ -50,13 +52,15 @@ public class DeviceController extends BaseController {
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.GET)
     public Device getDeviceById(@PathVariable(DEVICE_ID) String strDeviceId) throws DeviceAccessException {
         if (StringUtil.isEmpty(strDeviceId)) {
-            throw handleException(new Exception("can't be empty"));
+//            throw handleException(new Exception("can't be empty"));
+            return null ;
         }
         try {
             Device device = deviceService.findDeviceById(toUUID(strDeviceId));
             return device;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -72,7 +76,8 @@ public class DeviceController extends BaseController {
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDeviceByParentDeviceId(parentDeviceId, pageLink));
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -89,7 +94,8 @@ public class DeviceController extends BaseController {
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDevicesByTenantId(tenantId, pageLink));
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -98,7 +104,8 @@ public class DeviceController extends BaseController {
         try {
             deviceService.deleteDevicesByTenantId(tenantId);
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return ;
         }
     }
 
@@ -109,7 +116,8 @@ public class DeviceController extends BaseController {
             Optional<Device> optionalDevice = deviceService.findDeviceByTenantIdAndName(tenantId, name);
             return optionalDevice;
         }catch (Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -123,7 +131,8 @@ public class DeviceController extends BaseController {
             Device device = deviceService.assignDeviceToCustomer(toUUID(deviceId), customerId);
             return device;
         }catch (Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -133,7 +142,8 @@ public class DeviceController extends BaseController {
             Device device = deviceService.unassignDeviceFromCustomer(toUUID(deviceId));
             return device;
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -143,7 +153,8 @@ public class DeviceController extends BaseController {
         try{
             deviceService.unassignCustomerDevices(tenantId, customerId);
         }catch (Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return ;
         }
     }
 
@@ -160,7 +171,8 @@ public class DeviceController extends BaseController {
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerId(tenantId, customerId, pageLink));
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 

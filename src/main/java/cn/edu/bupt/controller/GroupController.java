@@ -31,14 +31,16 @@ public class GroupController extends BaseController {
         try {
             checkParameter("groupId", strGroupId);
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
         try{
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             TextPageData<Device> devices = deviceService.findDevicesByGroupId(toUUID(strGroupId), pageLink);
             return devices;
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -47,7 +49,8 @@ public class GroupController extends BaseController {
         try{
             deviceService.assignDeviceToGroup(UUID.fromString(groupId),UUID.fromString(deviceId));
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return ;
         }
     }
 
@@ -57,7 +60,8 @@ public class GroupController extends BaseController {
         try{
             deviceService.unassignDevicesByGroupId(UUID.fromString(groupId));
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return ;
         }
     }
 
@@ -67,7 +71,8 @@ public class GroupController extends BaseController {
         try{
             deviceService.unassignDeviceFromGroup(UUID.fromString(groupId), UUID.fromString(deviceId));
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return ;
         }
     }
 
@@ -82,19 +87,21 @@ public class GroupController extends BaseController {
             Group savedGroup = checkNotNull(groupService.saveGroup(group1));
             return savedGroup;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
     @RequestMapping(value = "/group/{groupId}", method = RequestMethod.DELETE)
     public void deleteGroup(@PathVariable(GROUP_ID) String strGroupId) throws DeviceAccessException{
         if(StringUtil.isEmpty(strGroupId)){
-            throw handleException(new Exception("can't be empty"));
+          return ;
         }
         try{
             groupService.deleteGroup(toUUID(strGroupId));
         }catch (Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return ;
         }
     }
 
@@ -111,7 +118,8 @@ public class GroupController extends BaseController {
             TextPageData<Group> tenantgroups = groupService.findGroupsByTenantId(tenantId, pageLink);
             return tenantgroups;
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -128,7 +136,8 @@ public class GroupController extends BaseController {
             TextPageData<Group> customergroups = groupService.findGroupsByCustomerId(customerId, pageLink);
             return customergroups;
         }catch(Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 

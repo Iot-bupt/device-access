@@ -26,7 +26,8 @@ public class AttributeController extends BaseController{
             ListenableFuture<List<AttributeKvEntry>> attributeKvEntry = baseAttributesService.findAll(toUUID(deviceId));
             return attributeKvEntry;
         }catch (Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -38,7 +39,8 @@ public class AttributeController extends BaseController{
                     baseAttributesService.find(toUUID(deviceId), attributeKeys);
             return listListenableFuture;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -50,7 +52,8 @@ public class AttributeController extends BaseController{
                     baseAttributesService.find(toUUID(deviceId), attributeKey);
             return optionalListenableFuture;
         } catch (Exception e) {
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -60,7 +63,8 @@ public class AttributeController extends BaseController{
         try{
             return baseAttributesService.removeAll(toUUID(deviceId), keys);
         }catch (Exception e){
-            throw handleException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 

@@ -21,10 +21,11 @@ import java.util.UUID;
 public class AttributeController extends BaseController{
 
     @RequestMapping(value="/allattributes/{deviceId}", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
-    public ListenableFuture<List<AttributeKvEntry>> getAllAttributes(@PathVariable("deviceId") String deviceId) throws DeviceAccessException {
+    public List<AttributeKvEntry> getAllAttributes(@PathVariable("deviceId") String deviceId) throws Exception {
         try{
             ListenableFuture<List<AttributeKvEntry>> attributeKvEntry = baseAttributesService.findAll(toUUID(deviceId));
-            return attributeKvEntry;
+            List<AttributeKvEntry> ls = attributeKvEntry.get();
+            return ls;
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -32,12 +33,13 @@ public class AttributeController extends BaseController{
     }
 
     @RequestMapping(value="/attributes/{deviceId}/{attributeKeys}", method = RequestMethod.GET,produces = {"application/json;charset=UTF-8"})
-    public ListenableFuture<List<AttributeKvEntry>> getAttribute(
-            @PathVariable("deviceId") String deviceId, @PathVariable("attributeKeys") Collection<String> attributeKeys) throws DeviceAccessException {
+    public List<AttributeKvEntry> getAttribute(
+            @PathVariable("deviceId") String deviceId, @PathVariable("attributeKeys") Collection<String> attributeKeys) throws Exception {
         try {
             ListenableFuture<List<AttributeKvEntry>> listListenableFuture =
                     baseAttributesService.find(toUUID(deviceId), attributeKeys);
-            return listListenableFuture;
+            List<AttributeKvEntry> ls = listListenableFuture.get();
+            return ls;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -45,12 +47,13 @@ public class AttributeController extends BaseController{
     }
 
     @RequestMapping(value="/attribute/{deviceId}/{attributeKey}", method = RequestMethod.GET,produces = {"application/json;charset=UTF-8"})
-        public ListenableFuture<Optional<AttributeKvEntry>> getAttribute(
-                @PathVariable("deviceId") String deviceId, @PathVariable("attributeKey") String attributeKey) throws DeviceAccessException {
+        public Optional<AttributeKvEntry> getAttribute(
+                @PathVariable("deviceId") String deviceId, @PathVariable("attributeKey") String attributeKey) throws Exception {
         try {
             ListenableFuture<Optional<AttributeKvEntry>> optionalListenableFuture =
                     baseAttributesService.find(toUUID(deviceId), attributeKey);
-            return optionalListenableFuture;
+            Optional<AttributeKvEntry> ls = optionalListenableFuture.get();
+            return ls;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -58,13 +61,12 @@ public class AttributeController extends BaseController{
     }
 
     @RequestMapping(value="/allattributes/{deviceId}/{keys}",method = RequestMethod.DELETE)
-    public ListenableFuture<List<Void>> removeAllAttributes(
-            @PathVariable("deviceId") String deviceId, @PathVariable("keys") List<String> keys) throws DeviceAccessException{
+    public void removeAllAttributes(
+            @PathVariable("deviceId") String deviceId, @PathVariable("keys") List<String> keys) throws Exception{
         try{
-            return baseAttributesService.removeAll(toUUID(deviceId), keys);
+            baseAttributesService.removeAll(toUUID(deviceId), keys);
         }catch (Exception e){
             e.printStackTrace();
-            return null;
         }
     }
 

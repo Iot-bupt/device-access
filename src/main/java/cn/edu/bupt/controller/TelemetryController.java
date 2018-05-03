@@ -18,20 +18,21 @@ import java.util.List;
 public class TelemetryController extends BaseController {
 
     @RequestMapping(value="alldata/{deviceId}/{queries}",method = RequestMethod.GET)
-    public ListenableFuture<List<TsKvEntry>> getAllData(@PathVariable("deviceId") String deviceId,
-                                                        @PathVariable("queries") List<TsKvQuery> queries) throws DeviceAccessException {
+    public List<TsKvEntry> getAllData(@PathVariable("deviceId") String deviceId,
+                                                        @PathVariable("queries") List<TsKvQuery> queries) throws Exception {
         try{
             ListenableFuture<List<TsKvEntry>> listListenableFuture = baseTimeseriesService.findAll(toUUID(deviceId),queries);
-            return listListenableFuture;
+            List<TsKvEntry> ls = listListenableFuture.get();
+            return ls;
         }catch (Exception e){
             e.printStackTrace();
             return null;
         }
     }
 
-    @RequestMapping(value = "/alllatestdata/{deviceId}", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
+    @RequestMapping(value = "/alllatestdata/{deviceId}", method = RequestMethod.GET)
     public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId)
-    throws DeviceAccessException{
+    throws Exception{
         try{
             ListenableFuture<List<TsKvEntry>> tskventry = baseTimeseriesService.findAllLatest(toUUID(deviceId));
             List<TsKvEntry> ls = tskventry.get();
@@ -43,13 +44,14 @@ public class TelemetryController extends BaseController {
     }
 
 
-    @RequestMapping(value = "/latestdata/{deviceId}/{keys}", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
-    public ListenableFuture<List<TsKvEntry>> getlatestData(@PathVariable("deviceId") String deviceId
+    @RequestMapping(value = "/latestdata/{deviceId}/{keys}", method = RequestMethod.GET)
+    public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId
     ,@PathVariable("keys") Collection<String> keys)
-            throws DeviceAccessException{
+            throws Exception{
         try{
             ListenableFuture<List<TsKvEntry>> tskventry = baseTimeseriesService.findLatest(toUUID(deviceId), keys);
-            return tskventry;
+            List<TsKvEntry> ls = tskventry.get();
+            return ls;
         }catch(Exception e){
             e.printStackTrace();
             return null;

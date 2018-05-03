@@ -8,7 +8,6 @@ import cn.edu.bupt.exception.DeviceAccessErrorCode;
 import cn.edu.bupt.exception.DeviceAccessErrorResponseHandler;
 import cn.edu.bupt.exception.DeviceAccessException;
 import cn.edu.bupt.service.*;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +63,7 @@ public class BaseController {
         } else if (exception instanceof IllegalArgumentException || exception instanceof IncorrectParameterException
                 || exception instanceof DataValidationException || cause.contains("IncorrectParameterException")) {
             return new DeviceAccessException(exception.getMessage(), DeviceAccessErrorCode.BAD_REQUEST_PARAMS);
-        } else if (exception instanceof MessagingException) {
-            return new DeviceAccessException("Unable to send mail: " + exception.getMessage(), DeviceAccessErrorCode.GENERAL);
-        } else {
+        }  else {
             return new DeviceAccessException(exception.getMessage(), DeviceAccessErrorCode.GENERAL);
         }
     }

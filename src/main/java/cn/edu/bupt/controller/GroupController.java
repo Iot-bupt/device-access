@@ -2,7 +2,6 @@ package cn.edu.bupt.controller;
 
 import cn.edu.bupt.dao.page.TextPageData;
 import cn.edu.bupt.dao.page.TextPageLink;
-import cn.edu.bupt.exception.DeviceAccessException;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.Group;
 import cn.edu.bupt.utils.StringUtil;
@@ -27,7 +26,7 @@ public class GroupController extends BaseController {
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,
             @RequestParam(required = false) String idOffset,
-            @RequestParam(required = false) String textOffset) throws DeviceAccessException {
+            @RequestParam(required = false) String textOffset) throws Exception {
         try {
             checkParameter("groupId", strGroupId);
         } catch (Exception e) {
@@ -45,7 +44,7 @@ public class GroupController extends BaseController {
     }
 
     @RequestMapping(value = "/assign/group/{groupId}/{deviceId}", method = RequestMethod.GET)
-    public void assignDeviceToGroup(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws DeviceAccessException{
+    public void assignDeviceToGroup(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
             deviceService.assignDeviceToGroup(UUID.fromString(groupId),UUID.fromString(deviceId));
         }catch(Exception e){
@@ -56,7 +55,7 @@ public class GroupController extends BaseController {
 
 
     @RequestMapping(value = "/unassign/group/{groupId}", method = RequestMethod.DELETE)
-    public void unassignDevicesFromGroup(@PathVariable(GROUP_ID) String groupId) throws DeviceAccessException{
+    public void unassignDevicesFromGroup(@PathVariable(GROUP_ID) String groupId) throws Exception{
         try{
             deviceService.unassignDevicesByGroupId(UUID.fromString(groupId));
         }catch(Exception e){
@@ -67,7 +66,7 @@ public class GroupController extends BaseController {
 
 
     @RequestMapping(value = "/unassign/group/{groupId}/{deviceId}", method = RequestMethod.DELETE)
-    public void unassignDeviceByGroupId(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws DeviceAccessException{
+    public void unassignDeviceByGroupId(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
             deviceService.unassignDeviceFromGroup(UUID.fromString(groupId), UUID.fromString(deviceId));
         }catch(Exception e){
@@ -79,7 +78,7 @@ public class GroupController extends BaseController {
 
     //设备组层面的设备组
     @RequestMapping(value = "/group", method = RequestMethod.POST)
-    public Group saveGroup(@RequestBody String group) throws DeviceAccessException{
+    public Group saveGroup(@RequestBody String group) throws Exception{
 
         //表单转变为json提交
         try {
@@ -93,7 +92,7 @@ public class GroupController extends BaseController {
     }
 
     @RequestMapping(value = "/group/{groupId}", method = RequestMethod.DELETE)
-    public void deleteGroup(@PathVariable(GROUP_ID) String strGroupId) throws DeviceAccessException{
+    public void deleteGroup(@PathVariable(GROUP_ID) String strGroupId) throws Exception{
         if(StringUtil.isEmpty(strGroupId)){
           return ;
         }
@@ -112,7 +111,7 @@ public class GroupController extends BaseController {
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,
             @RequestParam(required = false) String idOffset,
-            @RequestParam(required = false) String textOffset) throws DeviceAccessException{
+            @RequestParam(required = false) String textOffset) throws Exception{
         try{
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             TextPageData<Group> tenantgroups = groupService.findGroupsByTenantId(tenantId, pageLink);
@@ -130,7 +129,7 @@ public class GroupController extends BaseController {
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String textSearch,
             @RequestParam(required = false) String idOffset,
-            @RequestParam(required = false) String textOffset) throws DeviceAccessException{
+            @RequestParam(required = false) String textOffset) throws Exception{
         try{
             TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
             TextPageData<Group> customergroups = groupService.findGroupsByCustomerId(customerId, pageLink);

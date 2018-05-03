@@ -27,39 +27,6 @@ public class BaseController {
     @Autowired
     DeviceCredentialsService deviceCredentialsService;
 
-//    @Autowired
-//    private DeviceAccessErrorResponseHandler errorResponseHandler;
-
-//    @ExceptionHandler(DeviceAccessException.class)
-//    public void handleThingsboardException(DeviceAccessException ex, HttpServletResponse response) {
-//        errorResponseHandler.handle(ex, response);
-//    }
-
-//    DeviceAccessException handleException(Exception exception) {
-//        return handleException(exception, true);
-//    }
-//
-//    private DeviceAccessException handleException(Exception exception, boolean logException) {
-//        if (logException) {
-//            System.err.println(exception.getMessage());
-//        }
-//
-//        String cause = "";
-//        if (exception.getCause() != null) {
-//            cause = exception.getCause().getClass().getCanonicalName();
-//        }
-//
-//        if (exception instanceof DeviceAccessException) {
-//            return (DeviceAccessException) exception;
-//        } else if (exception instanceof IllegalArgumentException || exception instanceof IncorrectParameterException
-//                || exception instanceof DataValidationException || cause.contains("IncorrectParameterException")) {
-//            return new DeviceAccessException(exception.getMessage(), DeviceAccessErrorCode.BAD_REQUEST_PARAMS);
-//        } else if (exception instanceof MessagingException) {
-//            return new DeviceAccessException("Unable to send mail: " + exception.getMessage(), DeviceAccessErrorCode.GENERAL);
-//        } else {
-//            return new DeviceAccessException(exception.getMessage(), DeviceAccessErrorCode.GENERAL);
-//        }
-//    }
 
 
     UUID toUUID(String id) {

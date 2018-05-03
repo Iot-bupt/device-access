@@ -1,6 +1,5 @@
 package cn.edu.bupt.controller;
 
-import cn.edu.bupt.exception.DeviceAccessException;
 import cn.edu.bupt.pojo.DeviceCredentials;
 import com.alibaba.fastjson.JSON;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class DeviceCredentialController extends BaseController {
 
     @RequestMapping(value = "/credential",method = RequestMethod.POST)
-    public DeviceCredentials create(@RequestBody String credentials) throws DeviceAccessException {
+    public DeviceCredentials create(@RequestBody String credentials) throws Exception {
         //提交表单转变为json
 
         try {
@@ -24,7 +23,7 @@ public class DeviceCredentialController extends BaseController {
     }
 
     @RequestMapping(value = "/credential/{credential}",method = RequestMethod.DELETE)
-    public void delete(@PathVariable("credential") DeviceCredentials credentials) throws DeviceAccessException {
+    public void delete(@PathVariable("credential") DeviceCredentials credentials) throws Exception {
         try {
            deviceCredentialsService.deleteDeviceCredentials(credentials);
         } catch (Exception e) {
@@ -35,7 +34,7 @@ public class DeviceCredentialController extends BaseController {
 
 
     @RequestMapping(value = "/credential/{credential}",method = RequestMethod.PUT)
-    public DeviceCredentials update(@PathVariable("credential") DeviceCredentials credentials) throws DeviceAccessException {
+    public DeviceCredentials update(@PathVariable("credential") DeviceCredentials credentials) throws Exception {
         try {
             DeviceCredentials deviceCredentials = deviceCredentialsService.updateDeviceCredentials(credentials);
             return deviceCredentials;
@@ -46,7 +45,7 @@ public class DeviceCredentialController extends BaseController {
     }
 
     @RequestMapping(value = "/credentialbyid/{deviceId}",method = RequestMethod.GET)
-    public DeviceCredentials getById(@PathVariable("deviceId") String deviceId) throws DeviceAccessException {
+    public DeviceCredentials getById(@PathVariable("deviceId") String deviceId) throws Exception {
         try {
             DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByDeviceId(toUUID(deviceId));
             return deviceCredentials;
@@ -57,7 +56,7 @@ public class DeviceCredentialController extends BaseController {
     }
 
     @RequestMapping(value = "/crednetialbytoken/{token}",method = RequestMethod.GET)
-    public DeviceCredentials getByToken(@PathVariable("token") String token) throws DeviceAccessException {
+    public DeviceCredentials getByToken(@PathVariable("token") String token) throws Exception {
         try {
             DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByToken(token);
             return deviceCredentials;

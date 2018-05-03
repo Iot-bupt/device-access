@@ -1,7 +1,6 @@
 package cn.edu.bupt.controller;
 
 
-import cn.edu.bupt.exception.DeviceAccessException;
 import cn.edu.bupt.pojo.kv.TsKvEntry;
 import cn.edu.bupt.pojo.kv.TsKvQuery;
 import com.google.common.util.concurrent.ListenableFuture;

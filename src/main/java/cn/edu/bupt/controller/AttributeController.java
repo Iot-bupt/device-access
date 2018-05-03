@@ -1,20 +1,20 @@
 package cn.edu.bupt.controller;
 
 
-import cn.edu.bupt.exception.DeviceAccessException;
+
 import cn.edu.bupt.pojo.kv.AttributeKvEntry;
-import cn.edu.bupt.service.BaseAttributesService;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.management.Attribute;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/v1")

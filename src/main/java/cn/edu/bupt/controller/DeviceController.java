@@ -90,8 +90,9 @@ public class DeviceController extends BaseController {
             @RequestParam(required = false) String idOffset,
             @RequestParam(required = false) String textOffset) throws Exception {
         try {
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
-            return checkNotNull(deviceService.findDevicesByTenantId(tenantId, pageLink));
+            TextPageLink pageLink = new TextPageLink(limit, textSearch,idOffset==null?null:toUUID(idOffset), textOffset);
+            TextPageData<Device> ls = deviceService.findDevicesByTenantId(tenantId, pageLink);
+            return ls;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

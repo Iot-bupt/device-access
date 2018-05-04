@@ -18,7 +18,7 @@ public class TelemetryController extends BaseController {
 
     @RequestMapping(value="alldata/{deviceId}/{queries}",method = RequestMethod.GET)
     public List<TsKvEntry> getAllData(@PathVariable("deviceId") String deviceId,
-                                                        @PathVariable("queries") List<TsKvQuery> queries) throws Exception {
+                                      @PathVariable("queries") List<TsKvQuery> queries) throws Exception {
         try{
             ListenableFuture<List<TsKvEntry>> listListenableFuture = baseTimeseriesService.findAll(toUUID(deviceId),queries);
             List<TsKvEntry> ls = listListenableFuture.get();

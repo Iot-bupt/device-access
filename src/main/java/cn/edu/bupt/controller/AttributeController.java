@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("/api/v1")
 public class AttributeController extends BaseController{
 
-    @RequestMapping(value="/allattributes/{deviceId}", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
+    @RequestMapping(value="/allattributes/{deviceId}", method = RequestMethod.GET)
     public List<AttributeKvEntry> getAllAttributes(@PathVariable("deviceId") String deviceId) throws Exception {
         try{
             ListenableFuture<List<AttributeKvEntry>> attributeKvEntry = baseAttributesService.findAll(toUUID(deviceId));
@@ -32,7 +32,7 @@ public class AttributeController extends BaseController{
         }
     }
 
-    @RequestMapping(value="/attributes/{deviceId}/{attributeKeys}", method = RequestMethod.GET,produces = {"application/json;charset=UTF-8"})
+    @RequestMapping(value="/attributes/{deviceId}/{attributeKeys}", method = RequestMethod.GET)
     public List<AttributeKvEntry> getAttribute(
             @PathVariable("deviceId") String deviceId, @PathVariable("attributeKeys") Collection<String> attributeKeys) throws Exception {
         try {
@@ -46,7 +46,7 @@ public class AttributeController extends BaseController{
         }
     }
 
-    @RequestMapping(value="/attribute/{deviceId}/{attributeKey}", method = RequestMethod.GET,produces = {"application/json;charset=UTF-8"})
+    @RequestMapping(value="/attribute/{deviceId}/{attributeKey}", method = RequestMethod.GET)
         public Optional<AttributeKvEntry> getAttribute(
                 @PathVariable("deviceId") String deviceId, @PathVariable("attributeKey") String attributeKey) throws Exception {
         try {

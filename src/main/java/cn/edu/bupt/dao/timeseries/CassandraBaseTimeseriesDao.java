@@ -149,7 +149,6 @@ public class CassandraBaseTimeseriesDao extends CassandraAbstractAsyncDao implem
 
     private void findAllAsyncSequentiallyWithLimit(final TsKvQueryCursor cursor, final SimpleListenableFuture<List<TsKvEntry>> resultFuture) {
         if (cursor.isFull() || !cursor.hasNextPartition()) {
-            List<TsKvEntry> tsKvEntries = cursor.getData();
             resultFuture.set(cursor.getData());
         } else {
             PreparedStatement proto = getFetchStmt(Aggregation.NONE);

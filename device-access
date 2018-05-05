@@ -116,7 +116,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS bupt_iot.group_by_device_id AS
     PRIMARY KEY ( device_id, group_id)
     WITH CLUSTERING ORDER BY ( device_id ASC, group DESC );
 
-	CREATE TABLE IF NOT EXISTS BUPT_IOT.ts_kv_cf (
+CREATE TABLE IF NOT EXISTS BUPT_IOT.ts_kv_cf (
     entity_id timeuuid,
     key text,
     partition bigint,
@@ -145,4 +145,15 @@ CREATE TABLE IF NOT EXISTS BUPT_IOT.ts_kv_latest_cf (
     long_v bigint,
     dbl_v double,
     PRIMARY KEY (entity_id , key)
+) WITH compaction = { 'class' :  'LeveledCompactionStrategy'  };
+
+CREATE TABLE IF NOT EXISTS BUPT_IOT.attributes_kv_cf (
+    entity_id timeuuid,
+    attribute_key text,
+    bool_v boolean,
+    str_v text,
+    long_v bigint,
+    dbl_v double,
+    last_update_ts bigint,
+    PRIMARY KEY (entity_id,attribute_key)
 ) WITH compaction = { 'class' :  'LeveledCompactionStrategy'  };

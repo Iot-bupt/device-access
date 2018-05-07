@@ -34,7 +34,7 @@ public class GroupController extends BaseController {
             return null;
         }
         try{
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset==null?null:toUUID(idOffset), textOffset);
             TextPageData<Device> devices = deviceService.findDevicesByGroupId(toUUID(strGroupId), pageLink);
             return devices;
         }catch(Exception e){
@@ -113,7 +113,7 @@ public class GroupController extends BaseController {
             @RequestParam(required = false) String idOffset,
             @RequestParam(required = false) String textOffset) throws Exception{
         try{
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset==null?null:toUUID(idOffset), textOffset);
             TextPageData<Group> tenantgroups = groupService.findGroupsByTenantId(tenantId, pageLink);
             return tenantgroups;
         }catch(Exception e){
@@ -131,7 +131,7 @@ public class GroupController extends BaseController {
             @RequestParam(required = false) String idOffset,
             @RequestParam(required = false) String textOffset) throws Exception{
         try{
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset==null?null:toUUID(idOffset), textOffset);
             TextPageData<Group> customergroups = groupService.findGroupsByCustomerId(customerId, pageLink);
             return customergroups;
         }catch(Exception e){

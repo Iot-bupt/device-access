@@ -15,38 +15,23 @@
  */
 package cn.edu.bupt.dao.page;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 public abstract class BasePageLink implements Serializable {
 
     private static final long serialVersionUID = -4189954843653250481L;
 
-    protected final int limit;
+    @Getter protected final int limit;
 
+    @Getter @Setter
     protected UUID idOffset;
 
-    public BasePageLink(int limit, UUID idOffset) {
-        this.limit = limit;
-        this.idOffset = idOffset;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public UUID getIdOffset() {
-        return idOffset;
-    }
-
-    public void setIdOffset(UUID idOffset) {
-        this.idOffset = idOffset;
-    }
 }

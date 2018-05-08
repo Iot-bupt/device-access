@@ -23,7 +23,7 @@ public abstract class CassandraAbstractSearchTextDao<E extends SearchTextEntity>
         if (entity.getSearchTextSource() != null) {
             entity.setSearchText(entity.getSearchTextSource().toLowerCase());
         } else {
-            //log.trace("Entity [{}] has null SearchTextSource", entity);
+            log.trace("Entity [{}] has null SearchTextSource", entity);
         }
         return entity;
     }

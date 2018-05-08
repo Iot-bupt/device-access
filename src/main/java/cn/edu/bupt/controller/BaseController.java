@@ -30,7 +30,11 @@ public class BaseController {
 
 
     UUID toUUID(String id) {
-        return UUID.fromString(id);
+        if(id==null) {
+            return null;
+        }else {
+            return UUID.fromString(id);
+        }
     }
 
 

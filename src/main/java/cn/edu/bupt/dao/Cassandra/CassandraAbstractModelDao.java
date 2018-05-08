@@ -92,7 +92,8 @@ public abstract class CassandraAbstractModelDao<E extends BaseEntity> extends Ca
 //        } catch (Exception e) {
 //            throw new IllegalArgumentException("Can't create entity for domain object {" + domain + "}", e);
 //        }
-        entity = saveWithResult(domain);
+        entity = updateSearchTextIfPresent(domain);
+        entity = saveWithResult(entity);
         return entity;
     }
 

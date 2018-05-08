@@ -72,7 +72,7 @@ public class DeviceController extends BaseController {
             @RequestParam(required = false) String idOffset,
             @RequestParam(required = false) String textOffset) throws Exception{
         try{
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset==null?null:toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDeviceByParentDeviceId(parentDeviceId, pageLink));
         }catch(Exception e){
             e.printStackTrace();
@@ -168,7 +168,7 @@ public class DeviceController extends BaseController {
             @RequestParam(required = false) String idOffset,
             @RequestParam(required = false) String textOffset) throws Exception {
         try {
-            TextPageLink pageLink = new TextPageLink(limit, textSearch, toUUID(idOffset), textOffset);
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset==null?null:toUUID(idOffset), textOffset);
             return checkNotNull(deviceService.findDevicesByTenantIdAndCustomerId(tenantId, customerId, pageLink));
         } catch (Exception e) {
             e.printStackTrace();

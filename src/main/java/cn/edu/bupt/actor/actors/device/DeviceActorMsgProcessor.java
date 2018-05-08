@@ -78,6 +78,9 @@ public class DeviceActorMsgProcessor {
             int requestId = msg1.getRpcRequestId();
             if(msg1.requireResponse()){
                 rpcRequests.put(requestId,msg1.getRes());
+                msg1.getRes().onTimeout(()->{
+                    rpcRequests.remove(requestId);
+                });
                 subscriptions.forEach(sessionId->{
                     actorSystemContext.getSessionManagerActor().tell(
                             new BasicFromDeviceActorRpc(sessionId,msg1.getDevice(),msg1),
@@ -128,6 +131,7 @@ public class DeviceActorMsgProcessor {
         JsonObject obj =  new JsonObject();
         obj.addProperty("deviceId",device.getId().toString());
         obj.addProperty("tenantId",device.getTenantId());
+        obj.addProperty("deviceType",device.getDeviceType());
         JsonArray array = new JsonArray();
         for(Map.Entry<Long,List<cn.edu.bupt.common.entry.KvEntry>> entry:data.entrySet()){
             JsonObject temp = new JsonObject();

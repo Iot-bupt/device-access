@@ -62,7 +62,7 @@ spring:
     password: root
 
 account:
-  host: 127.0.0.1
+  host: 10.112.233.200
   port: 8081
 #  url需修改
   check_url: http://${account.host}:${account.port}/oauth/check_token

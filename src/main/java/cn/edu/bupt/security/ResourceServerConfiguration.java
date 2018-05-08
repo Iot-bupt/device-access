@@ -25,7 +25,7 @@
 //                .and()
 //                .requestMatchers().anyRequest()
 //                .and()
-//                .anonymous();
+//                .anonymous()
 //                .and()
 //                .authorizeRequests()
 //                .antMatchers("/api/v1/group/devices/*").permitAll()

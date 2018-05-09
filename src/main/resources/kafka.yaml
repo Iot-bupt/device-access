@@ -3,7 +3,7 @@ producer:
     producerConfigDemo:
         !!com.bupt.kafka.enity.ProducerProperties
         bootstrapServers: 10.112.233.200:9092
-        topic: test
+        topic: deviceData
         acks: 1
         retries: 0
         batchSize: 16384

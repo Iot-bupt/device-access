@@ -70,7 +70,7 @@ public class MqttTransportService {
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new MqttTransportServerInitializer(processor, deviceService, deviceAuthService,adaptor));
 
-        serverChannel = b.bind(host, port).sync().channel();
+        serverChannel = b.bind(port).sync().channel();
     }
 
     @PreDestroy

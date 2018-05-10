@@ -46,7 +46,7 @@ public class GroupController extends BaseController {
     @RequestMapping(value = "/assign/group/{groupId}/{deviceId}", method = RequestMethod.GET)
     public void assignDeviceToGroup(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
-            deviceService.assignDeviceToGroup(UUID.fromString(groupId),UUID.fromString(deviceId));
+            deviceService.assignDeviceToGroup(UUID.fromString(deviceId),UUID.fromString(groupId));
         }catch(Exception e){
             e.printStackTrace();
             return ;

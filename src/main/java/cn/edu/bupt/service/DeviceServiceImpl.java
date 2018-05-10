@@ -207,7 +207,7 @@ public class DeviceServiceImpl implements  DeviceService{
                     if (StringUtils.isEmpty(device.getName())) {
                         throw new DataValidationException("Device name should be specified!");
                     }
-                    if (device.getTenantId() == null) {
+                    if (device.getTenantId() == null || device.getTenantId()==1) {
                         throw new DataValidationException("Device should be assigned to tenant!");
                     }
                     if (device.getCustomerId() == null) {

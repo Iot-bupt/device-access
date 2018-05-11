@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/v1/data")
 public class TelemetryController extends BaseController {
 
-    //通过设备ID和查询内容获取所有数据
+    //通过设备ID和查询内容获取所有历史数据
     @RequestMapping(value="alldata/{deviceId}/{queries}",method = RequestMethod.GET)
     public List<TsKvEntry> getAllData(@PathVariable("deviceId") String deviceId,
                                       @PathVariable("queries") List<TsKvQuery> queries) throws Exception {
@@ -30,7 +30,7 @@ public class TelemetryController extends BaseController {
         }
     }
 
-    //通过设备ID获取所有历史数据
+    //通过设备ID获取所有最新数据
     @RequestMapping(value = "/alllatestdata/{deviceId}", method = RequestMethod.GET)
     public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId)
     throws Exception{
@@ -45,7 +45,7 @@ public class TelemetryController extends BaseController {
     }
 
 
-    //设备ID和键获取数据
+    //设备ID和键获取最新
     @RequestMapping(value = "/latestdata/{deviceId}/{keys}", method = RequestMethod.GET)
     public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId
     ,@PathVariable("keys") Collection<String> keys)

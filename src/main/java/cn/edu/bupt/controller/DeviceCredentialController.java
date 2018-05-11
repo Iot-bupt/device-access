@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class DeviceCredentialController extends BaseController {
 
+    //创建
     @RequestMapping(value = "/credential",method = RequestMethod.POST)
     public DeviceCredentials create(@RequestBody String credentials) throws Exception {
         //提交表单转变为json
@@ -22,6 +23,7 @@ public class DeviceCredentialController extends BaseController {
         }
     }
 
+    //删除
     @RequestMapping(value = "/credential/{credential}",method = RequestMethod.DELETE)
     public void delete(@PathVariable("credential") DeviceCredentials credentials) throws Exception {
         try {
@@ -33,6 +35,7 @@ public class DeviceCredentialController extends BaseController {
     }
 
 
+    //修改
     @RequestMapping(value = "/credential/{credential}",method = RequestMethod.PUT)
     public DeviceCredentials update(@PathVariable("credential") DeviceCredentials credentials) throws Exception {
         try {
@@ -44,6 +47,7 @@ public class DeviceCredentialController extends BaseController {
         }
     }
 
+    //通过ID查找
     @RequestMapping(value = "/credentialbyid/{deviceId}",method = RequestMethod.GET)
     public DeviceCredentials getById(@PathVariable("deviceId") String deviceId) throws Exception {
         try {
@@ -55,6 +59,7 @@ public class DeviceCredentialController extends BaseController {
         }
     }
 
+    //通过token查找
     @RequestMapping(value = "/crednetialbytoken/{token}",method = RequestMethod.GET)
     public DeviceCredentials getByToken(@PathVariable("token") String token) throws Exception {
         try {

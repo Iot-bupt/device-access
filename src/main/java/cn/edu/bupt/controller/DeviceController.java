@@ -20,6 +20,7 @@ public class DeviceController extends BaseController {
     public static final String DEVICE_ID = "deviceId";
 
     //对设备的操作
+    //创建设备
     @RequestMapping(value = "/device", method = RequestMethod.POST)
     public Device saveDevice(@RequestBody String device)  {
         try {
@@ -35,6 +36,7 @@ public class DeviceController extends BaseController {
         }
     }
 
+    //删除设备
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.DELETE)
     public void deleteDevice(@PathVariable(DEVICE_ID) String strDeviceId) throws Exception {
         if (StringUtil.isEmpty(strDeviceId)) {
@@ -49,6 +51,7 @@ public class DeviceController extends BaseController {
     }
 
 
+    //通过设备ID查找设备
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.GET)
     public Device getDeviceById(@PathVariable(DEVICE_ID) String strDeviceId) throws Exception {
         if (StringUtil.isEmpty(strDeviceId)) {
@@ -63,6 +66,7 @@ public class DeviceController extends BaseController {
         }
     }
 
+    //通过父设备ID查找设备
     @RequestMapping(value = "/parentdevices/{parentdeviceId}",params = {"limit"}, method = RequestMethod.GET)
     public List<Device> getDevicesByParentDeviceId(
             @PathVariable("parentdeviceId") String parentDeviceId,
@@ -81,6 +85,7 @@ public class DeviceController extends BaseController {
     }
 
     //对tenant设备的操作
+    //获取tenant下的所有设备
     @RequestMapping(value = "/tenant/devices/{tenantId}", params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Device> getTenantDevices(
             @PathVariable("tenantId") Integer tenantId,
@@ -99,6 +104,7 @@ public class DeviceController extends BaseController {
         }
     }
 
+    //删除tenant下的所有设备
     @RequestMapping(value = "/devices/{tenantId}", method = RequestMethod.DELETE)
     public void deleteDevicesByTenantId(@PathVariable("tenantId") Integer tenantId) throws Exception {
         try {
@@ -109,6 +115,7 @@ public class DeviceController extends BaseController {
         }
     }
 
+    //通过tenantID和Name查找设备
     @RequestMapping(value="/device/{tenantId}/{name}",method = RequestMethod.GET)
     public Optional<Device> getDeviceByTenantIdAndName(@PathVariable("tenantId") Integer tenantId,
                                                        @PathVariable("name") String name) throws Exception{
@@ -123,6 +130,7 @@ public class DeviceController extends BaseController {
 
 
     //customer层面的设备操作
+    //分配设备给客户
     @RequestMapping(value="/assign/customer/{deviceId}/{customerId}",method = RequestMethod.GET)
     public Device assignDeviceToCustomer(@PathVariable("deviceId") String deviceId,
                                          @PathVariable("customerId")Integer customerId) throws Exception{
@@ -136,6 +144,7 @@ public class DeviceController extends BaseController {
         }
     }
 
+    //取消分配某个设备给客户
     @RequestMapping(value="unassign/customer/{deviceId}",method = RequestMethod.DELETE)
     public Device unassignDeviceFromCustomer(@PathVariable("deviceId")String deviceId) throws Exception{
         try{
@@ -147,6 +156,7 @@ public class DeviceController extends BaseController {
         }
     }
 
+    //取消分配客户的所有设备
     @RequestMapping(value = "unassign/{tenantId}/{customerId}",method = RequestMethod.DELETE)
     public void unassignCustomerDevices(@PathVariable("tenantId") Integer tenantId,
                                         @PathVariable("customerId") Integer customerId) throws Exception{
@@ -158,6 +168,7 @@ public class DeviceController extends BaseController {
         }
     }
 
+    //获取客户的所有设备
     @RequestMapping(value = "/customerdevices/{tenantId}/{customerId}", params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Device> getDevicesByTenantIdAndCustomerId(
             @PathVariable("tenantId") Integer tenantId,

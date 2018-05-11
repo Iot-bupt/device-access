@@ -20,6 +20,7 @@ import java.util.Optional;
 @RequestMapping("/api/v1")
 public class AttributeController extends BaseController{
 
+    //通过设备ID获取全部属性
     @RequestMapping(value="/allattributes/{deviceId}", method = RequestMethod.GET)
     public List<AttributeKvEntry> getAllAttributes(@PathVariable("deviceId") String deviceId) throws Exception {
         try{
@@ -32,6 +33,7 @@ public class AttributeController extends BaseController{
         }
     }
 
+    //设备ID和属性键获取设备属性（多个）
     @RequestMapping(value="/attributes/{deviceId}/{attributeKeys}", method = RequestMethod.GET)
     public List<AttributeKvEntry> getAttribute(
             @PathVariable("deviceId") String deviceId, @PathVariable("attributeKeys") Collection<String> attributeKeys) throws Exception {
@@ -46,6 +48,7 @@ public class AttributeController extends BaseController{
         }
     }
 
+    //设备ID和属性键获取设备属性（单个）
     @RequestMapping(value="/attribute/{deviceId}/{attributeKey}", method = RequestMethod.GET)
         public Optional<AttributeKvEntry> getAttribute(
                 @PathVariable("deviceId") String deviceId, @PathVariable("attributeKey") String attributeKey) throws Exception {
@@ -60,6 +63,7 @@ public class AttributeController extends BaseController{
         }
     }
 
+    //删除属性的键值
     @RequestMapping(value="/allattributes/{deviceId}/{keys}",method = RequestMethod.DELETE)
     public void removeAllAttributes(
             @PathVariable("deviceId") String deviceId, @PathVariable("keys") List<String> keys) throws Exception{

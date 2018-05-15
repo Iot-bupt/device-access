@@ -72,7 +72,7 @@ public class GroupController extends BaseController {
     @RequestMapping(value = "/unassign/group/{groupId}/{deviceId}", method = RequestMethod.DELETE)
     public void unassignDeviceByGroupId(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
-            deviceService.unassignDeviceFromGroup(UUID.fromString(groupId), UUID.fromString(deviceId));
+            deviceService.unassignDeviceFromGroup(UUID.fromString(deviceId),UUID.fromString(groupId));
         }catch(Exception e){
             e.printStackTrace();
             return ;

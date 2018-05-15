@@ -6,6 +6,7 @@ import cn.edu.bupt.service.BaseAttributesService;
 import cn.edu.bupt.service.BaseTimeseriesService;
 import cn.edu.bupt.service.DeviceAuthService;
 import cn.edu.bupt.service.DeviceService;
+import cn.edu.bupt.websocket.WebSocketServer;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
@@ -33,6 +34,9 @@ public class ActorSystemContext {
 
     @Autowired
     @Getter private BaseAttributesService baseAttributesService;
+
+    @Autowired
+    @Getter private WebSocketServer webSocketServer;
 
 //    @Autowired
 //    @Getter private TenantService tenantService;

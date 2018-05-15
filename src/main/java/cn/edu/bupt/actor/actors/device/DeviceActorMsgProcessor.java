@@ -5,18 +5,20 @@ import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.common.entry.BasicAttributeKvEntry;
 import cn.edu.bupt.message.*;
 import cn.edu.bupt.pojo.Device;
-import cn.edu.bupt.pojo.kv.*;
-
+import cn.edu.bupt.pojo.kv.AttributeKvEntry;
+import cn.edu.bupt.pojo.kv.BasicAdaptorAttributeKvEntry;
+import cn.edu.bupt.pojo.kv.BasicAdaptorTsKvEntry;
+import cn.edu.bupt.pojo.kv.TsKvEntry;
 import cn.edu.bupt.service.BaseAttributesService;
 import cn.edu.bupt.service.BaseTimeseriesService;
 import cn.edu.bupt.utils.KafkaUtil;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -34,7 +36,7 @@ public class DeviceActorMsgProcessor {
         this.actorSystemContext = actorSystemContext;
     }
 
-    public void process(BasicToDeviceActorMsg msg) {
+    public void process(BasicToDeviceActorMsg msg) throws IOException {
         BasicToDeviceActorMsg msg1 = (BasicToDeviceActorMsg)msg;
         AdaptorToSessionActorMsg adptorMsg = msg1.getMsg();
         FromDeviceMsg fromDeviceMsg = adptorMsg.getMsg();
@@ -100,7 +102,7 @@ public class DeviceActorMsgProcessor {
     }
 
 
-     public void handleTelemetryUploadRequest(TelemetryUploadMsg msg, BasicToDeviceActorMsg msg1){
+     public void handleTelemetryUploadRequest(TelemetryUploadMsg msg, BasicToDeviceActorMsg msg1) throws IOException {
         Map<Long, List<cn.edu.bupt.common.entry.KvEntry>> data = msg.getData();
          sendDataToKafka(msg1.getDevice(),data);
         for( long ts : data.keySet()){
@@ -127,7 +129,7 @@ public class DeviceActorMsgProcessor {
         baseAttributesService.save(entityId, attributes);
     }
 
-    private void sendDataToKafka(Device device,Map<Long, List<cn.edu.bupt.common.entry.KvEntry>> data){
+    private void sendDataToKafka(Device device,Map<Long, List<cn.edu.bupt.common.entry.KvEntry>> data) throws IOException {
         JsonObject obj =  new JsonObject();
         obj.addProperty("deviceId",device.getId().toString());
         obj.addProperty("tenantId",device.getTenantId());
@@ -157,6 +159,12 @@ public class DeviceActorMsgProcessor {
             }
         }
         obj.add("data",array);
+
+        //System.out.println(actorSystemContext.getWebSocketServer().map);
+        if(actorSystemContext.getWebSocketServer().map.containsKey(device.getId().toString())) {
+            actorSystemContext.getWebSocketServer().sendMessage(obj.toString(),actorSystemContext.getWebSocketServer().map.get(device.getId().toString()));
+        }
+
         KafkaUtil.send("",obj.toString());
     }
 

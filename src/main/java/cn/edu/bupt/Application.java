@@ -1,9 +1,7 @@
 package cn.edu.bupt;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -11,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 //@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @SpringBootApplication
-@ComponentScan("cn.edu.bupt")
+@ComponentScan({"cn.edu.bupt", "cn.edu.bupt.websocket"})
 public class Application {
     public static void main(String[] args){
         SpringApplication.run(Application.class,args);

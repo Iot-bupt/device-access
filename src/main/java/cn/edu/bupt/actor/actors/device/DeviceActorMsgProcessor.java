@@ -137,9 +137,9 @@ public class DeviceActorMsgProcessor {
         obj.addProperty("deviceType",device.getDeviceType());
         JsonArray array = new JsonArray();
         for(Map.Entry<Long,List<cn.edu.bupt.common.entry.KvEntry>> entry:data.entrySet()){
-            JsonObject temp = new JsonObject();
             long ts = entry.getKey();
             for(cn.edu.bupt.common.entry.KvEntry en:entry.getValue()){
+                JsonObject temp = new JsonObject();
                 temp.addProperty("ts",ts);
                 temp.addProperty("key",en.getKey());
                 switch(en.getDataType()){

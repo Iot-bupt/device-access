@@ -8,6 +8,9 @@ mqtt:
     boss_group_thread_count: 1
     worker_group_thread_count: 12
 
+server:
+  port: 8100
+
 cassandra:
   # cluster name
   cluster_name: "${CASSANDRA_CLUSTER_NAME:Thingsboard Cluster}"

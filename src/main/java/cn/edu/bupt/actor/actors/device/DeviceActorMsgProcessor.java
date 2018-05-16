@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.websocket.Session;
 import java.io.IOException;
 import java.util.*;
 
@@ -162,7 +163,8 @@ public class DeviceActorMsgProcessor {
 
         //System.out.println(actorSystemContext.getWebSocketServer().map);
         if(actorSystemContext.getWebSocketServer().map.containsKey(device.getId().toString())) {
-            actorSystemContext.getWebSocketServer().sendMessage(obj.toString(),actorSystemContext.getWebSocketServer().map.get(device.getId().toString()));
+            for(Session session : actorSystemContext.getWebSocketServer().map.get(device.getId().toString()) )
+                actorSystemContext.getWebSocketServer().sendMessage(obj.toString(),session);
         }
 
         KafkaUtil.send("",obj.toString());

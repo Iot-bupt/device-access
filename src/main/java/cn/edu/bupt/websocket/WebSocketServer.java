@@ -11,7 +11,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -26,7 +28,8 @@ public class WebSocketServer{
     private static int onlineCount = 0;
 
     public static String deviceId = new String();
-    public static Map<String,Session> map = new ConcurrentHashMap<>();
+    public static Set<Session> sessions= new HashSet<>();
+    public static Map<String,Set<Session>> map = new ConcurrentHashMap<>();
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
@@ -75,7 +78,8 @@ public class WebSocketServer{
 
         JsonObject jsonObj = (JsonObject)new JsonParser().parse(message);
         String deviceId = jsonObj.get("deviceId").getAsString();
-        map.put(deviceId,session);
+        sessions.add(session);
+        map.put(deviceId,sessions);
 //        getSubscribeDevices().add(deviceId);
 //        System.out.println(getSubscribeDevices());
         //群发消息

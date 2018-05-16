@@ -145,7 +145,7 @@ public class DeviceController extends BaseController {
     }
 
     //取消分配某个设备给客户
-    @RequestMapping(value="unassign/customer/{deviceId}",method = RequestMethod.DELETE)
+    @RequestMapping(value="/unassign/customer/{deviceId}",method = RequestMethod.DELETE)
     public Device unassignDeviceFromCustomer(@PathVariable("deviceId")String deviceId) throws Exception{
         try{
             Device device = deviceService.unassignDeviceFromCustomer(toUUID(deviceId));
@@ -157,7 +157,7 @@ public class DeviceController extends BaseController {
     }
 
     //取消分配客户的所有设备
-    @RequestMapping(value = "unassign/{tenantId}/{customerId}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/unassign/{tenantId}/{customerId}",method = RequestMethod.DELETE)
     public void unassignCustomerDevices(@PathVariable("tenantId") Integer tenantId,
                                         @PathVariable("customerId") Integer customerId) throws Exception{
         try{

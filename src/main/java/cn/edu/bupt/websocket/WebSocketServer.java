@@ -25,8 +25,8 @@ public class WebSocketServer{
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
 
-    public static String deviceId = new String();
-    public static Set<Session> sessions= new HashSet<>();
+    public  String deviceId = null;
+    //public static Set<Session> sessions= new HashSet<>();
     public static Map<String,Set<Session>> map = new ConcurrentHashMap<>();
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
@@ -62,7 +62,7 @@ public class WebSocketServer{
     @OnClose
     public void onClose() {
         //webSocketSet.remove(this);  //从set中删除
-        sessions.remove(this.session);
+        map.get(deviceId).remove(this.session);
         subOnlineCount();           //在线数减1
         log.info("有一连接关闭！当前在线人数为" + getOnlineCount());
     }
@@ -77,8 +77,14 @@ public class WebSocketServer{
 
         JsonObject jsonObj = (JsonObject)new JsonParser().parse(message);
         String deviceId = jsonObj.get("deviceId").getAsString();
-        sessions.add(session);
-        map.put(deviceId,sessions);
+        this.deviceId = deviceId;
+        if(map.containsKey(deviceId)){
+            map.get(deviceId).add(session);
+        }else{
+            Set<Session> s = new HashSet<>();
+            s.add(this.session);
+            map.put(deviceId,s);
+        }
 //        getSubscribeDevices().add(deviceId);
 //        System.out.println(getSubscribeDevices());
         //群发消息

@@ -34,7 +34,14 @@ public class RpcController{
             res.setResult(new ResponseEntity(HttpStatus.BAD_REQUEST));
             return res;
         }
-        BasicFromServerRpcMsg msg = new BasicFromServerRpcMsg(requestId,data,device,res);
+        String pid= device.getParentDeviceId();
+        BasicFromServerRpcMsg msg;
+        if (pid==null||"".equals(pid)){
+            msg    = new BasicFromServerRpcMsg(requestId,data,device,res);
+        }else{
+            Device  pdevice = deviceService.findDeviceById(UUID.fromString(deviceId));
+            msg    = new BasicFromServerRpcMsg(requestId,data,pdevice,res);
+        }
         rpcMsgProcessor.process(msg);
         return res;
     }

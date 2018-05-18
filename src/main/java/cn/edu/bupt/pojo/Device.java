@@ -45,8 +45,8 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
 
     @Column(name  = DEVICE_DEVICE_TYPE_PROPERTY)
     private String deviceType; //设备
-
     @Column(name = DEVICE_MANUFACTURE_PROPERTY )
+
     private String manufacture;//厂商
 
     @Column(name  = DEVICE_MODEL_PROPERTY )

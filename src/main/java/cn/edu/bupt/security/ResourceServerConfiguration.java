@@ -28,7 +28,6 @@
 //                .anonymous()
 //                .and()
 //                .authorizeRequests()
-//                .antMatchers("/api/v1/group/devices/*").permitAll()
 //                .antMatchers("/api/v1/device/*").hasAuthority("TENANT_ADMIN");
 //
 //    }

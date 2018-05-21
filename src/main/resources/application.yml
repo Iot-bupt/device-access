@@ -63,3 +63,14 @@ spring:
     url: jdbc:mysql://39.104.165.155:3306/BUPT_IOT
     username: root
     password: root
+
+account:
+  host: 39.104.165.155
+  port: 8081
+  check_url: http://${account.host}:${account.port}/api/v1/auth/check_token
+  client_id: client_2
+  client_secret: 123456
+
+security:
+  basic:
+    enabled: false

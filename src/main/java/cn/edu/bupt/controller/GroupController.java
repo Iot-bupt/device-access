@@ -6,6 +6,7 @@ import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.Group;
 import cn.edu.bupt.utils.StringUtil;
 import com.alibaba.fastjson.JSON;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class GroupController extends BaseController {
 
     //设备层面的设备组
     //获取设备组下的所有设备
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/group/devices/{groupId}",params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Device> getDevicesByGroupId(
             @PathVariable(GROUP_ID) String strGroupId,

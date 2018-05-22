@@ -2,7 +2,7 @@ producer:
     # 生产者配置文件实体类目前添加的所有参数demo
     producerConfigDemo:
         !!com.bupt.kafka.enity.ProducerProperties
-        bootstrapServers: 10.112.233.200:9092
+        bootstrapServers: 39.104.186.210:9092
         topic: deviceData
         acks: 1
         retries: 0
@@ -15,14 +15,14 @@ producer:
     # 生产者测试
     producerTest:
         !!com.bupt.kafka.enity.ProducerProperties
-        bootstrapServers: 10.112.233.200:9092
+        bootstrapServers: 39.104.186.210:9092
         topic: kfktest
 
 consumer:
     # 消费者配置文件实体类目前添加的所有参数demo
     consumerConfigDemo:
         !!com.bupt.kafka.enity.ConsumerProperties
-        bootstrapServers: 10.112.233.200:9092
+        bootstrapServers: 39.104.186.210:9092
         groupId: test
         topic: test
         enableAutoCommit: true

@@ -39,7 +39,7 @@ public class RpcController{
         if (pid==null||"".equals(pid)){
             msg    = new BasicFromServerRpcMsg(requestId,data,device,res);
         }else{
-            Device  pdevice = deviceService.findDeviceById(UUID.fromString(deviceId));
+            Device  pdevice = deviceService.findDeviceById(UUID.fromString(pid));
             msg    = new BasicFromServerRpcMsg(requestId,data,pdevice,res);
         }
         rpcMsgProcessor.process(msg);

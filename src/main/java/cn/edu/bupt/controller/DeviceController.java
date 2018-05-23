@@ -29,6 +29,7 @@ public class DeviceController extends BaseController {
             Device device1 = JSON.parseObject(device, Device.class);
 
             Device savedDevice = checkNotNull(deviceService.saveDevice(device1));
+
             return savedDevice.toString();
         } catch (Exception e) {
             return onFail(e.toString());

@@ -22,17 +22,16 @@ public class DeviceController extends BaseController {
     //对设备的操作
     //创建设备
     @RequestMapping(value = "/device", method = RequestMethod.POST)
-    public Device saveDevice(@RequestBody String device)  {
+    public String saveDevice(@RequestBody String device)  {
         try {
             //将提交表单的形式转为json格式提交
 
             Device device1 = JSON.parseObject(device, Device.class);
 
             Device savedDevice = checkNotNull(deviceService.saveDevice(device1));
-            return savedDevice;
+            return savedDevice.toString();
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            return onFail(e.toString());
         }
     }
 

@@ -1,6 +1,7 @@
 package cn.edu.bupt.message;
 
 import cn.edu.bupt.pojo.Device;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -17,13 +18,15 @@ public class BasicFromServerRpcMsg  implements FromServerRpcMsg{
     @Getter
     private final DeferredResult<ResponseEntity> res;
 
+    private final JsonObject service;
 
-   public  BasicFromServerRpcMsg(int id,String data,Device device,DeferredResult<ResponseEntity> res){
+
+   public  BasicFromServerRpcMsg(int id,String data,Device device,DeferredResult<ResponseEntity> res,JsonObject service){
         this.requestId = id;
         this.data = data;
         this.device = device;
         this.res = res;
-
+        this.service = service;
    }
 
     @Override
@@ -53,6 +56,10 @@ public class BasicFromServerRpcMsg  implements FromServerRpcMsg{
     @Override
     public boolean requireResponse() {
        //TODO 需要根据情况更改
-        return true;
+        if (service.has("requireResponce")){
+            return service.getAsJsonPrimitive("requireResponce").getAsBoolean();
+        }else{
+            return false;
+        }
     }
 }

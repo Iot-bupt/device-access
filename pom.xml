@@ -56,6 +56,7 @@
         <springdata.cassandra.version>2.0.0.RELEASE</springdata.cassandra.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <spring-security.version>4.2.0.RELEASE</spring-security.version>
+        <okhttp.version>3.9.0</okhttp.version>
     </properties>
     <!--dependencyManagement部分用于管理依赖，被dependencyManagement配置的元素既不会引入父项目的依赖，-->
     <!--也不会给子项目引入依赖，只是表示该部分是可被继承的，但不直接被引用。如果需要引用dependencyManagement部分内容，-->
@@ -199,6 +200,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
             <version>2.0.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>org.springframework.boot</groupId>-->

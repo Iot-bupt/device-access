@@ -2,6 +2,7 @@ package cn.edu.bupt.controller;
 
 import cn.edu.bupt.actor.service.DefaultActorService;
 import cn.edu.bupt.service.*;
+import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -49,6 +50,19 @@ public class BaseController {
         if (StringUtils.isEmpty(param)) {
             throw new Exception("Parameter '" + name + "' can't be empty!");
         }
+    }
+
+    public String onFail(Exception exception) {
+        return this.onFail(exception.toString()) ;
+    }
+
+    public String onFail(String msg) {
+        JsonObject InfoJson = new JsonObject() ;
+        InfoJson.addProperty("id", "");
+        InfoJson.addProperty("response_code", 1);
+        //InfoJson.addProperty("response_msg", msg);
+        InfoJson.addProperty("info", "名称重复，创建失败");
+        return InfoJson.toString() ;
     }
 
 }

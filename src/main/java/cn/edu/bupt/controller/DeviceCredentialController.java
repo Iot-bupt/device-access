@@ -10,16 +10,16 @@ public class DeviceCredentialController extends BaseController {
 
     //创建
     @RequestMapping(value = "/credential",method = RequestMethod.POST)
-    public DeviceCredentials create(@RequestBody String credentials) throws Exception {
+    public String create(@RequestBody String credentials) throws Exception {
         //提交表单转变为json
 
         try {
             DeviceCredentials deviceCredentials1 = JSON.parseObject(credentials, DeviceCredentials.class);
             DeviceCredentials deviceCredentials = deviceCredentialsService.createDeviceCredentials(deviceCredentials1);
-            return deviceCredentials;
+            return deviceCredentials.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return onFail(e.toString());
         }
     }
 

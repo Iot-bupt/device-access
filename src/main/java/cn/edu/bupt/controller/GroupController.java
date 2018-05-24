@@ -83,16 +83,16 @@ public class GroupController extends BaseController {
     //设备组层面的设备组
     //创建
     @RequestMapping(value = "/group", method = RequestMethod.POST)
-    public Group saveGroup(@RequestBody String group) throws Exception{
+    public String saveGroup(@RequestBody String group) throws Exception{
 
         //表单转变为json提交
         try {
             Group group1 = JSON.parseObject(group, Group.class);
             Group savedGroup = checkNotNull(groupService.saveGroup(group1));
-            return savedGroup;
+            return savedGroup.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return onFail(e.toString());
         }
     }
 

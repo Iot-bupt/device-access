@@ -14,7 +14,7 @@ producer:
 
     # 生产者测试
     producerTest:
-        !!com.bupt.kafka.enity.ProducerProperties
+        !!com.bupt.kafka.enity.ProducerPropertiese
         bootstrapServers: 39.104.186.210:9092
         topic: kfktest
 

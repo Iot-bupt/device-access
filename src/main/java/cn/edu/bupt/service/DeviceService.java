@@ -44,4 +44,6 @@ public interface DeviceService {
 
     List<Device> findDeviceByParentDeviceId(String parentDeviceId, TextPageLink pageLink);
 
+    TextPageData<Device> findDevicesByManufactureAndDeviceTypeAndModel(String manufacture, String deviceType, String model, TextPageLink pageLink);
+
 }

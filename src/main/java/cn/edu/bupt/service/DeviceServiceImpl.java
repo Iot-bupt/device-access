@@ -30,6 +30,9 @@ public class DeviceServiceImpl implements  DeviceService{
     public static final String INCORRECT_CUSTOMER_ID = "Incorrect customerId ";
     public static final String INCORRECT_DEVICE_ID = "Incorrect deviceId ";
     public static final String INCORRECT_GROUP_ID = "Incorrect groupId ";
+    public static final String INCORRECT_MANUFACTURE = "Incorrect manufacture ";
+    public static final String INCORRECT_DEVICE_TYPE = "Incorrect device type ";
+    public static final String INCORRECT_MODEL = "Incorrect model ";
 
     @Autowired
     private DeviceDao deviceDao;
@@ -88,6 +91,8 @@ public class DeviceServiceImpl implements  DeviceService{
     public List<Device> findDeviceByParentDeviceId(String parentDeviceId, TextPageLink pageLink) {
         return deviceDao.findDevicesByParentDeviceId(parentDeviceId,pageLink);
     }
+
+
 
     @Override
     public Device findDeviceById(UUID deviceId) {
@@ -172,6 +177,17 @@ public class DeviceServiceImpl implements  DeviceService{
     }
 
     @Override
+    public TextPageData<Device> findDevicesByManufactureAndDeviceTypeAndModel(String manufacture, String deviceType, String model, TextPageLink pageLink){
+        validateString(manufacture,INCORRECT_MANUFACTURE);
+        validateString(deviceType,INCORRECT_DEVICE_TYPE);
+        validateString(model,INCORRECT_MODEL);
+        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
+        List<Device> devices = deviceDao.findDevicesByManufactureAndDeviceTypeAndModel(manufacture,deviceType,model,pageLink);
+        return new TextPageData<>(devices, pageLink);
+    }
+
+
+    @Override
     public void unassignCustomerDevices(Integer tenantId, Integer customerId) {
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
         validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
@@ -212,6 +228,15 @@ public class DeviceServiceImpl implements  DeviceService{
                     }
                     if (device.getCustomerId() == null) {
                         device.setCustomerId(1);
+                    }
+                    if (StringUtils.isEmpty(device.getManufacture())) {
+                        throw new DataValidationException("Device manufacture should be specified!");
+                    }
+                    if (StringUtils.isEmpty(device.getDeviceType())) {
+                        throw new DataValidationException("Device type should be specified!");
+                    }
+                    if (StringUtils.isEmpty(device.getModel())) {
+                        throw new DataValidationException("Device model should be specified!");
                     }
                 }
             };

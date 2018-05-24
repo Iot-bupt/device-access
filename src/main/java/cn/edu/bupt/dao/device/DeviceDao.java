@@ -53,4 +53,6 @@ public interface DeviceDao extends Dao<Device> {
 
 
     List<Device> findDevicesByParentDeviceId(String parentDeviceId, TextPageLink pageLink);
+
+    List<Device> findDevicesByManufactureAndDeviceTypeAndModel(String manufacture, String deviceType, String model, TextPageLink pageLink);
 }

@@ -176,6 +176,8 @@ public class DeviceServiceImpl implements  DeviceService{
         return new TextPageData<>(devices, pageLink);
     }
 
+
+    //TODO: 加入tenantId和CustomerId作为参数
     @Override
     public TextPageData<Device> findDevicesByManufactureAndDeviceTypeAndModel(String manufacture, String deviceType, String model, TextPageLink pageLink){
         validateString(manufacture,INCORRECT_MANUFACTURE);

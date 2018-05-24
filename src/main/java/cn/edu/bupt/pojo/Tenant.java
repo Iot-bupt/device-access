@@ -71,7 +71,7 @@ public class Tenant {
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
         sb.append("\"id\":")
-                .append(id);
+                .append("\""+id+"\"");
         sb.append(",\"address\":\"")
                 .append(address).append('\"');
         sb.append(",\"phone\":\"")

@@ -60,7 +60,7 @@ public class DeviceCredentials extends SearchTextBased implements BaseEntity{
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
         sb.append("\"id\":")
-                .append(id);
+                .append("\""+id+"\"");
         sb.append(",\"deviceId\":")
                 .append(deviceId);
         sb.append(",\"deviceToken\":\"")

@@ -230,13 +230,16 @@ public class DeviceServiceImpl implements  DeviceService{
                         device.setCustomerId(1);
                     }
                     if (StringUtils.isEmpty(device.getManufacture())) {
-                        throw new DataValidationException("Device manufacture should be specified!");
+                        device.setManufacture("default");
+//                        throw new DataValidationException("Device manufacture should be specified!");
                     }
                     if (StringUtils.isEmpty(device.getDeviceType())) {
-                        throw new DataValidationException("Device type should be specified!");
+                        device.setDeviceType("default");
+//                        throw new DataValidationException("Device type should be specified!");
                     }
                     if (StringUtils.isEmpty(device.getModel())) {
-                        throw new DataValidationException("Device model should be specified!");
+                        device.setModel("default");
+//                        throw new DataValidationException("Device model should be specified!");
                     }
                 }
             };

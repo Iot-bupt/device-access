@@ -1,14 +1,13 @@
 package cn.edu.bupt.controller;
 
 
+import cn.edu.bupt.pojo.kv.BaseTsKvQuery;
 import cn.edu.bupt.pojo.kv.TsKvEntry;
 import cn.edu.bupt.pojo.kv.TsKvQuery;
 import com.google.common.util.concurrent.ListenableFuture;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,10 +16,17 @@ import java.util.List;
 public class TelemetryController extends BaseController {
 
     //通过设备ID和查询内容获取所有历史数据
-    @RequestMapping(value="alldata/{deviceId}/{queries}",method = RequestMethod.GET)
+    @RequestMapping(value="/alldata/{deviceId}",method = RequestMethod.GET)
     public List<TsKvEntry> getAllData(@PathVariable("deviceId") String deviceId,
-                                      @PathVariable("queries") List<TsKvQuery> queries) throws Exception {
+                                      @RequestParam String key,
+                                      @RequestParam String startTs,
+                                      @RequestParam String endTs,
+                                      @RequestParam int limit
+                                      ) throws Exception {
         try{
+            List<TsKvQuery> queries = new ArrayList<>();
+            TsKvQuery tsKvQuery = new BaseTsKvQuery(key, Long.parseLong(startTs), Long.parseLong(endTs), limit);
+            queries.add(tsKvQuery);
             ListenableFuture<List<TsKvEntry>> listListenableFuture = baseTimeseriesService.findAll(toUUID(deviceId),queries);
             List<TsKvEntry> ls = listListenableFuture.get();
             return ls;

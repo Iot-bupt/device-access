@@ -2,6 +2,8 @@ package cn.edu.bupt.common.entry;
 
 import cn.edu.bupt.common.KvEntryType;
 
+import java.util.Optional;
+
 /**
  * Created by Administrator on 2018/4/14.
  */
@@ -14,6 +16,10 @@ public class BooleanEntry extends BasicTelemetryKvEntry {
         this.value = value;
     }
 
+    @Override
+    public Optional<Boolean> getBooleanValue() {
+        return Optional.ofNullable(value);
+    }
     @Override
     public String getDataType() {
         return KvEntryType.BOOLEAN;

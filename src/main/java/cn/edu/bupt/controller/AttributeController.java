@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -66,9 +67,11 @@ public class AttributeController extends BaseController{
     //删除属性的键值
     @RequestMapping(value="/allattributes/{deviceId}/{keys}",method = RequestMethod.DELETE)
     public void removeAllAttributes(
-            @PathVariable("deviceId") String deviceId, @PathVariable("keys") List<String> keys) throws Exception{
+            @PathVariable("deviceId") String deviceId, @PathVariable("keys") String keys) throws Exception{
         try{
-            baseAttributesService.removeAll(toUUID(deviceId), keys);
+            List<String> ls = new ArrayList<>();
+            ls.add(keys);
+            baseAttributesService.removeAll(toUUID(deviceId), ls);
         }catch (Exception e){
             e.printStackTrace();
         }

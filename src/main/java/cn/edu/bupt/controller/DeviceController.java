@@ -188,4 +188,35 @@ public class DeviceController extends BaseController {
     }
 
 
+    //获取站点下的所有设备
+    @RequestMapping(value = "/sitedevices/{tenantId}/{siteId}", params = {"limit"}, method = RequestMethod.GET)
+    public TextPageData<Device> getDevicesByTenantIdAndSiteId(
+            @PathVariable("tenantId") Integer tenantId,
+            @PathVariable("siteId") Integer siteId,
+            @RequestParam int limit,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String textSearch,
+            @RequestParam(required = false) String idOffset,
+            @RequestParam(required = false) String textOffset) throws Exception {
+        try {
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset==null?null:toUUID(idOffset), textOffset);
+            return checkNotNull(deviceService.findDevicesByTenantIdAndSiteId(tenantId, siteId, pageLink));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //分配设备到站点，即更新设备
+    @RequestMapping(value = "/assign/site", method = RequestMethod.POST)
+    public String assignDeviceToSite(@RequestBody String device)  {
+        try {
+            Device sitedevice = JSON.parseObject(device, Device.class);
+            return checkNotNull(deviceService.saveDevice(sitedevice)).toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
 }

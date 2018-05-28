@@ -218,5 +218,26 @@ public class DeviceController extends BaseController {
         }
     }
 
+    @RequestMapping(value = "/{manufactuere}/{deviceType}/{model}/devices/", params = {"limit"}, method = RequestMethod.GET)
+    public TextPageData<Device> getDevicesByTenantIdAndCustomerId(
+            @PathVariable("manufactuere") String manufactuere,
+            @PathVariable("deviceType") String deviceType,
+            @PathVariable("model") String model,
+            @RequestParam int limit,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String textSearch,
+            @RequestParam(required = false) String idOffset,
+            @RequestParam(required = false) String textOffset
+    ){
+        try {
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset==null?null:toUUID(idOffset), textOffset);
+            return checkNotNull( deviceService.findDevicesByManufactureAndDeviceTypeAndModel(
+                    manufactuere, deviceType,model,pageLink
+            ));
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

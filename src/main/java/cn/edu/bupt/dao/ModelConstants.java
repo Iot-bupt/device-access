@@ -79,6 +79,7 @@ public class ModelConstants {
     public static final String DEVICE_DEVICE_TYPE_PROPERTY = "device_type";
     public static final String DEVICE_STATUS_PROPERTY = "status";
     public static final String DEVICE_LOCATION_PROPERTY = "location";
+    public static final String DEVICE_SITE_ID_PROPERTY = "site_id";
     public static final String DEVICE_ADDITIONAL_INFO_PROPERTY = ADDITIONAL_INFO_PROPERTY;
 
     public static final String DEVICE_BY_TENANT_AND_PARENT_DEVICE_ID_COLUMN_FAMILY_NAME = "device_by_tenant_and_parent_device_id";
@@ -90,6 +91,7 @@ public class ModelConstants {
     public static final String DEVICE_BY_TENANT_AND_NAME_VIEW_NAME = "device_by_tenant_and_name";
     public static final String DEVICE_TYPES_BY_TENANT_VIEW_NAME = "device_types_by_tenant";
     public static final String DEVICE_BY_MANUFACTURE_AND_DEVICE_TYPE_AND_MODEL="device_by_manufacture_and_device_type_and_model";
+    public static final String DEVICE_BY_TENANT_AND_SITE = "device_by_tenant_and_site";
 
     /**
      * Cassandra device group constants.

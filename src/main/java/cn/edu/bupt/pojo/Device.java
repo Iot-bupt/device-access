@@ -7,6 +7,7 @@ import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 import com.google.gson.annotations.Expose;
+import scala.Int;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -43,12 +44,15 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
     @Column(name  = DEVICE_PARENT_DEVICE_ID_PROPERTY )
     private String parentDeviceId;
 
+    @PartitionKey(value = 4)
     @Column(name  = DEVICE_DEVICE_TYPE_PROPERTY)
     private String deviceType; //设备
-    @Column(name = DEVICE_MANUFACTURE_PROPERTY )
 
+    @PartitionKey(value = 3)
+    @Column(name = DEVICE_MANUFACTURE_PROPERTY )
     private String manufacture;//厂商
 
+    @PartitionKey(value = 5)
     @Column(name  = DEVICE_MODEL_PROPERTY )
     private String model;//设备型号
 
@@ -57,6 +61,9 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
 
     @Column(name  = DEVICE_LOCATION_PROPERTY )
     private String location;
+
+    @Column(name  = DEVICE_SITE_ID_PROPERTY )
+    private Integer siteId;
 
 //    public Device(Device device) {
 //        this.id = id;
@@ -168,6 +175,14 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
         return getName();
     }
 
+    public Integer getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(Integer siteId) {
+        this.siteId = siteId;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
@@ -193,6 +208,8 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
                 .append(status).append('\"');
         sb.append(",\"location\":\"")
                 .append(location).append('\"');
+        sb.append(",\"siteId\":\"")
+                .append(siteId).append('\"');
         sb.append('}');
         return sb.toString();
     }
@@ -215,7 +232,8 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
         if (manufacture != null ? !manufacture.equals(device.manufacture) : device.manufacture != null) return false;
         if (model != null ? !model.equals(device.model) : device.model != null) return false;
         if (status != null ? !status.equals(device.status) : device.status != null) return false;
-        return location != null ? location.equals(device.location) : device.location == null;
+        if (location != null ? !location.equals(device.location) : device.location != null) return false;
+        return siteId != null ? siteId.equals(device.siteId) : device.siteId == null;
     }
 
     @Override
@@ -231,6 +249,7 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
         result = 31 * result + (model != null ? model.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (siteId != null ? siteId.hashCode() : 0);
         return result;
     }
 }

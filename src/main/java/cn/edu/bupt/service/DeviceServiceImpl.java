@@ -33,6 +33,7 @@ public class DeviceServiceImpl implements  DeviceService{
     public static final String INCORRECT_MANUFACTURE = "Incorrect manufacture ";
     public static final String INCORRECT_DEVICE_TYPE = "Incorrect device type ";
     public static final String INCORRECT_MODEL = "Incorrect model ";
+    public static final String INCORRECT_SITE_ID = "Incorrect siteId ";
 
     @Autowired
     private DeviceDao deviceDao;
@@ -195,6 +196,15 @@ public class DeviceServiceImpl implements  DeviceService{
         validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
 
         new CustomerDevicesUnassigner(tenantId).removeEntities(customerId);
+    }
+
+    @Override
+    public TextPageData<Device> findDevicesByTenantIdAndSiteId(Integer tenantId, Integer siteId, TextPageLink pageLink){
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(siteId, INCORRECT_SITE_ID + siteId);
+        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
+        List<Device> devices = deviceDao.findDevicesByTenantIdAndSiteId(tenantId,siteId,pageLink);
+        return new TextPageData<>(devices, pageLink);
     }
 
     private DataValidator<Device> deviceValidator =

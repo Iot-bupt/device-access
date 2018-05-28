@@ -1,6 +1,8 @@
 package cn.edu.bupt.utils;
 
-import java.io.FileInputStream;
+import java.io.*;
+import java.net.URI;
+import java.nio.Buffer;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +11,8 @@ import org.yaml.snakeyaml.Yaml;
 public class AnalysisYaml {
 
 	// yaml配置文件路径默认为根目录的kafka.yaml文件
-	private String yamlPath = System.getProperty("user.dir") +  System.getProperty("file.separator") + ("kafka.yaml");
+//	private String yamlPath = System.getProperty("user.dir") +  System.getProperty("file.separator") + ("kafka.yaml");
+	private String yamlPath = AnalysisYaml.class.getClassLoader().getResource("")+ ("kafka.yaml");
 
 	public AnalysisYaml() {
 	}
@@ -42,9 +45,11 @@ public class AnalysisYaml {
 		Yaml yaml = new Yaml();
 		ProducerProperties producerProperties;
 		try {
-			Map<String, Map<String, Object>> yamlMap = yaml.loadAs(new FileInputStream(yamlPath), Map.class);
+			InputStream in = AnalysisYaml.class.getClassLoader().getResourceAsStream("kafka.yaml");
+			Map<String, Map<String, Object>> yamlMap = yaml.loadAs(in, Map.class);
 			producerProperties = (ProducerProperties) yamlMap.get("producer").get(producerName);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 
@@ -53,10 +58,17 @@ public class AnalysisYaml {
 	}
 
 	// 测试
-	public static void main(String args[]) {
-		AnalysisYaml test = new AnalysisYaml();
-		System.out.println(test.getProducerProperties("producerTest").getBootstrapServers());
-		System.out.println(test.getProducerProperties("producerTest").getTopic());
+	public static void main(String args[]) throws Exception{
+//		AnalysisYaml test = new AnalysisYaml();
+	//	FileInputStream f = new FileInputStream("D:/project/device-access/target/classes/kafka.yaml");
+		System.out.println(AnalysisYaml.class.getResource("/").getPath());
+		System.out.print(AnalysisYaml.class.getClassLoader().getResource(""));
+//		BufferedReader br = new BufferedReader(new InputStreamReader(c));
+//		while (br.readLine()!=null){
+//			System.out.print(br.readLine());
+//		}
+//		System.out.println(test.getProducerProperties("producerTest").getBootstrapServers());
+//		System.out.println(test.getProducerProperties("producerTest").getTopic());
 	}
 
 }

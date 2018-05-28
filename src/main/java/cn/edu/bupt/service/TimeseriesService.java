@@ -19,6 +19,8 @@ public interface TimeseriesService {
 
     ListenableFuture<List<TsKvEntry>> findAllLatest(UUID entityId);
 
+    ListenableFuture<List<String>> findAllKeys(UUID entityId);
+
     ListenableFuture<List<Void>> save(UUID entityId, TsKvEntry tsKvEntry);
 
     ListenableFuture<List<Void>> save(UUID entityId, List<TsKvEntry> tsKvEntry, long ttl);

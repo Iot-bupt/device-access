@@ -55,6 +55,7 @@ public class CassandraBaseTimeseriesDao extends CassandraAbstractAsyncDao implem
     private PreparedStatement[] fetchStmts;
     private PreparedStatement findLatestStmt;
     private PreparedStatement findAllLatestStmt;
+    private PreparedStatement findAllKeysStmt;
 
     @PostConstruct
     public void init() {
@@ -239,6 +240,14 @@ public class CassandraBaseTimeseriesDao extends CassandraAbstractAsyncDao implem
     }
 
     @Override
+    public ListenableFuture<List<String>> findAllKeys(UUID entityId) {
+        BoundStatement stmt = getFindAllKeysStmt().bind();
+        stmt.setUUID(0, entityId);
+        log.debug(GENERATED_QUERY_FOR_ENTITY_TYPE_AND_ENTITY_ID, stmt, entityId);
+        return getFuture(executeAsyncRead(stmt), rs -> convertResultToKeysList(rs.all()));
+    }
+
+    @Override
     public ListenableFuture<Void> save(UUID entityId, TsKvEntry tsKvEntry, long ttl) {
         long partition = toPartitionTs(tsKvEntry.getTs());
         DataType type = tsKvEntry.getDataType();
@@ -285,6 +294,19 @@ public class CassandraBaseTimeseriesDao extends CassandraAbstractAsyncDao implem
             rows.forEach(row -> entries.add(convertResultToTsKvEntry(row)));
         }
         return entries;
+    }
+
+    private List<String> convertResultToKeysList(List<Row> rows) {
+        List<String> keys = new ArrayList<>(rows.size());
+        if (!rows.isEmpty()) {
+            rows.forEach(row -> keys.add(convertResultToKeysString(row)));
+        }
+        return keys;
+    }
+
+    private String convertResultToKeysString(Row row) {
+        String key = row.getString(ModelConstants.KEY_COLUMN);
+        return key;
     }
 
     private TsKvEntry convertResultToTsKvEntry(String key, Row row) {
@@ -459,6 +481,16 @@ public class CassandraBaseTimeseriesDao extends CassandraAbstractAsyncDao implem
                     ModelConstants.BOOLEAN_VALUE_COLUMN + "," +
                     ModelConstants.LONG_VALUE_COLUMN + "," +
                     ModelConstants.DOUBLE_VALUE_COLUMN + " " +
+                    "FROM " + ModelConstants.TS_KV_LATEST_CF + " " +
+                    "WHERE " + ModelConstants.ENTITY_ID_COLUMN + EQUALS_PARAM);
+        }
+        return findAllLatestStmt;
+    }
+
+    private PreparedStatement getFindAllKeysStmt() {
+        if (findAllLatestStmt == null) {
+            findAllLatestStmt = getSession().prepare(SELECT_PREFIX +
+                    ModelConstants.KEY_COLUMN + " " +
                     "FROM " + ModelConstants.TS_KV_LATEST_CF + " " +
                     "WHERE " + ModelConstants.ENTITY_ID_COLUMN + EQUALS_PARAM);
         }

@@ -125,6 +125,19 @@ public class ModelConstants {
     public static final String DEVICE_CREDENTIALS_BY_DEVICE_TOKEN_COLUMN_FAMILY_NAME = "device_credentials_by_device_token";
 
     /**
+     * Cassandra event constants.
+     */
+    public static final String EVENT_COLUMN_FAMILY_NAME = "event";
+    public static final String EVENT_TENANT_ID_PROPERTY = TENANT_ID_PROPERTY;
+    public static final String EVENT_TYPE_PROPERTY = "event_type";
+    public static final String EVENT_ENTITY_TYPE_PROPERTY = "entity_type";
+    public static final String EVENT_ENTITY_ID_PROPERTY = "entity_id";
+    public static final String EVENT_BODY_PROPERTY = "body";
+
+    public static final String EVENT_BY_TYPE_AND_ID_VIEW_NAME = "event_by_type_and_id";
+    public static final String EVENT_BY_ID_VIEW_NAME = "event_by_id";
+
+    /**
      * Cassandra attributes and timeseries constants.
      */
     public static final String ATTRIBUTES_KV_CF = "attributes_kv_cf";

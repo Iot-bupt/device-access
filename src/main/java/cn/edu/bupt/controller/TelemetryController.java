@@ -65,5 +65,4 @@ public class TelemetryController extends BaseController {
             return null;
         }
     }
-
 }

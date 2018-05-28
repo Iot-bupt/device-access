@@ -1,8 +1,12 @@
 package cn.edu.bupt.websocket;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import cn.edu.bupt.pojo.Device;
+import com.alibaba.fastjson.JSON;
+import com.google.gson.*;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -11,6 +15,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -37,11 +43,11 @@ public class WebSocketServer{
         this.session = session;
         addOnlineCount();           //在线数加1
         log.info("有新连接加入！当前在线人数为" + getOnlineCount());
-        try {
+       /* try {
             sendMessage(this.hashCode()+"",this.session);
         } catch (IOException e) {
             log.error("websocket IO异常");
-        }
+        }*/
     }
 
     public void sendMessage(String message,Session session) throws IOException {
@@ -72,12 +78,22 @@ public class WebSocketServer{
      *
      * @param message 客户端发送过来的消息*/
     @OnMessage
-    public void onMessage(String message, Session session) {
+    public void onMessage(String message, Session session) throws IOException {
         log.info("来自客户端的消息:" + message);
 
         JsonObject jsonObj = (JsonObject)new JsonParser().parse(message);
         String deviceId = jsonObj.get("deviceId").getAsString();
         this.deviceId = deviceId;
+
+        String data = sendGETAllData(this.deviceId);
+        String deviceStr = getDeviceId(this.deviceId);
+
+        //Gson gson = new Gson();
+        Device device = JSON.parseObject(deviceStr, Device.class);
+
+        JsonObject jsonObject =  encodeJson(device,data);
+        sendMessage(jsonObject.toString(),this.session);
+
         if(map.containsKey(deviceId)){
             map.get(deviceId).add(session);
         }else{
@@ -124,5 +140,92 @@ public class WebSocketServer{
 
     public static synchronized void subOnlineCount() {
         WebSocketServer.onlineCount--;
+    }
+
+    public String sendGETAllData(String deviceId) throws IOException {
+
+        String host = null;
+        try {
+            host = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            System.out.println(e);
+        }
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("http://"+host+":8100/api/v1/data/alllatestdata/"+deviceId)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            throw new IOException("Unexpected code " + response);
+        }
+
+    }
+
+    public String getDeviceId(String deviceId) throws IOException {
+
+        String host = null;
+        try {
+            host = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            System.out.println(e);
+        }
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("http://"+host+":8100/api/v1/device/"+deviceId)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            throw new IOException("Unexpected code " + response);
+        }
+
+    }
+
+    public JsonObject encodeJson (Device device, String data){
+        JsonObject obj =  new JsonObject();
+        obj.addProperty("deviceId",device.getId().toString());
+        obj.addProperty("tenantId",device.getTenantId());
+        obj.addProperty("deviceType",device.getDeviceType());
+
+        JsonArray array = new JsonArray();
+
+        JsonArray dataArray = new JsonParser().parse(data).getAsJsonArray();
+        for(JsonElement elementData : dataArray ){
+            JsonObject objData = elementData.getAsJsonObject();
+
+            JsonObject jsonObj = new JsonObject();
+
+            jsonObj.addProperty("ts",objData.get("ts").getAsLong());
+            jsonObj.addProperty("key",objData.get("key").getAsString());
+            jsonObj.addProperty("value",objData.get("value").getAsString());
+            switch(objData.get("dataType").getAsString()){
+                case "string":
+                    jsonObj.addProperty("value",objData.get("value").getAsString());
+                    break;
+                case "boolean":
+                    jsonObj.addProperty("value",objData.get("value").getAsBoolean());
+                    break;
+                case "long":
+                    jsonObj.addProperty("value",objData.get("value").getAsLong());
+                    break;
+                case "double":
+                    jsonObj.addProperty("value",objData.get("value").getAsDouble());
+                    break;
+            }
+            array.add(jsonObj);
+        }
+        obj.add("data",array);
+        return obj;
     }
 }

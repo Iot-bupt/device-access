@@ -36,7 +36,7 @@ public class TelemetryController extends BaseController {
         }
     }
 
-    //通过设备ID获取所有最新数据
+    //通过设备ID获取所有键的最新数据
     @RequestMapping(value = "/alllatestdata/{deviceId}", method = RequestMethod.GET)
     public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId)
     throws Exception{
@@ -51,7 +51,7 @@ public class TelemetryController extends BaseController {
     }
 
 
-    //设备ID和键获取最新
+    //设备ID和键获取最新数据
     @RequestMapping(value = "/latestdata/{deviceId}/{keys}", method = RequestMethod.GET)
     public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId
     ,@PathVariable("keys") Collection<String> keys)
@@ -65,4 +65,18 @@ public class TelemetryController extends BaseController {
             return null;
         }
     }
+
+    //获取所有的数据的键类型
+    @RequestMapping(value = "/allKeys/{deviceId}", method = RequestMethod.GET)
+    public List<String> findAllKeys(@PathVariable("deviceId") String deviceId) throws Exception{
+        try{
+            ListenableFuture<List<String>> listListenableFuture = baseTimeseriesService.findAllKeys(toUUID(deviceId));
+            List<String> ls = listListenableFuture.get();
+            return ls;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

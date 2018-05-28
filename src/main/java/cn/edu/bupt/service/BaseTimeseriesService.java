@@ -53,6 +53,12 @@ public class BaseTimeseriesService implements TimeseriesService{
     }
 
     @Override
+    public ListenableFuture<List<String>> findAllKeys(UUID entityId) {
+        validate(entityId);
+        return timeseriesDao.findAllKeys(entityId);
+    }
+
+    @Override
     public ListenableFuture<List<Void>> save(UUID entityId, TsKvEntry tsKvEntry) {
         validate(entityId);
         if (tsKvEntry == null) {

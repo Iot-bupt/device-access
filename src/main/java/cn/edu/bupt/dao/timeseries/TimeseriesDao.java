@@ -18,6 +18,8 @@ public interface TimeseriesDao {
 
     ListenableFuture<List<TsKvEntry>> findAllLatest(UUID entityId);
 
+    ListenableFuture<List<String>> findAllKeys(UUID entityId);
+
     ListenableFuture<Void> save(UUID entityId, TsKvEntry tsKvEntry, long ttl);
 
     ListenableFuture<Void> savePartition(UUID entityId, long tsKvEntryTs, String key, long ttl);

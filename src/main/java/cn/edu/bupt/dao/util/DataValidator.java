@@ -15,6 +15,7 @@
  */
 package cn.edu.bupt.dao.util;
 
+import cn.edu.bupt.dao.BaseData;
 import cn.edu.bupt.dao.SearchTextBased;
 import cn.edu.bupt.dao.exception.DataValidationException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,7 +26,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 @Slf4j
-public abstract class DataValidator<D extends SearchTextBased> {
+public abstract class DataValidator<D extends BaseData> {
 
     
     public void validate(D data) {

@@ -19,9 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.UUID;
 
-public abstract class SearchTextBased{
-
-    protected UUID id;
+public abstract class SearchTextBased extends BaseData{
     
     public SearchTextBased() {
         super();
@@ -29,14 +27,6 @@ public abstract class SearchTextBased{
 
     public SearchTextBased(UUID id) {
         this.id = id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     @JsonIgnore

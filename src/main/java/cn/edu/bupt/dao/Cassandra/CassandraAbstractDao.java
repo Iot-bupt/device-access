@@ -1,6 +1,8 @@
 package cn.edu.bupt.dao.Cassandra;
 
+import cn.edu.bupt.pojo.event.EntityTypeCodec;
 import com.datastax.driver.core.*;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -20,6 +22,8 @@ public class CassandraAbstractDao {
             session = cluster.getSession();
             defaultReadLevel = cluster.getDefaultReadConsistencyLevel();
             defaultWriteLevel = cluster.getDefaultWriteConsistencyLevel();
+            CodecRegistry registry = session.getCluster().getConfiguration().getCodecRegistry();
+            registerCodecIfNotFound(registry, new EntityTypeCodec());
         }
         return session;
     }
@@ -52,5 +56,13 @@ public class CassandraAbstractDao {
             statement.setConsistencyLevel(level);
         }
         return getSession().executeAsync(statement);
+    }
+
+    private void registerCodecIfNotFound(CodecRegistry registry, TypeCodec<?> codec) {
+        try {
+            registry.codecFor(codec.getCqlType(), codec.getJavaType());
+        } catch (CodecNotFoundException e) {
+            registry.register(codec);
+        }
     }
 }

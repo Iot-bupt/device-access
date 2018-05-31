@@ -57,7 +57,7 @@ public class Event extends BaseData implements BaseEntity {
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
         sb.append("\"id\":")
-                .append(id);
+                .append("\""+id+"\"");
         sb.append(",\"tenantId\":")
                 .append(tenantId);
         sb.append(",\"entityType\":")

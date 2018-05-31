@@ -1,6 +1,7 @@
 package cn.edu.bupt.controller;
 
 
+import cn.edu.bupt.pojo.kv.Aggregation;
 import cn.edu.bupt.pojo.kv.BaseTsKvQuery;
 import cn.edu.bupt.pojo.kv.TsKvEntry;
 import cn.edu.bupt.pojo.kv.TsKvQuery;
@@ -21,11 +22,13 @@ public class TelemetryController extends BaseController {
                                       @RequestParam String key,
                                       @RequestParam String startTs,
                                       @RequestParam String endTs,
-                                      @RequestParam int limit
+                                      @RequestParam int interval,
+                                      @RequestParam int limit,
+                                      @RequestParam String aggregation
                                       ) throws Exception {
         try{
             List<TsKvQuery> queries = new ArrayList<>();
-            TsKvQuery tsKvQuery = new BaseTsKvQuery(key, Long.parseLong(startTs), Long.parseLong(endTs), limit);
+            TsKvQuery tsKvQuery = new BaseTsKvQuery(key, Long.parseLong(startTs), Long.parseLong(endTs), interval, limit, Aggregation.valueOf(aggregation));
             queries.add(tsKvQuery);
             ListenableFuture<List<TsKvEntry>> listListenableFuture = baseTimeseriesService.findAll(toUUID(deviceId),queries);
             List<TsKvEntry> ls = listListenableFuture.get();

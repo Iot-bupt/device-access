@@ -21,8 +21,8 @@ public class BaseTsKvQuery implements TsKvQuery {
         this.aggregation = aggregation;
     }
 
-    public BaseTsKvQuery(String key, long startTs, long endTs, int limit) {
-        this(key, startTs, endTs, 1000, limit, Aggregation.NONE);
+    public BaseTsKvQuery(String key, long startTs, long endTs, int interval, int limit) {
+        this(key, startTs, endTs, interval, limit, Aggregation.COUNT);
     }
 
 

@@ -71,4 +71,11 @@ public class Event extends BaseData implements BaseEntity {
         sb.append('}');
         return sb.toString();
     }
+
+    @Override
+    public long getCreatedTime(){
+        Long createdTime = id.timestamp();
+        createdTime = createdTime/10000000L - 12219292800L;
+        return createdTime;
+    }
 }

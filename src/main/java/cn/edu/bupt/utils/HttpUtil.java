@@ -20,7 +20,7 @@ public class HttpUtil {
         JsonObject obj = getDeviceServiceDes("bupt","switch","1","control swtich");
         System.out.println(obj);
     }
-    public static JsonObject getDeviceServiceDes(String manufacture, String deviceType, String model,String sericeName) throws IOException{
+    public static JsonObject getDeviceServiceDes(String manufacture, String deviceType, String model,String serviceName) throws IOException{
 //        String url = "http://172.24.32.167:8000/api/v1/ability/"+manufacture+"/"+deviceType+"/"+model;
         String url = "http://39.104.84.131:8000/api/v1/ability/"+manufacture+"/"+deviceType+"/"+model;
         Request.Builder buider = new Request.Builder()
@@ -35,7 +35,7 @@ public class HttpUtil {
                String str1 =  ele.getAsJsonObject().get("abilityDes").getAsString();
                JsonObject o = new  JsonParser().parse(str1).getAsJsonObject();
 
-               if (sericeName.equals(o.get("serviceName").getAsString())){
+               if (serviceName.equals(o.get("serviceName").getAsString())){
                     return o;
                }
             }

@@ -3,6 +3,9 @@ package cn.edu.bupt.controller;
 import cn.edu.bupt.actor.service.RpcMsgProcessor;
 import cn.edu.bupt.message.BasicFromServerRpcMsg;
 import cn.edu.bupt.pojo.Device;
+import cn.edu.bupt.pojo.event.EntityType;
+import cn.edu.bupt.pojo.event.Event;
+import cn.edu.bupt.service.BaseEventService;
 import cn.edu.bupt.service.DeviceService;
 import cn.edu.bupt.utils.HttpUtil;
 import com.google.gson.JsonObject;
@@ -20,7 +23,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/v1/rpc")
-public class RpcController{
+public class RpcController extends BaseController{
 
     @Autowired
     RpcMsgProcessor rpcMsgProcessor;
@@ -48,6 +51,14 @@ public class RpcController{
             msg    = new BasicFromServerRpcMsg(requestId,data,pdevice,res,serviceObj);
         }
         rpcMsgProcessor.process(msg);
+        Event event = new Event();
+        event.setEntityId(deviceId);
+        event.setTenantId(device.getTenantId());
+        event.setEntityType(EntityType.DEVICE);
+        JsonObject object = new JsonParser().parse(data).getAsJsonObject();
+        event.setBody(object.toString());
+        event.setEventType("TestType");
+        baseEventService.save(event);
         return res;
     }
 }

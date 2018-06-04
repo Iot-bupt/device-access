@@ -28,6 +28,8 @@ public class BaseController {
     @Autowired
     DeviceCredentialsService deviceCredentialsService;
 
+    @Autowired
+    BaseEventService baseEventService;
 
 
     UUID toUUID(String id) {

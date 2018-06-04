@@ -2,10 +2,7 @@ package cn.edu.bupt.actor.service;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import cn.edu.bupt.service.BaseAttributesService;
-import cn.edu.bupt.service.BaseTimeseriesService;
-import cn.edu.bupt.service.DeviceAuthService;
-import cn.edu.bupt.service.DeviceService;
+import cn.edu.bupt.service.*;
 import cn.edu.bupt.websocket.WebSocketServer;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -34,6 +31,9 @@ public class ActorSystemContext {
 
     @Autowired
     @Getter private BaseAttributesService baseAttributesService;
+
+    @Autowired
+    @Getter private BaseEventService baseEventService;
 
     @Autowired
     @Getter private WebSocketServer webSocketServer;

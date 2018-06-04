@@ -53,4 +53,14 @@ public class CassandraGroupDao extends CassandraAbstractSearchTextDao<Group> imp
         query.and(eq(ModelConstants.GROUP_NAME_PROPERTY, name));
         return Optional.ofNullable(findOneByStatement(query));
     }
+
+    @Override
+    public Optional<Group> findGroupByTenantAndCustomerIdAndName(Integer tenantId, Integer customerId, String name){
+        Select select = select().from(ModelConstants.GROUP_BY_TENANT_AND_CUSTOMER_AND_NAME_COLUMN_FAMILY_NAME);
+        Select.Where query = select.where();
+        query.and(eq(ModelConstants.GROUP_TENANT_ID_PROPERTY, tenantId));
+        query.and(eq(ModelConstants.GROUP_CUSTOMER_ID_PROPERTY, customerId));
+        query.and(eq(ModelConstants.GROUP_NAME_PROPERTY, name));
+        return Optional.ofNullable(findOneByStatement(query));
+    }
 }

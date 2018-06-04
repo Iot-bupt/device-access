@@ -48,4 +48,6 @@ public interface GroupDao extends Dao<Group> {
      */
     Optional<Group> findGroupByCustomerIdAndName(Integer customerId, String name);
 
+    Optional<Group> findGroupByTenantAndCustomerIdAndName(Integer tenantId, Integer customerId, String name);
+
 }

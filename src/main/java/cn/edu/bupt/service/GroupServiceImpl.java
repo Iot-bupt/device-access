@@ -44,6 +44,15 @@ public class GroupServiceImpl implements GroupService{
 
     //查找某个customer下的所有设备组信息
     @Override
+    public TextPageData<Group> findGroupsByTenantIdAndCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink) {
+        validateId(tenantId, "Incorrect tenantId " + tenantId);
+        validateId(customerId, "Incorrect customerId " + customerId);
+        validatePageLink(pageLink, "Incorrect page link " + pageLink);
+        List<Group> groups = groupDao.findGroupsByTenantIdAndCustomerId(tenantId, customerId, pageLink);
+        return new TextPageData<>(groups, pageLink);
+    }
+
+    @Override
     public TextPageData<Group> findGroupsByCustomerId(Integer customerId, TextPageLink pageLink) {
         validateId(customerId, "Incorrect customerId " + customerId);
         validatePageLink(pageLink, "Incorrect page link " + pageLink);

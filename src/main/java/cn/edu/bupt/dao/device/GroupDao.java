@@ -30,22 +30,10 @@ public interface GroupDao extends Dao<Group> {
      */
     List<Group> findGroupsByTenantId(Integer tenantId, TextPageLink pageLink);
 
-    /**
-     * Find groups by customerId and page link.
-     *
-     * @param customerId the customerId
-     * @param pageLink the page link
-     * @return the list of group object
-     */
-    List<Group> findGroupsByCustomerId(Integer customerId, TextPageLink pageLink) ;
+    List<Group> findGroupsByTenantIdAndCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink) ;
 
-    /**
-     * Find group by customerId and name.
-     *
-     * @param customerId the customerId
-     * @param name the group name
-     * @return found group
-     */
-    Optional<Group> findGroupByCustomerIdAndName(Integer customerId, String name);
+    List<Group> findGroupsByCustomerId(Integer customerId, TextPageLink pageLink);
+
+    Optional<Group> findGroupByTenantAndCustomerIdAndName(Integer tenantId, Integer customerId, String name);
 
 }

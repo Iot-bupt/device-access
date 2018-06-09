@@ -39,6 +39,13 @@ public class CassandraGroupDao extends CassandraAbstractSearchTextDao<Group> imp
     }
 
     @Override
+    public List<Group> findGroupsByTenantIdAndCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink) {
+        List<Group> groups = findPageWithTextSearch(ModelConstants.GROUP_BY_TENANT_AND_CUSTOMER_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME,
+                Arrays.asList(eq(ModelConstants.GROUP_TENANT_ID_PROPERTY, tenantId),eq(ModelConstants.GROUP_CUSTOMER_ID_PROPERTY, customerId)), pageLink);
+        return groups;
+    }
+
+    @Override
     public List<Group> findGroupsByCustomerId(Integer customerId, TextPageLink pageLink) {
         List<Group> groups = findPageWithTextSearch(ModelConstants.GROUP_BY_CUSTOMER_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME,
                 Arrays.asList(eq(ModelConstants.GROUP_CUSTOMER_ID_PROPERTY, customerId)), pageLink);
@@ -46,9 +53,10 @@ public class CassandraGroupDao extends CassandraAbstractSearchTextDao<Group> imp
     }
 
     @Override
-    public Optional<Group> findGroupByCustomerIdAndName(Integer customerId, String name){
-        Select select = select().from(ModelConstants.GROUP_BY_CUSTOMER_AND_NAME_COLUMN_FAMILY_NAME);
+    public Optional<Group> findGroupByTenantAndCustomerIdAndName(Integer tenantId, Integer customerId, String name){
+        Select select = select().from(ModelConstants.GROUP_BY_TENANT_AND_CUSTOMER_AND_NAME_COLUMN_FAMILY_NAME);
         Select.Where query = select.where();
+        query.and(eq(ModelConstants.GROUP_TENANT_ID_PROPERTY, tenantId));
         query.and(eq(ModelConstants.GROUP_CUSTOMER_ID_PROPERTY, customerId));
         query.and(eq(ModelConstants.GROUP_NAME_PROPERTY, name));
         return Optional.ofNullable(findOneByStatement(query));

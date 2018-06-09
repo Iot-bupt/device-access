@@ -148,6 +148,26 @@ public class GroupController extends BaseController {
         }
     }
 
+    //通过tenant和customer找group
+    @RequestMapping(value = "/groups/{tenantId}/{customerId}",params = {"limit"}, method = RequestMethod.GET)
+    public TextPageData<Group> getGroupsByTenantIdAndCustomerId(
+            @PathVariable("tenantId") Integer tenantId,
+            @PathVariable("customerId") Integer customerId,
+            @RequestParam int limit,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String textSearch,
+            @RequestParam(required = false) String idOffset,
+            @RequestParam(required = false) String textOffset) throws Exception{
+        try{
+            TextPageLink pageLink = new TextPageLink(limit, textSearch, idOffset==null?null:toUUID(idOffset), textOffset);
+            TextPageData<Group> customergroups = groupService.findGroupsByTenantIdAndCustomerId(tenantId, customerId, pageLink);
+            return customergroups;
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 
 

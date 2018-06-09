@@ -103,7 +103,9 @@ public class ModelConstants {
 
     public static final String GROUP_BY_TENANT_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "group_by_tenant_and_search_text";
     public static final String GROUP_BY_CUSTOMER_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "group_by_customer_and_search_text";
+    public static final String GROUP_BY_TENANT_AND_CUSTOMER_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME = "group_by_tenant_and_customer_and_search_text";
     public static final String GROUP_BY_CUSTOMER_AND_NAME_COLUMN_FAMILY_NAME = "group_by_customer_and_name";
+    public static final String GROUP_BY_TENANT_AND_CUSTOMER_AND_NAME_COLUMN_FAMILY_NAME = "group_by_tenant_and_customer_and_name";
 
     /**
      * Cassandra deviceByGroupId constants.

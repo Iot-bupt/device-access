@@ -16,7 +16,9 @@ public interface GroupService {
 
     TextPageData<Group> findGroupsByTenantId(Integer tenantId, TextPageLink pageLink);
 
-    TextPageData<Group> findGroupsByCustomerId(Integer customerId, TextPageLink pageLink) ;
-
     void deleteGroup(UUID groupId);
+
+    TextPageData<Group> findGroupsByCustomerId(Integer customerId, TextPageLink pageLink);
+
+    TextPageData<Group> findGroupsByTenantIdAndCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink);
 }

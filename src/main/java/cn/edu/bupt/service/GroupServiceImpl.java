@@ -44,6 +44,15 @@ public class GroupServiceImpl implements GroupService{
 
     //查找某个customer下的所有设备组信息
     @Override
+    public TextPageData<Group> findGroupsByTenantIdAndCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink) {
+        validateId(tenantId, "Incorrect tenantId " + tenantId);
+        validateId(customerId, "Incorrect customerId " + customerId);
+        validatePageLink(pageLink, "Incorrect page link " + pageLink);
+        List<Group> groups = groupDao.findGroupsByTenantIdAndCustomerId(tenantId, customerId, pageLink);
+        return new TextPageData<>(groups, pageLink);
+    }
+
+    @Override
     public TextPageData<Group> findGroupsByCustomerId(Integer customerId, TextPageLink pageLink) {
         validateId(customerId, "Incorrect customerId " + customerId);
         validatePageLink(pageLink, "Incorrect page link " + pageLink);
@@ -64,7 +73,7 @@ public class GroupServiceImpl implements GroupService{
 
                 @Override
                 protected void validateCreate(Group group) {
-                    groupDao.findGroupByCustomerIdAndName(group.getCustomerId(),  group.getName()).ifPresent(
+                    groupDao.findGroupByTenantAndCustomerIdAndName(group.getTenantId(), group.getCustomerId(),  group.getName()).ifPresent(
                             c -> {
                                 throw new DataValidationException("Group with such name already exists!");
                             }
@@ -73,7 +82,7 @@ public class GroupServiceImpl implements GroupService{
 
                 @Override
                 protected void validateUpdate(Group group) {
-                    groupDao.findGroupByCustomerIdAndName(group.getCustomerId(),  group.getName()).ifPresent(
+                    groupDao.findGroupByTenantAndCustomerIdAndName(group.getTenantId(), group.getCustomerId(),  group.getName()).ifPresent(
                             c -> {
                                 if (!c.getId().equals(group.getId())) {
                                     throw new DataValidationException("Group with such name already exists!");

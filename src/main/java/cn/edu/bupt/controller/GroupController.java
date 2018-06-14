@@ -12,7 +12,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/deviceaccess")
 public class GroupController extends BaseController {
 
     public static final String DEVICE_ID = "deviceId";

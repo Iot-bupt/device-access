@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/data")
+@RequestMapping("/api/v1/deviceaccess/data")
 public class TelemetryController extends BaseController {
 
     //通过设备ID和查询内容获取所有历史数据

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/deviceaccess")
 public class DeviceController extends BaseController {
     public static final String DEVICE_ID = "deviceId";
 

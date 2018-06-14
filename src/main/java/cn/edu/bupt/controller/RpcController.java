@@ -22,7 +22,7 @@ import java.util.UUID;
  * Created by Administrator on 2018/4/24.
  */
 @RestController
-@RequestMapping("/api/v1/rpc")
+@RequestMapping("/api/v1/deviceaccess/rpc")
 public class RpcController extends BaseController{
 
     @Autowired

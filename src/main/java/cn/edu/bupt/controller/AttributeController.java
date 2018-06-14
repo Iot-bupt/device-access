@@ -18,7 +18,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/deviceaccess")
 public class AttributeController extends BaseController{
 
     //通过设备ID获取全部属性

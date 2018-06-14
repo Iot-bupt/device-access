@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@ServerEndpoint(value = "api/v1/deviceaccess/websocket")
+@ServerEndpoint(value = "/api/v1/deviceaccess/websocket")
 @Component
 public class WebSocketServer{
 

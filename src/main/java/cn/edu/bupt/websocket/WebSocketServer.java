@@ -2,7 +2,10 @@ package cn.edu.bupt.websocket;
 
 import cn.edu.bupt.pojo.Device;
 import com.alibaba.fastjson.JSON;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -15,8 +18,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -144,17 +145,17 @@ public class WebSocketServer{
 
     public String sendGETAllData(String deviceId) throws IOException {
 
-        String host = null;
+ /*       String host = null;
         try {
             host = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             System.out.println(e);
         }
-
+*/
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("http://"+host+":8100/api/v1/data/alllatestdata/"+deviceId)
+                .url("http://deviceaccess:8100/api/v1/data/alllatestdata/"+deviceId)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -169,17 +170,17 @@ public class WebSocketServer{
 
     public String getDeviceId(String deviceId) throws IOException {
 
-        String host = null;
+/*        String host = null;
         try {
             host = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             System.out.println(e);
-        }
+        }*/
 
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("http://"+host+":8100/api/v1/device/"+deviceId)
+                .url("http://deviceaccess:8100/api/v1/device/"+deviceId)
                 .build();
 
         Response response = client.newCall(request).execute();

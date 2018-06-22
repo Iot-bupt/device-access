@@ -155,7 +155,7 @@ public class WebSocketServer{
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("http://deviceaccess:8100/api/v1/deviceaccess/data/alllatestdata/"+deviceId)
+                .url("http://39.104.189.84:30080/api/v1/deviceaccess/data/alllatestdata/"+deviceId)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -180,7 +180,7 @@ public class WebSocketServer{
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("http://deviceaccess:8100/api/v1/deviceaccess/device/"+deviceId)
+                .url("http://39.104.189.84:30080/api/v1/deviceaccess/device/"+deviceId)
                 .build();
 
         Response response = client.newCall(request).execute();

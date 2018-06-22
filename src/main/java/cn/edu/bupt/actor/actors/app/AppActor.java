@@ -39,6 +39,8 @@ public class AppActor extends ContextAwareActor{
             process((FromSessionActorToDeviceActorMsg)msg);
         }else if(msg instanceof FromServerMsg){
             process((FromServerMsg)msg);
+        }else if(msg instanceof BasicFromServerMsg){
+            process((BasicFromServerMsg)msg);
         }
     }
 
@@ -53,6 +55,10 @@ public class AppActor extends ContextAwareActor{
         getOrCreateTenantActor(msg.getTenantId()).tell(msg,ActorRef.noSender());
     }
 
+    private void process(BasicFromServerMsg msg) {
+        String tenantId = msg .getTenantId();
+        getOrCreateTenantActor(tenantId).tell(msg,ActorRef.noSender());
+    }
 
     private ActorRef getOrCreateTenantActor(String tenantId) {
         return tenantActors.computeIfAbsent(tenantId, k -> context().actorOf(Props.create(new TenantActor.ActorCreator(systemContext, tenantId))

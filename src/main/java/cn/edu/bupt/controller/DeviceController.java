@@ -1,8 +1,10 @@
 package cn.edu.bupt.controller;
 
+import cn.edu.bupt.actor.service.FromServerMsgProcessor;
 import cn.edu.bupt.dao.page.TextPageData;
 import cn.edu.bupt.dao.page.TextPageLink;
 
+import cn.edu.bupt.message.BasicFromServerMsg;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.utils.StringUtil;
 import com.alibaba.fastjson.JSON;
@@ -11,7 +13,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/deviceaccess")
 public class DeviceController extends BaseController {
+    @Autowired
+    FromServerMsgProcessor fromServerMsgProcessor;
+
     public static final String DEVICE_ID = "deviceId";
 
     //对设备的操作
@@ -246,15 +254,21 @@ public class DeviceController extends BaseController {
     }
 
     @RequestMapping(value = "/device/status/{tenantId}", method = RequestMethod.POST)
-    public String getDeviceStatus(@RequestBody String devices, @PathVariable Integer tenantId){
+    public DeferredResult<ResponseEntity> getDeviceStatus(@RequestBody String devices, @PathVariable Integer tenantId){
+        DeferredResult<ResponseEntity> res = new DeferredResult<>();
+
         try{
             JsonObject jsonObject = (JsonObject)new JsonParser().parse(devices);
-            List<String> deviceId = new ArrayList<>();
+            List<String> deviceIds = new ArrayList<>();
             JsonArray Dids = jsonObject.getAsJsonArray("deviceId");
             for(JsonElement element : Dids){
-                deviceId.add(element.getAsString());
+                deviceIds.add(element.getAsString());
             }
-            return null;
+
+            BasicFromServerMsg msg = new BasicFromServerMsg(tenantId.toString(),deviceIds,res);
+            fromServerMsgProcessor.process(msg);
+
+            return res;
 
         }catch (Exception e){
             return null;

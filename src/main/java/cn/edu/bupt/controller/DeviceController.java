@@ -7,8 +7,13 @@ import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.utils.StringUtil;
 import com.alibaba.fastjson.JSON;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -236,6 +241,22 @@ public class DeviceController extends BaseController {
             ));
         }catch (Exception e){
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/device/status/{tenantId}", method = RequestMethod.POST)
+    public String getDeviceStatus(@RequestBody String devices, @PathVariable Integer tenantId){
+        try{
+            JsonObject jsonObject = (JsonObject)new JsonParser().parse(devices);
+            List<String> deviceId = new ArrayList<>();
+            JsonArray Dids = jsonObject.getAsJsonArray("deviceId");
+            for(JsonElement element : Dids){
+                deviceId.add(element.getAsString());
+            }
+            return null;
+
+        }catch (Exception e){
             return null;
         }
     }

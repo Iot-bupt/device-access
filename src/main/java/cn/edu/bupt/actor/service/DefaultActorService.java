@@ -1,8 +1,12 @@
 package cn.edu.bupt.actor.service;
 
-import akka.actor.*;
-import cn.edu.bupt.actor.actors.session.SessionManagerActor;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.actor.Terminated;
 import cn.edu.bupt.actor.actors.app.AppActor;
+import cn.edu.bupt.actor.actors.session.SessionManagerActor;
+import cn.edu.bupt.message.BasicFromServerMsg;
 import cn.edu.bupt.message.FromServerMsg;
 import cn.edu.bupt.message.SessionAwareMsg;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +22,7 @@ import javax.annotation.PreDestroy;
  * Created by Administrator on 2018/4/17.
  */
 @Service
-public class DefaultActorService implements SessionMsgProcessor,RpcMsgProcessor {
+public class DefaultActorService implements SessionMsgProcessor,RpcMsgProcessor,FromServerMsgProcessor {
 
     private static final String ACTOR_SYSTEM_NAME = "Akka";
     public static final String CORE_DISPATCHER_NAME = "core-dispatcher";
@@ -65,6 +69,11 @@ public class DefaultActorService implements SessionMsgProcessor,RpcMsgProcessor 
 
     @Override
     public void process(FromServerMsg msg) {
+        appActor.tell(msg,ActorRef.noSender());
+    }
+
+    @Override
+    public void process(BasicFromServerMsg msg) {
         appActor.tell(msg,ActorRef.noSender());
     }
 }

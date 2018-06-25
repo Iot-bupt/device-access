@@ -8,9 +8,9 @@ import java.util.Optional;
  * Created by Administrator on 2018/4/14.
  */
 public class StringEntry extends BasicTelemetryKvEntry {
-    private final String value;
+    private String value;
 
-    public  StringEntry(String key,String value) {
+    public StringEntry(String key,String value) {
         super(key);
         this.value = value;
     }
@@ -33,4 +33,9 @@ public class StringEntry extends BasicTelemetryKvEntry {
     public Object getValue() {
         return value;
     }
+
+    public void setValue(String value){
+        this.value = value;
+    }
+
 }

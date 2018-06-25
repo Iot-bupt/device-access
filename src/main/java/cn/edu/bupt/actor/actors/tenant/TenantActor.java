@@ -4,15 +4,16 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.japi.Creator;
 import cn.edu.bupt.actor.actors.ContextAwareActor;
-import cn.edu.bupt.actor.actors.app.AppActor;
 import cn.edu.bupt.actor.actors.device.DeviceActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.actor.service.DefaultActorService;
 import cn.edu.bupt.message.*;
+import com.google.gson.JsonObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +51,8 @@ public class TenantActor extends ContextAwareActor {
             }
         }else if(msg instanceof FromServerMsg){
             process((FromServerMsg)msg);
+        }else if(msg instanceof BasicFromServerMsg) {
+            process((BasicFromServerMsg)msg);
         }
     }
 
@@ -62,6 +65,19 @@ public class TenantActor extends ContextAwareActor {
                 ((BasicFromServerRpcMsg)msg).getRes().setResult(new ResponseEntity(DEVICE_OFFLINE,HttpStatus.OK));
             }
         }
+    }
+
+    private void process(BasicFromServerMsg msg){
+        JsonObject jsonObject = new JsonObject();
+        List<String> deviceIds= msg.getDeviceIds();
+        for(String deviceId:deviceIds){
+            if(deviceActors.containsKey(deviceId)){
+                jsonObject.addProperty(deviceId,"online");
+            }else {
+                jsonObject.addProperty(deviceId,"offline");
+            }
+        }
+        msg.getRes().setResult(new ResponseEntity(jsonObject.toString(),HttpStatus.OK));
     }
 
     private ActorRef getOrCreateDeviceActor(String deviceId) {

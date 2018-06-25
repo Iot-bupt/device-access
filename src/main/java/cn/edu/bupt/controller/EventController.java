@@ -8,7 +8,7 @@ import com.google.gson.JsonArray;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/deviceaccess")
 public class EventController extends BaseController{
 
     //通过ID查找事件

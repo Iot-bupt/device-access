@@ -3,6 +3,7 @@ package cn.edu.bupt.actor.actors.device;
 import akka.actor.ActorRef;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.common.entry.BasicAttributeKvEntry;
+import cn.edu.bupt.common.entry.StringEntry;
 import cn.edu.bupt.message.*;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.kv.AttributeKvEntry;
@@ -18,9 +19,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.imageio.ImageIO;
 import javax.websocket.Session;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 /**
  * Created by Administrator on 2018/4/17.
@@ -30,6 +40,8 @@ public class DeviceActorMsgProcessor {
     private final Set<String> subscriptions;
     private final  Map<Integer,DeferredResult<ResponseEntity>> rpcRequests;
     private final ActorSystemContext actorSystemContext;
+    static BASE64Encoder encoder = new sun.misc.BASE64Encoder();
+    static BASE64Decoder decoder = new sun.misc.BASE64Decoder();
 
     public  DeviceActorMsgProcessor(ActorSystemContext actorSystemContext){
         rpcRequests  = new HashMap<>();
@@ -105,17 +117,36 @@ public class DeviceActorMsgProcessor {
 
      public void handleTelemetryUploadRequest(TelemetryUploadMsg msg, BasicToDeviceActorMsg msg1) throws IOException {
         Map<Long, List<cn.edu.bupt.common.entry.KvEntry>> data = msg.getData();
-         sendDataToKafka(msg1.getDevice(),data);
+
         for( long ts : data.keySet()){
             UUID entityId = UUID.fromString(msg1.getDeviceId());
             List<cn.edu.bupt.common.entry.KvEntry> KvEntry = data.get(ts);
             List<TsKvEntry> ls = new ArrayList<>();
-            KvEntry.forEach(entry->{
+            for(cn.edu.bupt.common.entry.KvEntry en : KvEntry){
+                if(en.getKey().equals("picture")){
+                    if(en instanceof StringEntry){
+                        // 图片二进制转为图片，将路径存入
+                        String[] pathWords = {"root", "iot", "treatment", "img"} ;
+                        //String[] pathWords = {"D:\\pic", "oup"} ;
+                        String path = String.join(File.separator, Arrays.asList(pathWords));
+                        String pathname = path +"\\" + System.currentTimeMillis() +".jpg";
+                        BufferedImage img = BinaryToImage(en.getValueAsString());
+                        saveImage(img, pathname);
+                        //设置路径存入
+                        ((StringEntry) en).setValue(pathname);
+                        ls.add(new BasicAdaptorTsKvEntry(ts, en));
+                    }
+                }else{
+                    ls.add(new BasicAdaptorTsKvEntry(ts, en));
+                }
+            }
+          /*  KvEntry.forEach(entry->{
                 ls.add(new BasicAdaptorTsKvEntry(ts,entry));
-            });
+            });*/
             BaseTimeseriesService baseTimeseriesService = actorSystemContext.getBaseTimeseriesService();
             baseTimeseriesService.save(entityId, ls, 0);
         }
+        sendDataToKafka(msg1.getDevice(),data);
     }
 
 
@@ -169,5 +200,27 @@ public class DeviceActorMsgProcessor {
 
         KafkaUtil.send("",obj.toString());
     }
+
+
+
+    public BufferedImage BinaryToImage(String binary) {
+        try{
+            byte[] bytes1 = decoder.decodeBuffer(binary);
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes1);
+            BufferedImage image = ImageIO.read(bais);
+            return image;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void saveImage(BufferedImage bufferedImage, String pathname) throws IOException {
+
+        ImageIO.write(bufferedImage,"jpg", new File(pathname));
+    }
+
+
+
 
 }

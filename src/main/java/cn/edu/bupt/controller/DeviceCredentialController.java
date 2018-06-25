@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/deviceaccess")
 public class DeviceCredentialController extends BaseController {
 
     //创建

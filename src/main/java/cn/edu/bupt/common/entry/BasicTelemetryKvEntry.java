@@ -16,7 +16,9 @@ public abstract class BasicTelemetryKvEntry implements KvEntry{
     @Override
     public String getKey() {
         return key;
-    }    @Override
+    }
+
+    @Override
     public Optional<Boolean> getBooleanValue() {
         return Optional.ofNullable(null);
     }
@@ -31,10 +33,9 @@ public abstract class BasicTelemetryKvEntry implements KvEntry{
         return Optional.ofNullable(null);
     }
 
-
-
     @Override
     public Optional<Double> getDoubleValue() {
         return Optional.ofNullable(null);
     }
+
 }

@@ -65,6 +65,9 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
     @Column(name  = DEVICE_SITE_ID_PROPERTY )
     private Integer siteId;
 
+    @Column(name  = DEVICE_LIFE_TIME_PROPERTY )
+    private long lifeTime;
+
 //    public Device(Device device) {
 //        this.id = id;
 //        this.tenantId = tenantId;
@@ -183,6 +186,14 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
         this.siteId = siteId;
     }
 
+    public long getLifeTime() {
+        return lifeTime;
+    }
+
+    public void setLifeTime(long lifeTime) {
+        this.lifeTime = lifeTime;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
@@ -210,6 +221,8 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
                 .append(location).append('\"');
         sb.append(",\"siteId\":\"")
                 .append(siteId).append('\"');
+        sb.append(",\"lifeTime\":\"")
+                .append(lifeTime).append('\"');
         sb.append('}');
         return sb.toString();
     }
@@ -218,9 +231,11 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Device device = (Device) o;
 
+        if (lifeTime != device.lifeTime) return false;
         if (id != null ? !id.equals(device.id) : device.id != null) return false;
         if (tenantId != null ? !tenantId.equals(device.tenantId) : device.tenantId != null) return false;
         if (customerId != null ? !customerId.equals(device.customerId) : device.customerId != null) return false;
@@ -238,7 +253,8 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (tenantId != null ? tenantId.hashCode() : 0);
         result = 31 * result + (customerId != null ? customerId.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
@@ -250,6 +266,14 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (location != null ? location.hashCode() : 0);
         result = 31 * result + (siteId != null ? siteId.hashCode() : 0);
+        result = 31 * result + (int) (lifeTime ^ (lifeTime >>> 32));
         return result;
+    }
+
+    @Override
+    public long getCreatedTime(){
+        Long createdTime = id.timestamp();
+        createdTime = createdTime/10000000L - 12219292800L;
+        return createdTime;
     }
 }

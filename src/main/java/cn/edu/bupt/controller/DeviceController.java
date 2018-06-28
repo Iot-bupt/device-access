@@ -6,6 +6,7 @@ import cn.edu.bupt.dao.page.TextPageLink;
 
 import cn.edu.bupt.message.BasicFromServerMsg;
 import cn.edu.bupt.pojo.Device;
+import cn.edu.bupt.security.HttpUtil;
 import cn.edu.bupt.utils.StringUtil;
 import com.alibaba.fastjson.JSON;
 
@@ -15,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -31,6 +33,17 @@ public class DeviceController extends BaseController {
     FromServerMsgProcessor fromServerMsgProcessor;
 
     public static final String DEVICE_ID = "deviceId";
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test(@RequestParam String token)  {
+        return HttpUtil.checkToken(token);
+    }
+
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/test2", method = RequestMethod.GET)
+    public String test2()  {
+        return "Hello";
+    }
 
     //对设备的操作
     //创建设备

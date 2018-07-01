@@ -63,6 +63,7 @@ public class DeviceController extends BaseController {
     }
 
     //删除设备
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.DELETE)
     public void deleteDevice(@PathVariable(DEVICE_ID) String strDeviceId) throws Exception {
         if (StringUtil.isEmpty(strDeviceId)) {

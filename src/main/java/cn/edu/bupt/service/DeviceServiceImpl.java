@@ -11,19 +11,35 @@ import cn.edu.bupt.dao.util.PaginatedRemover;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.DeviceByGroupId;
 import cn.edu.bupt.pojo.DeviceCredentials;
+import cn.edu.bupt.pojo.Tenant;
+import com.alibaba.fastjson.JSON;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import static cn.edu.bupt.dao.util.Validator.*;
 
 /**
  * Created by Administrator on 2018/4/14.
  */
 @Service
-public class DeviceServiceImpl implements  DeviceService{
+public class DeviceServiceImpl implements  DeviceService, InitializingBean{
 
     public static final String INCORRECT_TENANT_ID = "Incorrect tenantId ";
     public static final String INCORRECT_PAGE_LINK = "Incorrect page link ";
@@ -288,5 +304,55 @@ public class DeviceServiceImpl implements  DeviceService{
             unassignDeviceFromCustomer(entity.getId());
         }
 
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception{
+        Observable
+                .interval(1, TimeUnit.MINUTES)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(Schedulers.io())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        try {
+                            List<Tenant> tenants= getTenants();
+                            List<Device> devices =  new LinkedList<>();
+                            for (Tenant tenant: tenants){
+
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+    }
+
+    private List<Tenant> getTenants() throws IOException {
+        List<Tenant> tenants = new ArrayList<>();
+        OkHttpClient client = new OkHttpClient();
+        int page = 0;
+
+        while(true) {
+            Request request = new Request.Builder().url("http://account:8400/api/v1/account/tenants?limit=1000&page="+page).build();
+
+            Response response = client.newCall(request).execute();
+
+            if (response.isSuccessful()) {
+                JsonArray jsonArray = new JsonParser().parse(response.body().string()).getAsJsonArray();
+
+                if(jsonArray.size()==0){
+                    return tenants;
+                }
+
+                for(JsonElement jsonElement:jsonArray){
+                    JsonObject jsonObject = jsonElement.getAsJsonObject();
+                    tenants.add(JSON.parseObject(jsonObject.getAsString(), Tenant.class));
+                }
+                page++;
+            } else {
+                throw new IOException("Unexpected code " + response);
+            }
+        }
     }
 }

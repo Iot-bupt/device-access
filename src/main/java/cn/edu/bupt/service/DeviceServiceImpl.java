@@ -207,6 +207,14 @@ public class DeviceServiceImpl implements  DeviceService{
         return new TextPageData<>(devices, pageLink);
     }
 
+    @Override
+    public TextPageData<Device> findDevices(Integer tenantId,TextPageLink pageLink){
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validatePageLink(pageLink, INCORRECT_PAGE_LINK + pageLink);
+        List<Device> devices = deviceDao.findDevices(tenantId,pageLink);
+        return new TextPageData<>(devices, pageLink);
+    }
+
     private DataValidator<Device> deviceValidator =
             new DataValidator<Device>() {
 

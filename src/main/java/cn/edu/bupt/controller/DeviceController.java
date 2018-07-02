@@ -267,6 +267,23 @@ public class DeviceController extends BaseController {
         }
     }
 
+    @RequestMapping(value = "/devices/{tenantId}", params = {"limit"}, method = RequestMethod.GET)
+    public TextPageData<Device> getDevices(
+            @PathVariable("tenantId") Integer tenantId,
+            @RequestParam int limit,
+            @RequestParam(required = false) String textSearch,
+            @RequestParam(required = false) String idOffset,
+            @RequestParam(required = false) String textOffset) throws Exception {
+        try {
+            TextPageLink pageLink = new TextPageLink(limit, textSearch,idOffset==null?null:toUUID(idOffset), textOffset);
+            TextPageData<Device> ls = deviceService.findDevices(tenantId,pageLink);
+            return ls;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @RequestMapping(value = "/device/status/{tenantId}", method = RequestMethod.POST)
     public DeferredResult<ResponseEntity> getDeviceStatus(@RequestBody String devices, @PathVariable Integer tenantId){
         DeferredResult<ResponseEntity> res = new DeferredResult<>();

@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 import static cn.edu.bupt.dao.ModelConstants.*;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.*;
 
 /**
  * Created by CZX on 2018/4/17.
@@ -85,5 +84,10 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
         return devices;
     }
 
-
+    @Override
+    public List<Device> findDevices(int tenantId,TextPageLink pageLink) {
+        List<Device> devices = findPageWithTextSearch("device_by_tenant_and_search_text2",
+                Collections.singletonList(eq(DEVICE_TENANT_ID_PROPERTY, tenantId)), pageLink);
+        return devices;
+    }
 }

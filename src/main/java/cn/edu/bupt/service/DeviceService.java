@@ -48,4 +48,6 @@ public interface DeviceService {
 
     TextPageData<Device> findDevicesByTenantIdAndSiteId(Integer tenantId, Integer siteId, TextPageLink pageLink);
 
+    TextPageData<Device> findDevices(Integer tenantId,TextPageLink pageLink);
+
 }

@@ -5,7 +5,6 @@ import cn.edu.bupt.message.BasicFromServerRpcMsg;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.event.EntityType;
 import cn.edu.bupt.pojo.event.Event;
-import cn.edu.bupt.service.BaseEventService;
 import cn.edu.bupt.service.DeviceService;
 import cn.edu.bupt.utils.HttpUtil;
 import com.google.gson.JsonObject;
@@ -59,6 +58,7 @@ public class RpcController extends BaseController{
         event.setBody(object.toString());
         event.setEventType("TestType");
         baseEventService.save(event);
+        deviceService.sendMessage(device,event.getBody());
         return res;
     }
 }

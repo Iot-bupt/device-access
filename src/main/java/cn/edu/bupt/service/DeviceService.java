@@ -49,4 +49,6 @@ public interface DeviceService {
 
     TextPageData<Device> findDevices(Integer tenantId,TextPageLink pageLink);
 
+    String sendMessage(Device device,String message);
+
 }

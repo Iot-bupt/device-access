@@ -355,7 +355,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         int page = 0;
 
         while(true) {
-            String response = httpUtil.sendGet("http://127.0.0.1:8400/api/v1/account/tenants?limit=1000&page="+page,null);
+            String response = httpUtil.sendGet("http://account:8400/api/v1/account/tenants?limit=1000&page="+page,null);
 
             if (response!=null) {
                 JsonArray jsonArray = new JsonParser().parse(response).getAsJsonArray();
@@ -375,9 +375,9 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         }
     }
 
-    private String sendWarnMessage(Device device,Integer month){
+    public String sendMessage(Device device,String message){
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("message","您的"+device.getName()+"设备距离检修年限不足"+month+"个月");
+        jsonObject.addProperty("message",message);
         jsonObject.addProperty("messageType", "fromModule");
         jsonObject.addProperty("ts", System.currentTimeMillis());
         jsonObject.addProperty("tenantId",device.getTenantId());
@@ -409,14 +409,17 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
     }
 
     public void checkData(TextPageData pageData){
+        String message = null;
         for(Object object:pageData.getData())
         {
             Device device = (Device)object;
             if((device.getLifeTime()-device.getCreatedTime())<=15552000000L && (device.getLifeTime()-device.getCreatedTime())>15465600000L ){
-                sendWarnMessage(device,6);
+                message = device.getName()+"设备距离检修年限不足6个月";
+                sendMessage(device,message);
             }
             if((device.getLifeTime()-device.getCreatedTime())<=2592000000L && (device.getLifeTime()-device.getCreatedTime())>2505600000L ){
-                sendWarnMessage(device,1);
+                message = device.getName()+"设备距离检修年限不足1个月";
+                sendMessage(device,message);
             }
         }
     }

@@ -80,6 +80,7 @@ public class ModelConstants {
     public static final String DEVICE_STATUS_PROPERTY = "status";
     public static final String DEVICE_LOCATION_PROPERTY = "location";
     public static final String DEVICE_SITE_ID_PROPERTY = "site_id";
+    public static final String DEVICE_LIFE_TIME_PROPERTY = "life_time";
     public static final String DEVICE_ADDITIONAL_INFO_PROPERTY = ADDITIONAL_INFO_PROPERTY;
 
     public static final String DEVICE_BY_TENANT_AND_PARENT_DEVICE_ID_COLUMN_FAMILY_NAME = "device_by_tenant_and_parent_device_id";

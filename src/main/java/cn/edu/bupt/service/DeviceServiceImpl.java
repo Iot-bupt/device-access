@@ -323,7 +323,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         TextPageData pageData;
 
         Observable
-                .interval(1, TimeUnit.MINUTES)
+                .interval(1, TimeUnit.DAYS)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<Long>() {
@@ -413,11 +413,11 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         for(Object object:pageData.getData())
         {
             Device device = (Device)object;
-            if((device.getLifeTime()-device.getCreatedTime())<=15552000000L && (device.getLifeTime()-device.getCreatedTime())>15465600000L ){
+            if((device.getLifeTime()-System.currentTimeMillis())<=15552000000L && (device.getLifeTime()-System.currentTimeMillis())>15465600000L ){
                 message = device.getName()+"设备距离检修年限不足6个月";
                 sendMessage(device,message);
             }
-            if((device.getLifeTime()-device.getCreatedTime())<=2592000000L && (device.getLifeTime()-device.getCreatedTime())>2505600000L ){
+            if((device.getLifeTime()-System.currentTimeMillis())<=2592000000L && (device.getLifeTime()-System.currentTimeMillis())>2505600000L ){
                 message = device.getName()+"设备距离检修年限不足1个月";
                 sendMessage(device,message);
             }

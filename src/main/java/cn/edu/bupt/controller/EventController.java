@@ -24,7 +24,28 @@ public class EventController extends BaseController{
         }
         try {
 
-            TimePageLink pageLink = new TimePageLink(limit,startTime,endTime,ascOrder);
+            TimePageLink pageLink = new TimePageLink(limit,1000*startTime,1000*endTime,ascOrder);
+            TimePageData<Event> event = baseEventService.findEvents(tenantId, deviceId, pageLink);
+            return event;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/event/newest/{tenantId}/{deviceId}", method = RequestMethod.GET)
+    public TimePageData<Event> getEventById(@PathVariable("deviceId") String deviceId,
+                                            @PathVariable("tenantId") Integer tenantId,
+                                            @RequestParam(required = false) String idOffset ,
+                                            @RequestParam int limit
+                                            ) throws Exception {
+        if (StringUtil.isEmpty(deviceId)) {
+            throw new Exception("can't be empty");
+        }
+        try {
+
+            TimePageLink pageLink = new TimePageLink(limit);
+            pageLink.setIdOffset(idOffset==null?null:toUUID(idOffset));
             TimePageData<Event> event = baseEventService.findEvents(tenantId, deviceId, pageLink);
             return event;
         } catch (Exception e) {

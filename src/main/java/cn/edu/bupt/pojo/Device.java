@@ -1,13 +1,11 @@
 package cn.edu.bupt.pojo;
 
-import cn.edu.bupt.dao.BaseEntity;
 import cn.edu.bupt.dao.SearchTextBased;
 import cn.edu.bupt.dao.SearchTextEntity;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 import com.google.gson.annotations.Expose;
-import scala.Int;
 
 import java.io.Serializable;
 import java.util.UUID;

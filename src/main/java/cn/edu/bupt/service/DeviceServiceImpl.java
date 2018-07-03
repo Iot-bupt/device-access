@@ -12,14 +12,13 @@ import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.pojo.DeviceByGroupId;
 import cn.edu.bupt.pojo.DeviceCredentials;
 import cn.edu.bupt.pojo.Tenant;
+import cn.edu.bupt.security.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,10 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static cn.edu.bupt.dao.util.Validator.*;
@@ -53,6 +55,8 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
 
     @Autowired
     private DeviceDao deviceDao;
+
+    private HttpUtil httpUtil = new HttpUtil();
 //
 //    @Autowired
 //    private TenantDao tenantDao;
@@ -316,6 +320,11 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
 
     @Override
     public void afterPropertiesSet() throws Exception{
+        String textSearch = null;
+        String idOffset = null;
+        String textOffset = null;
+        TextPageData pageData;
+
         Observable
                 .interval(1, TimeUnit.MINUTES)
                 .subscribeOn(Schedulers.computation())
@@ -325,29 +334,33 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
                     public void call(Long aLong) {
                         try {
                             List<Tenant> tenants= getTenants();
-                            List<Device> devices =  new LinkedList<>();
+                            TextPageData pageData;
                             for (Tenant tenant: tenants){
+                                TextPageLink pageLink = new TextPageLink(1000, textSearch,idOffset==null?null:UUID.fromString(idOffset), textOffset);
+                                pageData = findDevices(tenant.getId() , pageLink);
+                                checkData(pageData);
 
+                                while(pageData.hasNext()) {
+                                    pageData = findDevices(tenant.getId() , pageData.getNextPageLink());
+                                    checkData(pageData);
+                                }
                             }
-                        } catch (IOException e) {
+                        }  catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-                })
+                });
     }
 
-    private List<Tenant> getTenants() throws IOException {
+    private List<Tenant> getTenants() throws Exception {
         List<Tenant> tenants = new ArrayList<>();
-        OkHttpClient client = new OkHttpClient();
         int page = 0;
 
         while(true) {
-            Request request = new Request.Builder().url("http://account:8400/api/v1/account/tenants?limit=1000&page="+page).build();
+            String response = httpUtil.sendGet("http://127.0.0.1:8400/api/v1/account/tenants?limit=1000&page="+page,null);
 
-            Response response = client.newCall(request).execute();
-
-            if (response.isSuccessful()) {
-                JsonArray jsonArray = new JsonParser().parse(response.body().string()).getAsJsonArray();
+            if (response!=null) {
+                JsonArray jsonArray = new JsonParser().parse(response).getAsJsonArray();
 
                 if(jsonArray.size()==0){
                     return tenants;
@@ -363,4 +376,51 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
             }
         }
     }
+
+    private String sendWarnMessage(Device device,Integer month){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("message","您的"+device.getName()+"设备距离检修年限不足"+month+"个月");
+        jsonObject.addProperty("messageType", "fromModule");
+        jsonObject.addProperty("ts", System.currentTimeMillis());
+        jsonObject.addProperty("tenantId",device.getTenantId());
+
+
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8")
+                , jsonObject.toString());
+
+        System.out.println(requestBody);
+
+        Request request = new Request.Builder()
+                .url("http://updatemessageplugin:8500/api/v1/updatemessageplugin/updateMessage/insert")
+                .post(requestBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println(e);
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()){
+                    System.out.println("Success");
+                }
+            }
+        });
+        return "Success";
+    }
+
+    public void checkData(TextPageData pageData){
+        for(Object object:pageData.getData())
+        {
+            Device device = (Device)object;
+            if((device.getLifeTime()-device.getCreatedTime())<=15552000000L && (device.getLifeTime()-device.getCreatedTime())>15465600000L ){
+                sendWarnMessage(device,6);
+            }
+            if((device.getLifeTime()-device.getCreatedTime())<=2592000000L && (device.getLifeTime()-device.getCreatedTime())>2505600000L ){
+                sendWarnMessage(device,1);
+            }
+        }
+    }
+
 }

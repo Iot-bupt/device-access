@@ -14,10 +14,7 @@ import cn.edu.bupt.pojo.DeviceCredentials;
 import cn.edu.bupt.pojo.Tenant;
 import cn.edu.bupt.security.HttpUtil;
 import com.alibaba.fastjson.JSON;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import okhttp3.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -353,6 +350,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
     }
 
     private List<Tenant> getTenants() throws Exception {
+        //Gson gs = new Gson();
         List<Tenant> tenants = new ArrayList<>();
         int page = 0;
 
@@ -368,7 +366,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
 
                 for(JsonElement jsonElement:jsonArray){
                     JsonObject jsonObject = jsonElement.getAsJsonObject();
-                    tenants.add(JSON.parseObject(jsonObject.getAsString(), Tenant.class));
+                    tenants.add(JSON.parseObject(jsonObject.toString(), Tenant.class));
                 }
                 page++;
             } else {

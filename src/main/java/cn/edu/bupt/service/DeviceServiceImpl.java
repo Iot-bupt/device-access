@@ -70,6 +70,13 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
     @Autowired
     private DeviceByGroupIdDao deviceByGroupIdDao;
 
+    @Override
+    public Long findDevicesCount(Integer tenantId){
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        return deviceDao.findDevicesCount(tenantId);
+    }
+
+
     //*********查找组中设备**********
     @Override
     public TextPageData<Device> findDevicesByGroupId(UUID groupId, TextPageLink pageLink) {

@@ -45,6 +45,10 @@ public class DeviceController extends BaseController {
         return "Hello";
     }
 
+    @RequestMapping(value = "/tenant/deviceCount/{tenantId}", method = RequestMethod.GET)
+    public Long getTenantDeviceCount(@PathVariable("tenantId") Integer tenantId)  {
+        return deviceService.findDevicesCount(tenantId);
+    }
     //对设备的操作
     //创建设备
     @RequestMapping(value = "/device", method = RequestMethod.POST)

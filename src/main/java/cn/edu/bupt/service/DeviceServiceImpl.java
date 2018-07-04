@@ -285,6 +285,10 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
                         device.setModel("default");
 //                        throw new DataValidationException("Device model should be specified!");
                     }
+                    if (device.getLifeTime() == null) {
+                        device.setLifeTime(0L);
+//                        throw new DataValidationException("Device model should be specified!");
+                    }
                 }
             };
 

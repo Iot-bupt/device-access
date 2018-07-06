@@ -3,13 +3,11 @@ package cn.edu.bupt.controller;
 import cn.edu.bupt.actor.service.FromServerMsgProcessor;
 import cn.edu.bupt.dao.page.TextPageData;
 import cn.edu.bupt.dao.page.TextPageLink;
-
 import cn.edu.bupt.message.BasicFromServerMsg;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.security.HttpUtil;
 import cn.edu.bupt.utils.StringUtil;
 import com.alibaba.fastjson.JSON;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,6 +54,7 @@ public class DeviceController extends BaseController {
 
             Device savedDevice = checkNotNull(deviceService.saveDevice(device1));
 
+            deviceService.sendMessage(savedDevice,"新增"+savedDevice.getName()+"设备");
             return savedDevice.toString();
         } catch (Exception e) {
             return onFail(e.toString());
@@ -70,7 +69,10 @@ public class DeviceController extends BaseController {
             throw new Exception("can't be empty");
         }
         try {
+            Device device = deviceService.findDeviceById(toUUID(strDeviceId));
             deviceService.deleteDevice(toUUID(strDeviceId));
+
+            deviceService.sendMessage(device, "删除"+device.getName()+"设备");
         } catch (Exception e) {
             e.printStackTrace();
             return ;

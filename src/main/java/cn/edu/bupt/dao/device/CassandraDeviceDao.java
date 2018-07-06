@@ -1,8 +1,12 @@
 package cn.edu.bupt.dao.device;
 
 import cn.edu.bupt.dao.Cassandra.CassandraAbstractSearchTextDao;
+import cn.edu.bupt.dao.ModelConstants;
 import cn.edu.bupt.dao.page.TextPageLink;
 import cn.edu.bupt.pojo.Device ;
+import com.datastax.driver.core.BoundStatement;
+import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.querybuilder.Select;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +20,10 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.*;
  */
 @Component
 public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> implements DeviceDao{
+
+    private PreparedStatement fetchStmt;
+    public static final String SELECT_PREFIX = "SELECT ";
+    public static final String EQUALS_PARAM = " = ? ";
 
     @Override
     protected Class<Device> getColumnFamilyClass() {
@@ -89,5 +97,23 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
         List<Device> devices = findPageWithTextSearch("device_by_tenant_and_search_text2",
                 Collections.singletonList(eq(DEVICE_TENANT_ID_PROPERTY, tenantId)), pageLink);
         return devices;
+    }
+
+    @Override
+    public Long findDevicesCount(int tenantId) {
+        PreparedStatement proto = getCountStmt();
+        BoundStatement stmt = proto.bind();
+        stmt.setInt(0, tenantId);
+        ResultSet resultSet = executeRead(stmt);
+        return resultSet.one().getLong(0);
+    }
+
+    private PreparedStatement getCountStmt() {
+        if(fetchStmt==null) {
+            fetchStmt = getSession().prepare(SELECT_PREFIX +
+                    "count(id)" + " FROM " + ModelConstants.DEVICE_BY_TENANT_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME
+                    + " WHERE " + ModelConstants.DEVICE_TENANT_ID_PROPERTY + EQUALS_PARAM);
+        }
+        return fetchStmt;
     }
 }

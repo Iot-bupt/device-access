@@ -70,6 +70,13 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
     @Autowired
     private DeviceByGroupIdDao deviceByGroupIdDao;
 
+    @Override
+    public Long findDevicesCount(Integer tenantId){
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        return deviceDao.findDevicesCount(tenantId);
+    }
+
+
     //*********查找组中设备**********
     @Override
     public TextPageData<Device> findDevicesByGroupId(UUID groupId, TextPageLink pageLink) {
@@ -276,6 +283,10 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
                     }
                     if (StringUtils.isEmpty(device.getModel())) {
                         device.setModel("default");
+//                        throw new DataValidationException("Device model should be specified!");
+                    }
+                    if (device.getLifeTime() == null) {
+                        device.setLifeTime(0L);
 //                        throw new DataValidationException("Device model should be specified!");
                     }
                 }

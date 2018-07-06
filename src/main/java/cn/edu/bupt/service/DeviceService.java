@@ -51,4 +51,6 @@ public interface DeviceService {
 
     String sendMessage(Device device,String message);
 
+    Long findDevicesCount(Integer tenantId);
+
 }

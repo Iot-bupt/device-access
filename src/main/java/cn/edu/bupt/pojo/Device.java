@@ -64,7 +64,7 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
     private Integer siteId;
 
     @Column(name  = DEVICE_LIFE_TIME_PROPERTY )
-    private long lifeTime;
+    private Long lifeTime;
 
 //    public Device(Device device) {
 //        this.id = id;
@@ -184,11 +184,11 @@ public class Device extends SearchTextBased implements SearchTextEntity,Serializ
         this.siteId = siteId;
     }
 
-    public long getLifeTime() {
+    public Long getLifeTime() {
         return lifeTime;
     }
 
-    public void setLifeTime(long lifeTime) {
+    public void setLifeTime(Long lifeTime) {
         this.lifeTime = lifeTime;
     }
 

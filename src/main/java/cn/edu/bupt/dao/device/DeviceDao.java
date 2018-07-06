@@ -3,11 +3,9 @@ package cn.edu.bupt.dao.device;
 import cn.edu.bupt.dao.Dao;
 import cn.edu.bupt.dao.page.TextPageLink;
 import cn.edu.bupt.pojo.Device;
-import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by CZX on 2018/4/17.
@@ -59,4 +57,6 @@ public interface DeviceDao extends Dao<Device> {
     List<Device> findDevicesByTenantIdAndSiteId(int tenantId, int siteId, TextPageLink pageLink);
 
     List<Device> findDevices(int tenantId,TextPageLink pageLink);
+
+    Long findDevicesCount(int tenantId);
 }

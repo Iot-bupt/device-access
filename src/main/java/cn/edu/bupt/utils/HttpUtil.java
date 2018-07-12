@@ -22,7 +22,7 @@ public class HttpUtil {
     }
     public static JsonObject getDeviceServiceDes(String manufacture, String deviceType, String model,String serviceName) throws IOException{
 //        String url = "http://172.24.32.167:8000/api/v1/ability/"+manufacture+"/"+deviceType+"/"+model;
-        String url = "http://39.104.84.131:8000/api/v1/ability/"+manufacture+"/"+deviceType+"/"+model;
+        String url = "http://servicemanagement:8000/api/v1/ability/"+manufacture+"/"+deviceType+"/"+model;
         Request.Builder buider = new Request.Builder()
                 .url(url)
                 .get() ;

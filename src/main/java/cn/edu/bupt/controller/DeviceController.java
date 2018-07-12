@@ -1,12 +1,15 @@
 package cn.edu.bupt.controller;
 
 import cn.edu.bupt.actor.service.FromServerMsgProcessor;
+import cn.edu.bupt.dao.exception.IOTErrorCode;
+import cn.edu.bupt.dao.exception.IOTException;
 import cn.edu.bupt.dao.page.TextPageData;
 import cn.edu.bupt.dao.page.TextPageLink;
 
 import cn.edu.bupt.message.BasicFromServerMsg;
 import cn.edu.bupt.pojo.Device;
 import cn.edu.bupt.security.HttpUtil;
+import cn.edu.bupt.security.model.Authority;
 import cn.edu.bupt.utils.StringUtil;
 import com.alibaba.fastjson.JSON;
 
@@ -45,10 +48,25 @@ public class DeviceController extends BaseController {
         return "Hello";
     }
 
-    @RequestMapping(value = "/tenant/deviceCount/{tenantId}", method = RequestMethod.GET)
-    public Long getTenantDeviceCount(@PathVariable("tenantId") Integer tenantId)  {
+    @RequestMapping(value = "/tenant/deviceCount", method = RequestMethod.GET)
+    public Long getTenantDeviceCount(@RequestParam Integer tenantId)  {
         return deviceService.findDevicesCount(tenantId);
     }
+
+    @RequestMapping(value = "/customer/deviceCount", method = RequestMethod.GET)
+    public Long getCustomerDeviceCount(@RequestParam Integer tenantId,@RequestParam Integer customerId) throws IOTException{
+        try {
+            if (getCurrentUser().getCustomerId().equals(customerId)||
+                    ((getCurrentUser().getAuthority().equals(Authority.TENANT_ADMIN))&&getCurrentUser().getTenantId().equals(tenantId))) {
+                return deviceService.findCustomerDevicesCount(customerId);
+            }else{
+                throw new IOTException("You aren't authorized to perform this operation!", IOTErrorCode.AUTHENTICATION);
+            }
+        }catch(Exception e){
+            throw handleException(e);
+        }
+    }
+
     //对设备的操作
     //创建设备
     @RequestMapping(value = "/device", method = RequestMethod.POST)

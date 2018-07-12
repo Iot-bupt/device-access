@@ -76,6 +76,12 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         return deviceDao.findDevicesCount(tenantId);
     }
 
+    @Override
+    public Long findCustomerDevicesCount(Integer customerId){
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        return deviceDao.findCustomerDevicesCount(customerId);
+    }
+
 
     //*********查找组中设备**********
     @Override

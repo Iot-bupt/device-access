@@ -24,7 +24,7 @@ public class EventController extends BaseController{
         }
         try {
 
-            TimePageLink pageLink = new TimePageLink(limit,1000*startTime,1000*endTime,ascOrder);
+            TimePageLink pageLink = new TimePageLink(limit,startTime,endTime,ascOrder);
             TimePageData<Event> event = baseEventService.findEvents(tenantId, deviceId, pageLink);
             return event;
         } catch (Exception e) {

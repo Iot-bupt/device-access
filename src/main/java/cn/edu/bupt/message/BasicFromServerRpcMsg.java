@@ -56,8 +56,8 @@ public class BasicFromServerRpcMsg  implements FromServerRpcMsg{
     @Override
     public boolean requireResponse() {
        //TODO 需要根据情况更改
-        if (service.has("requireResponce")){
-            return service.getAsJsonPrimitive("requireResponce").getAsBoolean();
+        if (service.has("requireResponse")){
+            return service.getAsJsonPrimitive("requireResponse").getAsBoolean();
         }else{
             return false;
         }

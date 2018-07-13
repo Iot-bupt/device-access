@@ -28,8 +28,6 @@ import java.util.*;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
@@ -126,8 +124,8 @@ public class DeviceActorMsgProcessor {
                 if(en.getKey().equals("picture")){
                     if(en instanceof StringEntry){
                         // 图片二进制转为图片，将路径存入
-                        String[] pathWords = {"root", "iot", "treatment", "img"} ;
-                        //String[] pathWords = {"D:\\pic", "oup"} ;
+                        //String[] pathWords = {"root", "iot", "treatment", "img"} ;
+                        String[] pathWords = {"D:\\pic", "oup"} ;
                         String path = String.join(File.separator, Arrays.asList(pathWords));
                         String pathname = path +"\\" + System.currentTimeMillis() +".jpg";
                         BufferedImage img = BinaryToImage(en.getValueAsString());

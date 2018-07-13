@@ -23,11 +23,13 @@ public class HttpUtil {
 
     @Value("${account.login_url}")
     private void getLogin(String loginUrl) {
+        System.out.println(loginUrl);
         tokenurl = loginUrl ;
     }
 
     @Value("${account.check_url}")
     private void getCheck(String checkUrl) {
+        System.out.println(checkUrl);
         checkurl = checkUrl ;
     }
 

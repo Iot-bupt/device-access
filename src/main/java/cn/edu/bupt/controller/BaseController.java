@@ -1,14 +1,25 @@
 package cn.edu.bupt.controller;
 
 import cn.edu.bupt.actor.service.DefaultActorService;
+import cn.edu.bupt.dao.exception.*;
+import cn.edu.bupt.security.model.SecurityUser;
 import cn.edu.bupt.service.*;
 import com.google.gson.JsonObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+@Slf4j
 public class BaseController {
+
+    @Autowired
+    private IOTErrorResponseHandler errorResponseHandler;
 
     @Autowired
     protected DeviceService deviceService;
@@ -31,6 +42,43 @@ public class BaseController {
     @Autowired
     BaseEventService baseEventService;
 
+    @ExceptionHandler(IOTException.class)
+    public void handleIOTException(IOTException ex, HttpServletResponse response) {
+        errorResponseHandler.handle(ex, response);
+    }
+
+    IOTException handleException(Exception exception) {
+        return handleException(exception, true);
+    }
+
+    private IOTException handleException(Exception exception, boolean logException) {
+        if (logException) {
+            log.error("Error [{}]", exception.getMessage());
+        }
+
+        String cause = "";
+        if (exception.getCause() != null) {
+            cause = exception.getCause().getClass().getCanonicalName();
+        }
+
+        if (exception instanceof IOTException) {
+            return (IOTException) exception;
+        } else if (exception instanceof IllegalArgumentException || exception instanceof IncorrectParameterException
+                || exception instanceof DataValidationException || cause.contains("IncorrectParameterException")) {
+            return new IOTException(exception.getMessage(), IOTErrorCode.BAD_REQUEST_PARAMS);
+        }  else {
+            return new IOTException(exception.getMessage(), IOTErrorCode.GENERAL);
+        }
+    }
+
+    protected SecurityUser getCurrentUser() throws IOTException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            return (SecurityUser) authentication.getPrincipal();
+        } else {
+            throw new IOTException("You aren't authorized to perform this operation!", IOTErrorCode.AUTHENTICATION);
+        }
+    }
 
     UUID toUUID(String id) {
         if(id==null) {

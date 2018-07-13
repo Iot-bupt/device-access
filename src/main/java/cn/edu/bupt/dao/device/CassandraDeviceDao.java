@@ -22,6 +22,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.*;
 public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> implements DeviceDao{
 
     private PreparedStatement fetchStmt;
+    private PreparedStatement fetchCustomerCountStmt;
     public static final String SELECT_PREFIX = "SELECT ";
     public static final String EQUALS_PARAM = " = ? ";
 
@@ -108,6 +109,15 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
         return resultSet.one().getLong(0);
     }
 
+    @Override
+    public Long findCustomerDevicesCount(int customerId) {
+        PreparedStatement proto = getCustomerCountStmt();
+        BoundStatement stmt = proto.bind();
+        stmt.setInt(0, customerId);
+        ResultSet resultSet = executeRead(stmt);
+        return resultSet.one().getLong(0);
+    }
+
     private PreparedStatement getCountStmt() {
         if(fetchStmt==null) {
             fetchStmt = getSession().prepare(SELECT_PREFIX +
@@ -115,5 +125,14 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
                     + " WHERE " + ModelConstants.DEVICE_TENANT_ID_PROPERTY + EQUALS_PARAM);
         }
         return fetchStmt;
+    }
+
+    private PreparedStatement getCustomerCountStmt() {
+        if(fetchCustomerCountStmt==null) {
+            fetchCustomerCountStmt = getSession().prepare(SELECT_PREFIX +
+                    "count(id)" + " FROM " + ModelConstants.DEVICE_BY_CUSTOMER_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME
+                    + " WHERE " + ModelConstants.DEVICE_CUSTOMER_ID_PROPERTY + EQUALS_PARAM);
+        }
+        return fetchCustomerCountStmt;
     }
 }

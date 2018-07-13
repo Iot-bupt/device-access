@@ -53,4 +53,6 @@ public interface DeviceService {
 
     Long findDevicesCount(Integer tenantId);
 
+    Long findCustomerDevicesCount(Integer customerId);
+
 }

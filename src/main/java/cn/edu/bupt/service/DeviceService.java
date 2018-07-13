@@ -55,4 +55,6 @@ public interface DeviceService {
 
     Long findCustomerDevicesCount(Integer customerId);
 
+    Device updateDeviceSiteId(UUID deviceId,Integer siteId);
+
 }

@@ -84,6 +84,20 @@ public class DeviceController extends BaseController {
         }
     }
 
+    //改变设备站点ID
+    @RequestMapping(value = "/device", method = RequestMethod.PUT)
+    public String updateDeviceSiteId(@RequestBody String device)  {
+        try {
+            //将提交表单的形式转为json格式提交
+
+            Device device1 = JSON.parseObject(device, Device.class);
+            Device changedDevice = checkNotNull(deviceService.updateDeviceSiteId(device1.getId(),device1.getSiteId()));
+            return changedDevice.toString();
+        } catch (Exception e) {
+            return onFail(e.toString());
+        }
+    }
+
     //删除设备
     @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/device/{deviceId}", method = RequestMethod.DELETE)

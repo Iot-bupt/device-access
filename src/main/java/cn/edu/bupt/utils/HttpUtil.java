@@ -16,17 +16,17 @@ import java.io.IOException;
  */
 public class HttpUtil {
     private static OkHttpClient client = new OkHttpClient();
-    public static void main(String[] agrs)throws Exception{
-        JsonObject obj = getDeviceServiceDes("bupt","switch","1","control swtich");
+    public static void main(String[] args)throws Exception{
+        JsonObject obj = getDeviceServiceDes("bupt","switch","1","control switch");
         System.out.println(obj);
     }
     public static JsonObject getDeviceServiceDes(String manufacture, String deviceType, String model,String serviceName) throws IOException{
 //        String url = "http://172.24.32.167:8000/api/v1/ability/"+manufacture+"/"+deviceType+"/"+model;
-        String url = "http://servicemanagement:8000/api/v1/ability/"+manufacture+"/"+deviceType+"/"+model;
-        Request.Builder buider = new Request.Builder()
+        String url = "http://servicemanagement:8000/api/v1/servicemanagement/ability/"+manufacture+"/"+deviceType+"/"+model;
+        Request.Builder builder = new Request.Builder()
                 .url(url)
                 .get() ;
-        Request request =  buider.build();
+        Request request =  builder.build();
         Response response = client.newCall(request).execute();
         if (response.isSuccessful()){
             String str = response.body().string();

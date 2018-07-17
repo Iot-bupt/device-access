@@ -10,6 +10,7 @@ import com.datastax.driver.core.querybuilder.Select.Where;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
@@ -63,5 +64,18 @@ public abstract class CassandraAbstractSearchTextDao<E extends SearchTextEntity>
         }
     }
 
-
+        protected List<E> findPageWithIdDesc(String searchView, List<Clause> clauses, TextPageLink pageLink){
+            Select select = select().from(searchView);
+            Where query = select.where();
+            List<E> result = new ArrayList<>();
+            for (Clause clause : clauses) {
+                query.and(clause);
+            }
+            query.and(QueryBuilder.lt(ModelConstants.ID_PROPERTY, pageLink.getIdOffset()));
+            int limit = pageLink.getLimit();
+            query.limit(limit);
+            result.addAll(findListByStatement(query));
+            return result;
+        }
 }
+

@@ -82,6 +82,14 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         return deviceDao.findCustomerDevicesCount(customerId);
     }
 
+    @Override
+    public Device updateDeviceSiteId(UUID deviceId,Integer siteId){
+        validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
+        validateId(siteId, INCORRECT_SITE_ID + siteId);
+        Device device = findDeviceById(deviceId);
+        device.setSiteId(siteId);
+        return deviceDao.save(device);
+    }
 
     //*********查找组中设备**********
     @Override
@@ -105,7 +113,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
 
     @Override
     public void unassignDeviceFromGroup(UUID deviceId , UUID groupId){
-        validateId(deviceId, INCORRECT_GROUP_ID + deviceId);
+        validateId(deviceId, INCORRECT_DEVICE_ID + deviceId);
         validateId(groupId, INCORRECT_GROUP_ID + groupId);
         deviceByGroupIdDao.delete(new DeviceByGroupId(groupId,deviceId));
     }
@@ -266,6 +274,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
                                 }
                             }
                     );
+                    device.setSiteId(deviceDao.findById(device.getId()).getSiteId());
                 }
 
                 @Override

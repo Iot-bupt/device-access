@@ -18,6 +18,7 @@ public class EventController extends BaseController{
                                             @RequestParam int limit,
                                             @RequestParam long startTime,
                                             @RequestParam long endTime,
+                                            @RequestParam(required = false) String idOffset,
                                             @RequestParam(required = false) boolean ascOrder) throws Exception {
         if (StringUtil.isEmpty(deviceId)) {
             throw new Exception("can't be empty");
@@ -25,6 +26,7 @@ public class EventController extends BaseController{
         try {
 
             TimePageLink pageLink = new TimePageLink(limit,startTime,endTime,ascOrder);
+            pageLink.setIdOffset(idOffset==null?null:toUUID(idOffset));
             TimePageData<Event> event = baseEventService.findEvents(tenantId, deviceId, pageLink);
             return event;
         } catch (Exception e) {

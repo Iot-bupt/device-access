@@ -87,7 +87,7 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
 
     @Override
     public List<Device> findDevicesByTenantIdAndSiteId(int tenantId, int siteId, TextPageLink pageLink){
-        List<Device> devices = findPageWithTextSearch(DEVICE_BY_TENANT_AND_SITE,
+        List<Device> devices = findPageWithIdDesc(DEVICE_BY_TENANT_AND_SITE,
                 Arrays.asList(eq(DEVICE_TENANT_ID_PROPERTY, tenantId), eq(DEVICE_SITE_ID_PROPERTY, siteId)),
                 pageLink);
         return devices;

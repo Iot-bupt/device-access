@@ -76,7 +76,7 @@ public class DeviceController extends BaseController {
 
             Device savedDevice = checkNotNull(deviceService.saveDevice(device1));
 
-            deviceService.sendMessage(savedDevice,"新增"+savedDevice.getName()+"设备");
+            deviceService.sendMessage(savedDevice,"新增/更新设备："+savedDevice.getName());
             return savedDevice.toString();
         } catch (Exception e) {
             return onFail(e.toString());
@@ -108,7 +108,7 @@ public class DeviceController extends BaseController {
             Device device = deviceService.findDeviceById(toUUID(strDeviceId));
             deviceService.deleteDevice(toUUID(strDeviceId));
 
-            deviceService.sendMessage(device, "删除"+device.getName()+"设备");
+            deviceService.sendMessage(device, "删除设备："+device.getName());
         } catch (Exception e) {
             e.printStackTrace();
             return ;

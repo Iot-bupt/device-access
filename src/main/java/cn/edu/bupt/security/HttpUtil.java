@@ -33,15 +33,6 @@ public class HttpUtil {
         checkurl = checkUrl ;
     }
 
-    @Value("${account.client_id}")
-    private void getClientId(String client_id) {
-        Client_id = client_id ;
-    }
-
-    @Value("${account.client_secret}")
-    private void getClientSecret(String client_secret) {
-        Client_secret = client_secret ;
-    }
 
     @Value("${account.internal_client_id}")
     private void getInternalClientId(String internal_client_id) {
@@ -59,37 +50,8 @@ public class HttpUtil {
     private static final MediaType FORM = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
     private static String tokenurl;
     private static String checkurl;
-    private static String Client_id;
-    private static String Client_secret;
     private static String Internal_client_id;
     private static String Internal_client_secret;
-
-
-    public static String checkToken(String token){
-        String content = "token="+token;
-        RequestBody body = RequestBody.create(FORM, content);
-        Request.Builder builder = new Request.Builder()
-                .url(checkurl)
-                .post(body);
-
-        byte[] textByte = (Client_id+":"+Client_secret).getBytes();
-        String auth = encoder.encodeToString(textByte);
-        builder.header("Authorization","Basic "+auth);
-
-        Request request = builder.build();
-        try{
-        Response response = execute(request);
-        if(response.isSuccessful()){
-            String result = response.body().string();
-            response.close();
-            return result;
-        }else{
-            throw new Exception("fail to check token!") ;
-          }
-        }catch (Exception e){
-            return "{\"error\":\"Invalid token!\"}";
-        }
-    }
 
     public static String getAccessToken(){
 

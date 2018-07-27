@@ -35,11 +35,6 @@ public class DeviceController extends BaseController {
 
     public static final String DEVICE_ID = "deviceId";
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String test(@RequestParam String token)  {
-        return HttpUtil.checkToken(token);
-    }
-
     @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/test2", method = RequestMethod.GET)
     public String test2()  {

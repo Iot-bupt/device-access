@@ -6,6 +6,7 @@ import cn.edu.bupt.pojo.kv.BaseTsKvQuery;
 import cn.edu.bupt.pojo.kv.TsKvEntry;
 import cn.edu.bupt.pojo.kv.TsKvQuery;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 public class TelemetryController extends BaseController {
 
     //通过设备ID和查询内容获取所有历史数据
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value="/alldata/{deviceId}",method = RequestMethod.GET)
     public List<TsKvEntry> getAllData(@PathVariable("deviceId") String deviceId,
                                       @RequestParam String key,
@@ -40,6 +42,7 @@ public class TelemetryController extends BaseController {
     }
 
     //通过设备ID获取所有键的最新数据
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/alllatestdata/{deviceId}", method = RequestMethod.GET)
     public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId)
     throws Exception{
@@ -55,6 +58,7 @@ public class TelemetryController extends BaseController {
 
 
     //设备ID和键获取最新数据
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/latestdata/{deviceId}/{keys}", method = RequestMethod.GET)
     public List<TsKvEntry> getlatestData(@PathVariable("deviceId") String deviceId
     ,@PathVariable("keys") Collection<String> keys)
@@ -70,6 +74,7 @@ public class TelemetryController extends BaseController {
     }
 
     //获取所有的数据的键类型
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
     @RequestMapping(value = "/allKeys/{deviceId}", method = RequestMethod.GET)
     public List<String> findAllKeys(@PathVariable("deviceId") String deviceId) throws Exception{
         try{

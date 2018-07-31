@@ -56,7 +56,8 @@ public class RpcController extends BaseController{
         event.setEntityId(deviceId);
         event.setTenantId(device.getTenantId());
         event.setEntityType(EntityType.DEVICE);
-        JsonObject object = new JsonParser().parse(data).getAsJsonObject();
+        //JsonObject object = new JsonParser().parse(data).getAsJsonObject();
+        event.setBody(data);
         event.setEventType("TestType");
         baseEventService.save(event);
         deviceService.sendMessage(device,"对"+device.getName()+"设备进行了控制");

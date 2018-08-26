@@ -73,7 +73,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
     @Override
     public Long findDevicesCountWithTextSearch(Integer tenantId, TextPageLink pageLink){
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
-        validateString(pageLink.getTextSearch(), INCORRECT_TEXT_SEARCH + pageLink.getTextSearch());
+//        validateString(pageLink.getTextSearch(), INCORRECT_TEXT_SEARCH + pageLink.getTextSearch());
         Long count = deviceDao.findDevicesCountByTenantId(tenantId, pageLink);
         return count;
     }
@@ -82,7 +82,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
     public Long findDevicesCountWithTextSearch(Integer tenantId, Integer customerId, TextPageLink pageLink){
         validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
         validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
-        validateString(pageLink.getTextSearch(), INCORRECT_TEXT_SEARCH + pageLink.getTextSearch());
+//        validateString(pageLink.getTextSearch(), INCORRECT_TEXT_SEARCH + pageLink.getTextSearch());
         Long count = deviceDao.findDevicesCountByCustomerId(tenantId, customerId, pageLink);
         return count;
     }

@@ -50,6 +50,21 @@ public class CassandraDeviceDao extends CassandraAbstractSearchTextDao<Device> i
     }
 
     @Override
+    public Long findDevicesCountByTenantId(Integer tenantId, TextPageLink pageLink) {
+        Long count = findCountWithTextSearch(DEVICE_BY_TENANT_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME,
+                Collections.singletonList(eq(DEVICE_TENANT_ID_PROPERTY, tenantId)), pageLink);
+        return count;
+    }
+
+    @Override
+    public Long findDevicesCountByCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink) {
+        Long count = findCountWithTextSearch(DEVICE_BY_CUSTOMER_AND_SEARCH_TEXT_COLUMN_FAMILY_NAME,
+                Arrays.asList(eq(DEVICE_CUSTOMER_ID_PROPERTY, customerId),
+                        eq(DEVICE_TENANT_ID_PROPERTY, tenantId)), pageLink);
+        return count;
+    }
+
+    @Override
     public List<Device> findDevicesByParentDeviceId(String parentDeviceId, TextPageLink pageLink) {
         List<Device> devices = findPageWithTextSearch(DEVICE_BY_TENANT_AND_PARENT_DEVICE_ID_COLUMN_FAMILY_NAME,
                 Collections.singletonList(eq(DEVICE_PARENT_DEVICE_ID_PROPERTY, parentDeviceId)), pageLink);

@@ -61,4 +61,8 @@ public interface DeviceDao extends Dao<Device> {
     Long findDevicesCount(int tenantId);
 
     Long findCustomerDevicesCount(int customerId);
+
+    Long findDevicesCountByTenantId(Integer tenantId, TextPageLink pageLink);
+
+    Long findDevicesCountByCustomerId(Integer tenantId, Integer customerId, TextPageLink pageLink);
 }

@@ -49,7 +49,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
     public static final String INCORRECT_DEVICE_TYPE = "Incorrect device type ";
     public static final String INCORRECT_MODEL = "Incorrect model ";
     public static final String INCORRECT_SITE_ID = "Incorrect siteId ";
-
+    public static final String INCORRECT_TEXT_SEARCH = "Incorrect textSearch ";
     @Autowired
     private DeviceDao deviceDao;
 
@@ -69,6 +69,23 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
 
     @Autowired
     private DeviceByGroupIdDao deviceByGroupIdDao;
+
+    @Override
+    public Long findDevicesCountWithTextSearch(Integer tenantId, TextPageLink pageLink){
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateString(pageLink.getTextSearch(), INCORRECT_TEXT_SEARCH + pageLink.getTextSearch());
+        Long count = deviceDao.findDevicesCountByTenantId(tenantId, pageLink);
+        return count;
+    }
+
+    @Override
+    public Long findDevicesCountWithTextSearch(Integer tenantId, Integer customerId, TextPageLink pageLink){
+        validateId(tenantId, INCORRECT_TENANT_ID + tenantId);
+        validateId(customerId, INCORRECT_CUSTOMER_ID + customerId);
+        validateString(pageLink.getTextSearch(), INCORRECT_TEXT_SEARCH + pageLink.getTextSearch());
+        Long count = deviceDao.findDevicesCountByCustomerId(tenantId, customerId, pageLink);
+        return count;
+    }
 
     @Override
     public Long findDevicesCount(Integer tenantId){
@@ -416,7 +433,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         System.out.println(requestBody);
 
         Request request = new Request.Builder()
-                .url("http://updatemessageplugin:8500/api/v1/updatemessageplugin/updateMessage/insert")
+                .url("http://127.0.0.1:8900/api/v1/updatemessageplugin/updateMessage/insert")
                 .post(requestBody)
                 .build();
         client.newCall(request).enqueue(new Callback() {

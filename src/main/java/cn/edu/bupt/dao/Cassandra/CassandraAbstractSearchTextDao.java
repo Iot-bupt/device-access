@@ -3,6 +3,7 @@ package cn.edu.bupt.dao.Cassandra;
 import cn.edu.bupt.dao.ModelConstants;
 import cn.edu.bupt.dao.SearchTextEntity;
 import cn.edu.bupt.dao.page.TextPageLink;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.querybuilder.Clause;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
@@ -62,6 +63,19 @@ public abstract class CassandraAbstractSearchTextDao<E extends SearchTextEntity>
         } else {
             return findListByStatement(query);
         }
+    }
+
+    protected Long findCountWithTextSearch(String searchView, List<Clause> clauses, TextPageLink pageLink) {
+//        Select select = select().from(searchView);
+        Select.SelectionOrAlias selectionOrAlias = new Select.SelectionOrAlias();
+        Where query = selectionOrAlias.countAll().from(searchView).where();
+        for (Clause clause : clauses) {
+            query.and(clause);
+        }
+        query.and(QueryBuilder.gte(ModelConstants.SEARCH_TEXT_PROPERTY, pageLink.getTextSearch()));
+        query.and(QueryBuilder.lt(ModelConstants.SEARCH_TEXT_PROPERTY, pageLink.getTextSearchBound()));
+        ResultSet resultSet = executeRead(query);
+        return resultSet.one().getLong(0);
     }
 
         protected List<E> findPageWithIdDesc(String searchView, List<Clause> clauses, TextPageLink pageLink){

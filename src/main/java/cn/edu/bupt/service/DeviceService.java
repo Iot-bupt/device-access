@@ -57,4 +57,8 @@ public interface DeviceService {
 
     Device updateDeviceSiteId(UUID deviceId,Integer siteId);
 
+    Long findDevicesCountWithTextSearch(Integer tenantId, TextPageLink pageLink);
+
+    Long findDevicesCountWithTextSearch(Integer tenantId, Integer customerId, TextPageLink pageLink);
+
 }

@@ -144,11 +144,42 @@ public class DeviceController extends BaseController {
         }
     }
 
-    //对tenant设备的操作
-    //获取tenant下的所有设备
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/tenant/devices/SearchCount/{tenantId}", method = RequestMethod.GET)
+    public Long getTenantDevicesCountByTextSearch(
+            @PathVariable("tenantId") Integer tenantId,
+            @RequestParam String textSearch) throws Exception {
+        try {
+            TextPageLink pageLink = new TextPageLink(1,textSearch);
+            Long count = deviceService.findDevicesCountWithTextSearch(tenantId,pageLink);
+            System.out.println(count);
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('CUSTOMER_USER')")
+    @RequestMapping(value = "/customerdevices/SearchCount/{tenantId}/{customerId}", method = RequestMethod.GET)
+    public Long getCustomerDevicesCountByTextSearch(
+            @PathVariable("tenantId") Integer tenantId,
+            @PathVariable("customerId") Integer customerId,
+            @RequestParam String textSearch) throws Exception {
+        try {
+            TextPageLink pageLink = new TextPageLink(1,textSearch);
+            Long count = deviceService.findDevicesCountWithTextSearch(tenantId,customerId,pageLink);
+            System.out.println(count);
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
     @RequestMapping(value = "/tenant/devices/{tenantId}", params = {"limit"}, method = RequestMethod.GET)
-    public TextPageData<Device> getTenantDevices(
+    public TextPageData<Device> getTenantDevicesCount(
             @PathVariable("tenantId") Integer tenantId,
             @RequestParam int limit,
             @RequestParam(required = false) String type,
@@ -158,6 +189,9 @@ public class DeviceController extends BaseController {
         try {
             TextPageLink pageLink = new TextPageLink(limit, textSearch,idOffset==null?null:toUUID(idOffset), textOffset);
             TextPageData<Device> ls = deviceService.findDevicesByTenantId(tenantId, pageLink);
+            TextPageLink pageLink1 = new TextPageLink(1,textSearch);
+            Long count = deviceService.findDevicesCountWithTextSearch(tenantId,pageLink1);
+            System.out.println(count);
             return ls;
         } catch (Exception e) {
             e.printStackTrace();

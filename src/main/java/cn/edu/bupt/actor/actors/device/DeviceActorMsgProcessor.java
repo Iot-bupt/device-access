@@ -18,17 +18,16 @@ import com.google.gson.JsonObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import javax.websocket.Session;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
-import java.io.*;
 
 /**
  * Created by Administrator on 2018/4/17.
@@ -163,7 +162,10 @@ public class DeviceActorMsgProcessor {
         JsonObject obj =  new JsonObject();
         obj.addProperty("deviceId",device.getId().toString());
         obj.addProperty("tenantId",device.getTenantId());
+        obj.addProperty("name",device.getName());
+        obj.addProperty("manufacture",device.getManufacture());
         obj.addProperty("deviceType",device.getDeviceType());
+        obj.addProperty("model",device.getModel());
         JsonArray array = new JsonArray();
         for(Map.Entry<Long,List<cn.edu.bupt.common.entry.KvEntry>> entry:data.entrySet()){
             long ts = entry.getKey();

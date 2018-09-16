@@ -270,6 +270,16 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         return new TextPageData<>(devices, pageLink);
     }
 
+    @Override
+    public void suspendedDeviceByTenantId(Integer tenantId) {
+        new TenantDevicesSuspended().removeEntities(tenantId);
+    }
+
+    @Override
+    public void activatedDeviceByTenantId(Integer tenantId) {
+        new TenantDevicesActivated().removeEntities(tenantId);
+    }
+
     private DataValidator<Device> deviceValidator =
             new DataValidator<Device>() {
 
@@ -354,6 +364,38 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         @Override
         protected void removeEntity(Device entity) {
             unassignDeviceFromCustomer(entity.getId());
+        }
+
+    }
+
+    private class TenantDevicesSuspended extends PaginatedRemover<Integer, Device> {
+
+        @Override
+        protected List<Device> findEntities(Integer id,TextPageLink pageLink) {
+            return deviceDao.findDevices(id,pageLink);
+        }
+
+        @Override
+        protected void removeEntity(Device entity) {
+            DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByDeviceId(entity.getId());
+            deviceCredentials.setSuspended(Boolean.TRUE);
+            deviceCredentialsService.updateDeviceCredentials(deviceCredentials);
+        }
+
+    }
+
+    private class TenantDevicesActivated extends PaginatedRemover<Integer, Device> {
+
+        @Override
+        protected List<Device> findEntities(Integer id,TextPageLink pageLink) {
+            return deviceDao.findDevices(id,pageLink);
+        }
+
+        @Override
+        protected void removeEntity(Device entity) {
+            DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByDeviceId(entity.getId());
+            deviceCredentials.setSuspended(Boolean.FALSE);
+            deviceCredentialsService.updateDeviceCredentials(deviceCredentials);
         }
 
     }

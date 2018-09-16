@@ -385,4 +385,16 @@ public class DeviceController extends BaseController {
         }
     }
 
+//    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/devices/suspend/{tenantId}", method = RequestMethod.PUT)
+    public void suspendDevices(@PathVariable("tenantId") Integer tenantId) throws Exception {
+        deviceService.suspendedDeviceByTenantId(tenantId);
+    }
+
+//    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
+    @RequestMapping(value = "/devices/activate/{tenantId}", method = RequestMethod.PUT)
+    public void activateDevices(@PathVariable("tenantId") Integer tenantId) throws Exception {
+        deviceService.activatedDeviceByTenantId(tenantId);
+    }
+
 }

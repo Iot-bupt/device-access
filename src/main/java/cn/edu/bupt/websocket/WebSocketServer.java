@@ -1,34 +1,43 @@
 package cn.edu.bupt.websocket;
 
 import cn.edu.bupt.pojo.Device;
+import cn.edu.bupt.pojo.kv.TsKvEntry;
 import cn.edu.bupt.security.HttpUtil;
-import com.alibaba.fastjson.JSON;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import cn.edu.bupt.service.BaseTimeseriesService;
+import cn.edu.bupt.service.DeviceService;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.gson.*;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @ServerEndpoint(value = "/api/v1/deviceaccess/websocket")
 @Component
-public class WebSocketServer{
+public class WebSocketServer /*extends WebSocketBaseServer*/{
+    @Autowired
+    private DeviceService deviceService;
 
+    @Autowired
+    protected BaseTimeseriesService baseTimeseriesService;
+
+    private static DeviceService deviceStaticService;
+
+    private static BaseTimeseriesService baseTimeseriesStaticService;
 
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
@@ -39,6 +48,13 @@ public class WebSocketServer{
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
+
+    @PostConstruct
+    public void init(){
+        deviceStaticService = deviceService;
+        baseTimeseriesStaticService = baseTimeseriesService;
+    }
+
 
     @OnOpen
     public void onOpen(Session session) {
@@ -80,18 +96,24 @@ public class WebSocketServer{
      *
      * @param message 客户端发送过来的消息*/
     @OnMessage
-    public void onMessage(String message, Session session) throws IOException {
+    public void onMessage(String message, Session session) throws IOException, ExecutionException, InterruptedException {
         log.info("来自客户端的消息:" + message);
 
         JsonObject jsonObj = (JsonObject)new JsonParser().parse(message);
         String deviceId = jsonObj.get("deviceId").getAsString();
         this.deviceId = deviceId;
 
-        String data = sendGETAllData(this.deviceId);
-        String deviceStr = getDeviceId(this.deviceId);
+/*        String data = sendGETAllData(this.deviceId);
+        String deviceStr = getDeviceId(this.deviceId);*/
+
+        ListenableFuture<List<TsKvEntry>> tskventry = baseTimeseriesStaticService.findAllLatest(toUUID(deviceId));
+        List<TsKvEntry> ls = tskventry.get();
+        Gson gson = new Gson();
+        String data = gson.toJson(ls);
 
         //Gson gson = new Gson();
-        Device device = JSON.parseObject(deviceStr, Device.class);
+        /*Device device = JSON.parseObject(deviceStr, Device.class);*/
+        Device device = deviceStaticService.findDeviceById(toUUID(this.deviceId));
 
         JsonObject jsonObject =  encodeJson(device,data);
         sendMessage(jsonObject.toString(),this.session);
@@ -217,9 +239,10 @@ public class WebSocketServer{
             JsonObject jsonObj = new JsonObject();
 
             jsonObj.addProperty("ts",objData.get("ts").getAsLong());
-            jsonObj.addProperty("key",objData.get("key").getAsString());
-            jsonObj.addProperty("value",objData.get("value").getAsString());
-            switch(objData.get("dataType").getAsString()){
+            JsonObject kv = objData.get("kv").getAsJsonObject();
+            jsonObj.addProperty("key",kv.get("key").getAsString());
+            jsonObj.addProperty("value",kv.get("value").getAsString());
+            /*switch(objData.get("dataType").getAsString()){
                 case "string":
                     jsonObj.addProperty("value",objData.get("value").getAsString());
                     break;
@@ -231,11 +254,19 @@ public class WebSocketServer{
                     break;
                 case "double":
                     jsonObj.addProperty("value",objData.get("value").getAsDouble());
-                    break;
-            }
+                    break;*/
+           //}
             array.add(jsonObj);
         }
         obj.add("data",array);
         return obj;
+    }
+
+    UUID toUUID(String id) {
+        if(id==null) {
+            return null;
+        }else {
+            return UUID.fromString(id);
+        }
     }
 }

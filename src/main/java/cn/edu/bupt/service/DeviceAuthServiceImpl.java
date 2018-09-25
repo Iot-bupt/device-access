@@ -28,9 +28,11 @@ public class DeviceAuthServiceImpl implements  DeviceAuthService {
 //        return DeviceAuthResult.of(true, UUID.randomUUID().toString(),"errorMsg");
         DeviceCredentials crede= deviceCredentialsService.findDeviceCredentialsByToken(credentals.getCredentialsId());
 
-        if(crede!=null){
+        if(crede!=null && !crede.getSuspended()){
            return  DeviceAuthResult.of(true,crede.getDeviceId().toString(),"success");
-        }else{
+        }else if(crede!=null && crede.getSuspended()) {
+            return DeviceAuthResult.of(false, null, "this device is suspended!");
+        }else {
             return  DeviceAuthResult.of(false,null,"wrong token");
         }
     }

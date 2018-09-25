@@ -25,6 +25,9 @@ public class DeviceCredentials extends SearchTextBased implements BaseEntity{
     @Column(name = DEVICE_CREDENTIALS_TOKEN_PROPERTY )
     private String deviceToken;
 
+    @Column(name  = DEVICE_CREDENTIALS_SUSPENDED_PROPERTY )
+    private Boolean suspended = Boolean.FALSE;
+
     @Override
     public UUID getId() {
         return id;
@@ -55,6 +58,13 @@ public class DeviceCredentials extends SearchTextBased implements BaseEntity{
         return "";
     }
 
+    public Boolean getSuspended() {
+        return suspended;
+    }
+
+    public void setSuspended(Boolean suspended) {
+        this.suspended = suspended;
+    }
 
     @Override
     public String toString() {

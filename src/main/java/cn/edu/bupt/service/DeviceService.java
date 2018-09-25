@@ -61,4 +61,8 @@ public interface DeviceService {
 
     Long findDevicesCountWithTextSearch(Integer tenantId, Integer customerId, TextPageLink pageLink);
 
+    void suspendedDeviceByTenantId(Integer tenantId);
+
+    void activatedDeviceByTenantId(Integer tenantId);
+
 }

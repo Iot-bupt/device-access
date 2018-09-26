@@ -8,6 +8,9 @@ import cn.edu.bupt.actor.actors.device.DeviceActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import cn.edu.bupt.actor.service.DefaultActorService;
 import cn.edu.bupt.message.*;
+import cn.edu.bupt.pojo.Device;
+import cn.edu.bupt.pojo.Model;
+import cn.edu.bupt.service.ModelService;
 import com.google.gson.JsonObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,27 +25,42 @@ import java.util.Map;
 public class TenantActor extends ContextAwareActor {
 
     private final Map<String, ActorRef> deviceActors;
+    private final Map<String, Long> deviceLiveTime;
     private final String tenantId;
     private final String DEVICE_OFFLINE  = "device is offline";
 
     public TenantActor(ActorSystemContext systemContext,String tenantId){
         super(systemContext);
         this.deviceActors = new HashMap<>();
+        this.deviceLiveTime = new HashMap<>();
         this.tenantId = tenantId;
     }
 
     @Override
     public void onReceive(Object msg) throws Exception {
         if(msg instanceof BasicToDeviceActorMsg){
+            if(!deviceLiveTime.containsKey(((BasicToDeviceActorMsg) msg).getDeviceId())){
+                Device device = ((BasicToDeviceActorMsg) msg).getDevice();
+
+                ModelService modelService = systemContext.getModelService();
+
+                Model model = modelService.getModel(device.getManufacture(), device.getDeviceType(), device.getModel());
+                if(model==null){
+                    deviceLiveTime.put(((BasicToDeviceActorMsg) msg).getDeviceId(), 60000L);
+                }else{
+                    deviceLiveTime.put(((BasicToDeviceActorMsg) msg).getDeviceId(), model.getLimit_lifetime());
+                }
+            }
             getOrCreateDeviceActor(((BasicToDeviceActorMsg) msg).getDeviceId()).tell(msg,ActorRef.noSender());
         }else if(msg instanceof BasicToDeviceActorSessionMsg){
             //TODO 待完成
             ActorRef ref = deviceActors.get(((BasicToDeviceActorSessionMsg)msg).getDeviceId());
             if(ref != null){
                 //TODO 延时时间改为通过配置文件注入
-                scheduleMsgWithDelay(msg,60000,ref);
+                scheduleMsgWithDelay(msg,deviceLiveTime.get(((BasicToDeviceActorSessionMsg)msg).getDeviceId()),ref);
             }
         }else if(msg instanceof  DeviceTerminationMsg){
+            deviceLiveTime.remove(((DeviceTerminationMsg)msg).getDeviceId());
             ActorRef ref =  deviceActors.remove(((DeviceTerminationMsg)msg).getDeviceId());
             if(ref!=null){
                 //TODO 打日志

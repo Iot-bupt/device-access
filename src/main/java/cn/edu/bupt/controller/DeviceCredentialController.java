@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 public class DeviceCredentialController extends BaseController {
 
     //创建
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'createCredentials')")
     @RequestMapping(value = "/credential",method = RequestMethod.POST)
-    public String create(@RequestBody String credentials) throws Exception {
+    public String createCredentials(@RequestBody String credentials) throws Exception {
         //提交表单转变为json
 
         try {
@@ -26,9 +26,9 @@ public class DeviceCredentialController extends BaseController {
     }
 
     //删除
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'deleteCredentials')")
     @RequestMapping(value = "/credential/{credential}",method = RequestMethod.DELETE)
-    public void delete(@PathVariable("credential") DeviceCredentials credentials) throws Exception {
+    public void deleteCredentials(@PathVariable("credential") DeviceCredentials credentials) throws Exception {
         try {
            deviceCredentialsService.deleteDeviceCredentials(credentials);
         } catch (Exception e) {
@@ -39,9 +39,9 @@ public class DeviceCredentialController extends BaseController {
 
 
     //修改
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'updateCredentials')")
     @RequestMapping(value = "/credential/{credential}",method = RequestMethod.PUT)
-    public DeviceCredentials update(@PathVariable("credential") DeviceCredentials credentials) throws Exception {
+    public DeviceCredentials updateCredentials(@PathVariable("credential") DeviceCredentials credentials) throws Exception {
         try {
             DeviceCredentials deviceCredentials = deviceCredentialsService.updateDeviceCredentials(credentials);
             return deviceCredentials;
@@ -52,9 +52,9 @@ public class DeviceCredentialController extends BaseController {
     }
 
     //通过ID查找
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getCredentialsById')")
     @RequestMapping(value = "/credentialbyid/{deviceId}",method = RequestMethod.GET)
-    public DeviceCredentials getById(@PathVariable("deviceId") String deviceId) throws Exception {
+    public DeviceCredentials getCredentialsById(@PathVariable("deviceId") String deviceId) throws Exception {
         try {
             DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByDeviceId(toUUID(deviceId));
             return deviceCredentials;
@@ -65,9 +65,9 @@ public class DeviceCredentialController extends BaseController {
     }
 
     //通过token查找
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getCredentialsByToken')")
     @RequestMapping(value = "/crednetialbytoken/{token}",method = RequestMethod.GET)
-    public DeviceCredentials getByToken(@PathVariable("token") String token) throws Exception {
+    public DeviceCredentials getCredentialsByToken(@PathVariable("token") String token) throws Exception {
         try {
             DeviceCredentials deviceCredentials = deviceCredentialsService.findDeviceCredentialsByToken(token);
             return deviceCredentials;

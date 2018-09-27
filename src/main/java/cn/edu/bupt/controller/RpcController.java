@@ -31,7 +31,7 @@ public class RpcController extends BaseController{
     @Autowired
     DeviceService deviceService;
 
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'sendRpcCommandToDevice')")
     @RequestMapping(value = "/{deviceId}/{requestId}", method = RequestMethod.POST)
     public DeferredResult<ResponseEntity> sendRpcCommandToDevice(@RequestBody String data, @PathVariable String deviceId,
                                                                  @PathVariable int requestId)throws Exception{

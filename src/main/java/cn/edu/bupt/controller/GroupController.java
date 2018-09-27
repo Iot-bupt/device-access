@@ -21,7 +21,7 @@ public class GroupController extends BaseController {
 
     //设备层面的设备组
     //获取设备组下的所有设备
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getDevicesByGroupId')")
     @RequestMapping(value = "/group/devices/{groupId}",params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Device> getDevicesByGroupId(
             @PathVariable(GROUP_ID) String strGroupId,
@@ -47,7 +47,7 @@ public class GroupController extends BaseController {
     }
 
     //分配设备到设备组
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'assignDeviceToGroup')")
     @RequestMapping(value = "/assign/group/{groupId}/{deviceId}", method = RequestMethod.GET)
     public void assignDeviceToGroup(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
@@ -60,7 +60,7 @@ public class GroupController extends BaseController {
 
 
     //从设备组取消分配所有设备
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'unassignDevicesFromGroup')")
     @RequestMapping(value = "/unassign/group/{groupId}", method = RequestMethod.DELETE)
     public void unassignDevicesFromGroup(@PathVariable(GROUP_ID) String groupId) throws Exception{
         try{
@@ -73,7 +73,7 @@ public class GroupController extends BaseController {
 
 
     //从设备组取消分配某一个设备
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'unassignDeviceByGroupId')")
     @RequestMapping(value = "/unassign/group/{groupId}/{deviceId}", method = RequestMethod.DELETE)
     public void unassignDeviceByGroupId(@PathVariable(GROUP_ID) String groupId, @PathVariable(DEVICE_ID) String deviceId) throws Exception{
         try{
@@ -87,7 +87,7 @@ public class GroupController extends BaseController {
 
     //设备组层面的设备组
     //创建
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'saveGroup')")
     @RequestMapping(value = "/group", method = RequestMethod.POST)
     public String saveGroup(@RequestBody String group) throws Exception{
 
@@ -103,7 +103,7 @@ public class GroupController extends BaseController {
     }
 
     //删除
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'deleteGroup')")
     @RequestMapping(value = "/group/{groupId}", method = RequestMethod.DELETE)
     public void deleteGroup(@PathVariable(GROUP_ID) String strGroupId) throws Exception{
         if(StringUtil.isEmpty(strGroupId)){
@@ -118,7 +118,7 @@ public class GroupController extends BaseController {
     }
 
     //查找所有设备组
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('TENANT_ADMIN')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getGroupsByTenantId')")
     @RequestMapping(value = "/groups/tenant/{tenantId}",params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Group> getGroupsByTenantId(
             @PathVariable("tenantId") Integer tenantId,
@@ -138,7 +138,7 @@ public class GroupController extends BaseController {
     }
 
     //获取客户管理的所有设备组
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('CUSTOMER_USER')")
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getGroupsByCustomerId')")
     @RequestMapping(value = "/groups/customer/{customerId}",params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Group> getGroupsByCustomerId(
             @PathVariable("customerId") Integer customerId,
@@ -158,7 +158,8 @@ public class GroupController extends BaseController {
     }
 
     //通过tenant和customer找group
-    @PreAuthorize("#oauth2.hasScope('all') OR hasAuthority('CUSTOMER_USER')")
+    //permission同上
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getGroupsByCustomerId')")
     @RequestMapping(value = "/groups/{tenantId}/{customerId}",params = {"limit"}, method = RequestMethod.GET)
     public TextPageData<Group> getGroupsByTenantIdAndCustomerId(
             @PathVariable("tenantId") Integer tenantId,

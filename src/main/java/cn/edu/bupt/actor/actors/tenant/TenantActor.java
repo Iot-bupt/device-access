@@ -47,6 +47,8 @@ public class TenantActor extends ContextAwareActor {
                 Model model = modelService.getModel(device.getManufacture(), device.getDeviceType(), device.getModel());
                 if(model==null){
                     deviceLiveTime.put(((BasicToDeviceActorMsg) msg).getDeviceId(), 60000L);
+                }else if(model.getLimit_lifetime()==0L){
+                    deviceLiveTime.put(((BasicToDeviceActorMsg) msg).getDeviceId(), 60000L);
                 }else{
                     deviceLiveTime.put(((BasicToDeviceActorMsg) msg).getDeviceId(), model.getLimit_lifetime());
                 }

@@ -475,7 +475,7 @@ public class DeviceServiceImpl implements  DeviceService, InitializingBean{
         System.out.println(requestBody);
 
         Request request = new Request.Builder()
-                .url("http://updatemessageplugin:8900/api/v1/updatemessageplugin/updateMessage/insert")
+                .url("http://updatemessageplugin:8500/api/v1/updatemessageplugin/updateMessage/insert")
                 .post(requestBody)
                 .build();
         client.newCall(request).enqueue(new Callback() {

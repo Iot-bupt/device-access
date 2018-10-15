@@ -1,26 +1,61 @@
 package cn.edu.bupt.controller;
-
-
-
-import cn.edu.bupt.pojo.kv.AttributeKvEntry;
+import cn.edu.bupt.pojo.kv.*;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.gson.*;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @RestController
 @RequestMapping("/api/v1/deviceaccess")
 public class AttributeController extends BaseController{
+
+
+    @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getAllAttributes')")
+    @RequestMapping(value="/attribute/{deviceId}", method = RequestMethod.POST)
+    public void addAttribute(@PathVariable("deviceId") String deviceId, @RequestBody String attributes){
+            JsonObject object = new JsonParser().parse(attributes).getAsJsonObject();
+            long ts = System.currentTimeMillis();
+            List<AttributeKvEntry> aKv = new ArrayList<>();
+            for(Map.Entry<String,JsonElement> entry:object.getAsJsonObject().entrySet()){
+                if(entry.getValue().isJsonPrimitive()){
+                    KvEntry kv = parseAttribute(entry);
+                    KvEntry e =  new BaseAttributeKvEntry(kv, ts);
+                    aKv.add((AttributeKvEntry) e);
+                }else{
+                    throw new JsonSyntaxException("Can't parse value: " + entry);
+                }
+            }
+        try{
+            baseAttributesService.save(toUUID(deviceId), aKv);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public static KvEntry parseAttribute(Map.Entry<String, JsonElement> entry) {
+        KvEntry e = null ;
+        if(entry.getValue().getAsJsonPrimitive().isNumber()){
+            if(entry.getValue().getAsString().contains(".")){
+                e = new DoubleDataEntry(entry.getKey(),entry.getValue().getAsDouble());
+            }else{
+                e = new LongDataEntry(entry.getKey(),entry.getValue().getAsLong());
+            }
+        }else if(entry.getValue().getAsJsonPrimitive().isString()){
+            e = new StringDataEntry(entry.getKey(),entry.getValue().getAsString());
+        }else if(entry.getValue().getAsJsonPrimitive().isBoolean()){
+            e = new BooleanDataEntry(entry.getKey(),entry.getValue().getAsBoolean());
+        }else{
+            throw new JsonSyntaxException("输入的键值对不满足指定的规范");
+        }
+        return e;
+    }
 
     //通过设备ID获取全部属性
     @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getAllAttributes')")

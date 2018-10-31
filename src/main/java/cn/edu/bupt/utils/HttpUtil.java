@@ -9,6 +9,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/5/23.
@@ -25,6 +26,9 @@ public class HttpUtil {
         Request.Builder builder = new Request.Builder()
                 .url(url)
                 .get() ;
+        String tocken = cn.edu.bupt.security.HttpUtil.getAccessToken();
+        builder.header("Authorization","Bearer "+tocken);
+
         Request request =  builder.build();
         Response response = client.newCall(request).execute();
         if (response.isSuccessful()){

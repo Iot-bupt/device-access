@@ -2,6 +2,7 @@ package cn.edu.bupt.actor.actors;
 
 import akka.actor.ActorContext;
 import akka.actor.ActorRef;
+import akka.actor.Cancellable;
 import akka.actor.UntypedActor;
 import cn.edu.bupt.actor.service.ActorSystemContext;
 import scala.concurrent.duration.Duration;
@@ -21,10 +22,11 @@ public abstract class ContextAwareActor extends UntypedActor {
         this.systemContext = systemContext;
     }
 
-    protected void scheduleMsgWithDelay(Object msg, long delayInMs, ActorRef target) {
+    protected Cancellable scheduleMsgWithDelay(Object msg, long delayInMs, ActorRef target) {
       //  getScheduler().scheduleOnce(Duration.create(delayInMs, TimeUnit.MILLISECONDS), target, msg, getSystemDispatcher(), null);
-        systemContext.getActorSystem().scheduler().scheduleOnce(Duration.create(delayInMs,TimeUnit.MILLISECONDS),
+        Cancellable cancellable = systemContext.getActorSystem().scheduler().scheduleOnce(Duration.create(delayInMs,TimeUnit.MILLISECONDS),
                 target,msg,systemContext.getActorSystem().dispatcher(),null);
+        return cancellable;
     }
 
 }

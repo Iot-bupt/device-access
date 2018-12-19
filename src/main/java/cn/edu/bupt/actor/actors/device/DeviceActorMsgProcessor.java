@@ -2,6 +2,7 @@ package cn.edu.bupt.actor.actors.device;
 
 import akka.actor.ActorRef;
 import cn.edu.bupt.actor.service.ActorSystemContext;
+import cn.edu.bupt.common.SessionId;
 import cn.edu.bupt.common.entry.BasicAttributeKvEntry;
 import cn.edu.bupt.common.entry.StringEntry;
 import cn.edu.bupt.message.*;
@@ -34,7 +35,9 @@ import java.util.*;
  */
 public class DeviceActorMsgProcessor {
 
-    private final Set<String> subscriptions;
+    //cong之前的set改为map，键为sessionid，值为订阅次数（这里不确定短线重连是否会复用前一个绘话，如果会复用，那这样写没问题）
+    //如果不复用，这么些也没问题
+    private final Map<String,Integer> subscriptions;
     private final  Map<Integer,DeferredResult<ResponseEntity>> rpcRequests;
     private final ActorSystemContext actorSystemContext;
     static BASE64Encoder encoder = new sun.misc.BASE64Encoder();
@@ -42,8 +45,33 @@ public class DeviceActorMsgProcessor {
 
     public  DeviceActorMsgProcessor(ActorSystemContext actorSystemContext){
         rpcRequests  = new HashMap<>();
-        subscriptions = new HashSet<>();
+        subscriptions = new HashMap<>();
         this.actorSystemContext = actorSystemContext;
+    }
+
+    public boolean jugeWhetherDie(SessionId id){
+        if(subscriptions.isEmpty()){
+            return true;
+        }
+
+        String idstr = id.toUidStr();
+
+        if(!subscriptions.containsKey(idstr)){
+            return false;
+        }
+
+        if(subscriptions.get(idstr)>1){
+            subscriptions.put(idstr,subscriptions.get(idstr)-1);
+            return false;
+        }
+
+        subscriptions.remove(idstr);
+
+        if(subscriptions.isEmpty()){
+            return true;
+        }
+
+        return false;
     }
 
     public void process(BasicToDeviceActorMsg msg) throws IOException {
@@ -61,11 +89,24 @@ public class DeviceActorMsgProcessor {
                 break;
             case MsgType.FROM_DEVICE_RPC_SUB:
                 System.err.println("receive a rpc sub");
-                subscriptions.add(adptorMsg.getSessionId().toUidStr());
+                if(subscriptions.containsKey(adptorMsg.getSessionId().toUidStr())){
+                    String uidStr = adptorMsg.getSessionId().toUidStr();
+                    subscriptions.put(uidStr, subscriptions.get(uidStr)+1);
+                }else {
+                    subscriptions.put(adptorMsg.getSessionId().toUidStr(), 1);
+                }
                 break;
             case MsgType.FROM_DEVICE_RPC_UNSUB:
                 System.err.println("receive a rpc unsub");
-                subscriptions.remove(adptorMsg.getSessionId().toUidStr());
+                String uidStr = adptorMsg.getSessionId().toUidStr();
+                if(!subscriptions.containsKey(uidStr)){
+                    break;
+                }
+                if(subscriptions.get(uidStr)<=1){
+                    subscriptions.remove(uidStr);
+                }else{
+                    subscriptions.put(uidStr, subscriptions.get(uidStr)-1);
+                }
                 break;
             case MsgType.FROM_DEVICE_RPC_RESPONSE:
                 System.err.println("receive a rpc  response");
@@ -93,7 +134,7 @@ public class DeviceActorMsgProcessor {
                 msg1.getRes().onTimeout(()->{
                     rpcRequests.remove(requestId);
                 });
-                subscriptions.forEach(sessionId->{
+                subscriptions.keySet().forEach(sessionId->{
                     actorSystemContext.getSessionManagerActor().tell(
                             new BasicFromDeviceActorRpc(sessionId,msg1.getDevice(),msg1),
                             ActorRef.noSender()
@@ -101,7 +142,7 @@ public class DeviceActorMsgProcessor {
                 });
             }else{
                 msg1.getRes().setResult(new ResponseEntity(HttpStatus.OK));
-                subscriptions.forEach(sessionId->{
+                subscriptions.keySet().forEach(sessionId->{
                     actorSystemContext.getSessionManagerActor().tell(
                             new BasicFromDeviceActorRpc(sessionId,msg1.getDevice(),msg1),
                             ActorRef.noSender()

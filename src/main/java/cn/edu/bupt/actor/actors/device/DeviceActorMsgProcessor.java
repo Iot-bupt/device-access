@@ -50,6 +50,10 @@ public class DeviceActorMsgProcessor {
     }
 
     public boolean jugeWhetherDie(SessionId id){
+        System.out.println("start to juge whether die nd session = " +id);
+        subscriptions.forEach((k,v) -> {
+            System.out.println(k+"=>"+v);
+        });
         if(subscriptions.isEmpty()){
             return true;
         }

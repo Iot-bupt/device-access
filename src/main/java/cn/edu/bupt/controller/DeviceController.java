@@ -214,11 +214,14 @@ public class DeviceController extends BaseController {
     //通过tenantID和Name查找设备
     @PreAuthorize("#oauth2.hasScope('all') OR hasPermission(null ,'getDeviceByTenantIdAndName')")
     @RequestMapping(value="/device/{tenantId}/{name}",method = RequestMethod.GET)
-    public Optional<Device> getDeviceByTenantIdAndName(@PathVariable("tenantId") Integer tenantId,
+    public Device getDeviceByTenantIdAndName(@PathVariable("tenantId") Integer tenantId,
                                                        @PathVariable("name") String name) throws Exception{
         try{
             Optional<Device> optionalDevice = deviceService.findDeviceByTenantIdAndName(tenantId, name);
-            return optionalDevice;
+            if(optionalDevice.isPresent()) {
+                return optionalDevice.get();
+            }
+            return null;
         }catch (Exception e){
             e.printStackTrace();
             return null;
